@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head id="apps">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>China Taste LLC</title>
+
+    <!--JQuery library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom CSS styles for this template -->
+    <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
+    <link href="Frontend/css/itemSelect.css" rel="stylesheet">
+
+    <!--Custom JavaScript files-->
+    <script src="Frontend/js/itemSelect.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">China Taste of Vernon, LLC</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Menu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <br>
+
+    <!-- Page Content -->
+    <div class="container" id="page-body">
+
+      <div id="modal">
+        <div id="modal-border">
+          <div id="modal-content">
+
+            <h5 id="modal-name-text"></h5>
+
+            <div class="row">
+
+              <div class="col-lg-6">
+                <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
+                  <input type="radio" checked="checked" name="radio">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+              <div class="col-lg-6">
+                <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
+                  <input type="radio" name="radio">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+
+            </div>
+
+            <div id="special-instructions">
+              <h6>Special Instructions (128 char. limit)</h6>
+              <div id="textarea-wrapper"> 
+                <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
+              </div>
+            </div>
+
+            <div id="modal-quantity">
+              <button id="q-sel-down">-</button><input id="modal-quantity-text" type="text" size="1"><button id="q-sel-up">+</button>
+            </div>
+
+            <span id="modal-btn-wrapper">
+              <button id="cancel-btn">Cancel</button>
+            </span>
+
+            <span id="modal-btn-wrapper">
+              <button id="add-item-btn">Add to Order</button>
+            </span>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-8">
+
+          <div class="row">
+
+            <div class="col-lg-3">
+
+              <div class="list-group">
+                <a href="/" class="list-group-item">Appetizers</a>
+                <a href="/soup" class="list-group-item">Soup</a>
+                <a href="#" class="list-group-item">Fried Rice</a>
+              </div>
+
+              <br>
+
+            </div>
+            <!-- /.col-lg-2 -->
+
+            <div class="col-lg-9">
+              <div id="menu-header">
+                <h4>Appetizers</h4>
+              </div>
+
+              <div class="item" id="item0">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item1">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item2">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item3">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item4">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item5">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item6">
+                <div class="row">
+                  <div class="col-lg-9">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-3">
+                    <p class="cost-text"></p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <br>
+
+        </div>
+
+        <div class="col-lg-4">
+          <div id="checkout-box">
+
+            <div id="cob-header">
+              <h5>Your Order</p>
+            </div>
+
+            <div id="box-body">
+
+              <div class="checkout-item" id="checkout-item0">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="checkout-item" id="checkout-item1">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="checkout-item" id="checkout-item2">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="checkout-item" id="checkout-item3">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="checkout-item" id="checkout-item4">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div id="divider"></div>
+
+              <div id="cost-info">
+                <div class="row">
+
+                  <div class="col-lg-8">
+                    <h6 class="cost-info-label">Subtotal</h6>
+                    <h6 class="cost-info-label">Tax</h6>
+                    <h6 class="cost-info-label">Delivery Charge</h6>
+                    <h6 class="cost-info-label">Total</h6>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <h6 id="subtotal-text"></h6>
+                    <h6 id="tax-text"></h6>
+                    <h6 id="del-charge-text"></h6>
+                    <h6 id="total-text"></h6>
+                  </div>
+
+                </div>
+              </div>
+              <!-- cost-info -->
+
+              <div id="checkout-btn-wrapper">
+                <a href="http://localhost:3000/submit"> <button id="checkout-btn">Checkout</button> </a>
+              </div>
+
+            </div>
+            <!-- box-body -->
+
+          </div>
+        </div>
+        <!-- /.col-lg-4 -->
+
+      </div>
+      <!-- /.row -->
+
+      <br><br>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; China Taste of Vernon, LLC 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+  </body>
+
+</html>
