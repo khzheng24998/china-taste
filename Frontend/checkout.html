@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>China Taste LLC</title>
+
+    <!--JQuery library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom CSS styles for this template -->
+    <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
+    <link href="Frontend/css/checkout.css" rel="stylesheet">
+
+    <!--Custom JavaScript files-->
+    <script src="Frontend/js/checkout.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">China Taste of Vernon, LLC</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Menu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <br>
+
+    <!-- Page Content -->
+    <div class="container" id="page-body">
+
+      <div class="row">
+
+        <div class="col-lg-8">
+
+          <div id="header">
+            <h4 id="header-text">Your Order</h4>
+          </div>
+
+        <!-----------------------------------------Labels----------------------------------------->
+
+          <div id="labels">
+            <div class="row">
+              <div class="col-lg-3">
+                <h5>Quantity</h5>
+              </div>
+              <div class="col-lg-5">
+                <h5>Item</h5>
+              </div>
+              <div class="col-lg-2">
+                <h5>Size</h5>
+              </div>
+              <div class="col-lg-2">
+                <h5>Cost</h5>
+              </div>
+            </div>
+          </div>
+
+          <!----------------------------------Empty Display Text---------------------------------->
+
+          <div id="empty">
+            <h4 id="empty-text">Your Cart is Empty</h4>
+          </div>
+
+          <!----------------------------------------Item 0---------------------------------------->
+
+          <div class="item" id="item0">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <div class="item-quantity">
+                  <button class="q-sel-down">-</button><input class="quantity-text" type="text" size="1"><button class="q-sel-up">+</button>
+                </div>
+              </div>
+
+              <div class="col-lg-5">
+                <div class="item-name">
+                  <p class="name-text"></p>
+                  <button class="del-button">Delete</button>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-size">
+                  <select class="size-text">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
+                  </select>
+                  <p class="size-null">---</p>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-cost">
+                  <p class="cost-text"></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!----------------------------------------Item 1---------------------------------------->
+
+          <div class="item" id="item1">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <div class="item-quantity">
+                  <button class="q-sel-down">-</button><input class="quantity-text" type="text" size="1"><button class="q-sel-up">+</button>
+                </div>
+              </div>
+
+              <div class="col-lg-5">
+                <div class="item-name">
+                  <p class="name-text"></p>
+                  <button class="del-button">Delete</button>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-size">
+                  <select class="size-text">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
+                  </select>
+                  <p class="size-null">---</p>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-cost">
+                  <p class="cost-text"></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!----------------------------------------Item 2---------------------------------------->
+
+          <div class="item" id="item2">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <div class="item-quantity">
+                  <button class="q-sel-down">-</button><input class="quantity-text" type="text" size="1"><button class="q-sel-up">+</button>
+                </div>
+              </div>
+
+              <div class="col-lg-5">
+                <div class="item-name">
+                  <p class="name-text"></p>
+                  <button class="del-button">Delete</button>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-size">
+                  <select class="size-text">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
+                  </select>
+                  <p class="size-null">---</p>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-cost">
+                  <p class="cost-text"></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!----------------------------------------Item 3---------------------------------------->
+
+          <div class="item" id="item3">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <div class="item-quantity">
+                  <button class="q-sel-down">-</button><input class="quantity-text" type="text" size="1"><button class="q-sel-up">+</button>
+                </div>
+              </div>
+
+              <div class="col-lg-5">
+                <div class="item-name">
+                  <p class="name-text"></p>
+                  <button class="del-button">Delete</button>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-size">
+                  <select class="size-text">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
+                  </select>
+                  <p class="size-null">---</p>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-cost">
+                  <p class="cost-text"></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!----------------------------------------Item 4---------------------------------------->
+
+          <div class="item" id="item4">
+            <div class="row">
+
+              <div class="col-lg-3">
+                <div class="item-quantity">
+                  <button class="q-sel-down">-</button><input class="quantity-text" type="text" size="1"><button class="q-sel-up">+</button>
+                </div>
+              </div>
+
+              <div class="col-lg-5">
+                <div class="item-name">
+                  <p class="name-text"></p>
+                  <button class="del-button">Delete</button>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-size">
+                  <select class="size-text">
+                    <option value="small">Small</option>
+                    <option value="large">Large</option>
+                  </select>
+                  <p class="size-null">---</p>
+                </div>
+              </div>
+
+              <div class="col-lg-2">
+                <div class="item-cost">
+                  <p class="cost-text"></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-------------------------------------------------------------------------------------->
+
+
+          <!--------------------------------------Subtotal---------------------------------------->
+
+          <div id="subtotal">
+            <div class="row">
+
+              <div class="col-lg-2">
+                <div class="subtotal-text-wrapper">
+                  <h5>Subtotal</h5>
+                </div>
+              </div>
+
+              <div class="col-lg-6">
+                
+              </div>
+
+              <div class="col-lg-2">
+                
+              </div>
+
+              <div class="col-lg-2">
+                <div class="subtotal-text-wrapper">
+                  <h5 id="subtotal-text"></h5>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+        <!-- /.col-lg-8 -->
+
+        <div class="col-lg-4">
+          <div id="checkout-box">
+
+            <!-- Tab links -->
+            <div id="tab">
+              <button id="takeout-btn">Takeout</button>
+              <button id="delivery-btn">Delivery</button>
+              <button id="dine-in-btn">Dine-in</button>
+            </div>
+
+            <br>
+
+            <div id="total">
+              <div class="row">
+
+                <div class="col-lg-2"></div>
+                <div class="col-lg-6">
+                  <h6 id="subtotal-label">Subtotal</h6>
+                  <h6 id="tax-label">Tax</h6>
+                  <h6 id="del-charge-label">Delivery Charge</h6>
+                  <h6 id="total-label">Total</h6>
+                </div>
+                <div class="col-lg-4">
+                  <p id="subtotal-text-2"></p>
+                  <p id="tax-text"></p>
+                  <p id="del-charge-text"></p>
+                  <p id="total-text"></p>
+                </div>
+
+              </div>
+            </div>
+
+            <br>
+
+            <div id="checkout-btn-wrapper">
+              <a href="http://localhost:3000/submit"> <button id="checkout-btn">Checkout</button> </a>
+            </div>
+
+            <br>
+
+          </div>
+        </div>
+        <!-- /.col-lg-4 -->
+
+      </div>
+      <!-- /.row -->
+
+      <br><br>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; China Taste of Vernon, LLC 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+  </body>
+
+</html>

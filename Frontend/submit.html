@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>China Taste LLC</title>
+
+    <!--JQuery library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom CSS styles for this template -->
+    <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
+    <link href="Frontend/css/submit.css" rel="stylesheet">
+
+    <!--Custom JavaScript files-->
+    <script src="Frontend/js/submit.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">China Taste of Vernon, LLC</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Menu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <br>
+
+    <!-- Page Content -->
+    <div class="container" id="page-body">
+
+      <div id="modal">
+        <div id="modal-border">
+          <div id="modal-content">
+            <h6>Size:</h6>
+            <h6>Sauce:</h6>
+            <h6>Spiciness level:</h6>
+            <textarea rows="6" cols="46" placeholder=" Click here to write a message."></textarea>
+            <button>Add to Order</button>
+            <button id="cancel-btn">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-8">
+
+          <div id="tab-wrapper"> 
+            <div id="tab">
+              <button id="takeout-btn" class="order-type-sel">Takeout</button>
+              <button id="delivery-btn" class="order-type-sel">Delivery</button>
+              <button id="dine-in-btn" class="order-type-sel">Dine-in</button>
+            </div>
+          </div>
+
+          <br>
+
+          <div id="address-info">
+
+            <h5>Deliver to:</h5>
+            <h6>Address*</h6>
+            <input type="text" size="93" id="address" class="required">
+            <p class="err-msg" id="address-err">Required field.</p>
+            
+            <div class="row">
+
+              <div class="col-lg-4">
+                <h6 class="label">City*</h6>
+                <input type="text" id="city" class="required">
+                <p class="err-msg" id="city-err">Required field.</p>
+              </div>
+
+              <div class="col-lg-4">
+                <h6 class="label">State*</h6>
+                <input type="text" id="state" class="required">
+                <p class="err-msg" id="state-err">Required field.</p>
+              </div>
+
+              <div class="col-lg-4">
+                <h6 class="label">Zip Code*</h6>
+                <input type="text" id="zip-code" class="required">
+                <p class="err-msg" id="zip-code-err">Required field.</p>
+              </div>
+
+            </div>
+
+            <div class="row">
+
+              <div class="col-lg-4">
+                <h6 class="label">Company Name</h6>
+                <input type="text" id="company-name">
+              </div>
+
+              <div class="col-lg-4">
+                <h6 class="label">Cross Street</h6>
+                <input type="text" id="cross-street">
+              </div>
+
+              <div class="col-lg-4">
+                <h6 class="label">Apt/Unit/Suite</h6>
+                <input type="text" id="apt">
+              </div>
+
+            </div>
+
+            <br>
+          </div>
+          <!-- address-info -->
+
+          <div class="row">
+
+            <div class="col-lg-6">
+
+              <div id="customer-info">
+                <h5>Customer Information</h5>
+
+                <div class="row">
+                  <div class="col-lg-6">
+                    <h6 class="label">First Name*</h6>
+                    <input type="text" size="18" id="first-name" class="required">
+                    <p class="err-msg" id="first-name-err">Required field.</p>
+                  </div>
+                  <div class="col-lg-6">
+                    <h6 class="label">Last Name*</h6>
+                    <input type="text" size="18" id="last-name" class="required">
+                    <p class="err-msg" id="last-name-err">Required field.</p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-6">
+                    <h6 class="label">Phone Number*</h6>
+                    <input type="text" size="18" id="phone-number" class="required">
+                    <p class="err-msg" id="phone-number-err">Required field.</p>
+                  </div>
+                  <div class="col-lg-6">
+                    <div id="customer-count-div">
+                      <h6 class="label">Customer Count*</h6>
+                      <input type="text" size="18" id="customer-count" class="required">
+                      <p class="err-msg" id="customer-count-err">Required field.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <br>
+              </div>
+              <!-- customer-info -->
+
+            </div>
+
+            <div class="col-lg-6">
+              <div id="order-info">
+                <h5>Order Information</h5>
+
+                <div class="row">
+
+                  <div class="col-lg-6">
+                    <h6 class="label">Request Date*</h6>
+                    <select id="request-date"></select>
+                  </div>
+
+                  <div class="col-lg-6">
+                    <h6 class="label">Request Time*</h6>
+                    <select id="request-time">
+                      <option value="asap">ASAP</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                </div>
+
+                <div id="payment-info">
+                  <h6>Payment Method:*</h6>
+                  <div id="opt-cash">
+                    <input type="radio" name="payment-method" value="cash" id="cash">  Cash<br>
+                  </div>
+                  <div id="opt-card">
+                    <input type="radio" name="payment-method" value="card" id="card">  Credit/Debit Card<br>
+                  </div>
+                  <div id="opt-in-store">
+                    <input type="radio" name="payment-method" value="in-store" id="in-store">  Pay at Store<br>
+                  </div>
+                </div>
+
+                <div id="time-prompt">
+                  <h6 class="inline-element" id="enter-time">Enter time:</h6>
+                  <input class="inline-element" type="time" size="5" id="time-text">
+                  <select class="inline-element" id="time-period">
+                    <option value="am">AM</option>
+                    <option value="pm">PM</option>
+                  </select>
+                  <br>
+                </div>
+
+                <div id="special-instructions">
+                  <h6>Special Instructions (256 char. limit)</h6>
+                  <textarea rows="6" cols="46" placeholder=" Click here to write a message."></textarea>
+                </div>
+
+                <br>
+
+              </div>
+            </div>
+
+          </div>
+          <!-- /.row -->
+
+        </div>
+        <!-- /.col-lg-8 -->
+
+        <div class="col-lg-4">
+          <div id="checkout-box">
+
+            <div id="cob-header">
+              <h5>Your Order</p>
+            </div>
+
+            <div id="box-body">
+
+              <div class="item" id="item0">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item1">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item2">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item3">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="item" id="item4">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <p class="name-text"></p>
+                  </div>
+                  <div class="col-lg-4">
+                    <p class="cost-text"></p>
+                    <p class="quantity-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <div id="divider"></div>
+
+              <div id="cost-info">
+                <div class="row">
+
+                  <div class="col-lg-8">
+                    <h6 class="cost-info-label">Subtotal</h6>
+                    <h6 class="cost-info-label">Tax</h6>
+                    <h6 class="cost-info-label">Delivery Charge</h6>
+                    <h6 class="cost-info-label">Total</h6>
+                  </div>
+
+                  <div class="col-lg-4">
+                    <h6 id="subtotal-text"></h6>
+                    <h6 id="tax-text"></h6>
+                    <h6 id="del-charge-text"></h6>
+                    <h6 id="total-text"></h6>
+                  </div>
+
+                </div>
+              </div>
+              <!-- cost-info -->
+
+              <div id="order-btn-wrapper">
+                <button id="order-btn">Place Order</button>
+              </div>
+
+            </div>
+            <!-- box-body -->
+
+          </div>
+        </div>
+        <!-- /.col-lg-4 -->
+
+      </div>
+      <!-- /.row -->
+
+      <br><br>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; China Taste of Vernon, LLC 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+  </body>
+
+</html>
