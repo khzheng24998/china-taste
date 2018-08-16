@@ -1,6 +1,27 @@
 //Included module(s)
 const Menu = require("./menu.js");
 
+/*------Menu Entry---------/
+
+struct MenuEntry
+{
+	name;
+	category;
+	cost = [];
+	extra = [];
+}
+
+/-------Order Entry-------/
+
+struct OrderEntry
+{
+	menuEntry = {};
+	size;
+	quantity;
+	special;
+}
+*/
+
 //Return value: Returns true on success and false otherwise.
 //Argument(s):
 // - req: {action, name, size, quantity}
@@ -12,7 +33,7 @@ function updateOrder(req, order)
 		case "add":
 			addToOrder(req, order);
 			return true;
-		case "remove":
+		/*case "remove":
 			removeFromOrder(req, order);
 			return true;
 		case "change-quantity":
@@ -20,7 +41,7 @@ function updateOrder(req, order)
 			return true;
 		case "change-size":
 			changeSize(req, order);
-			return true;
+			return true;*/
 		default:
 			console.log("updateOrder: Invalid action!");
 			return false;
@@ -49,7 +70,9 @@ function validateAdd(req, order)
 // - order: order list
 function addToOrder(req, order)
 {
-	let index = getOrderIndex(req.name, req.size, order);
+	/*let index = orderLookup(req.name, req.size, order);
+
+	//Item is already in 
 	if (index != -1)
 	{
 		let sum = (+order[index].quantity) + (+req.quantity);
@@ -65,7 +88,9 @@ function addToOrder(req, order)
 		temp.cost = getCost(req.lookupHandle);
 
 		order.push(temp);
-	}
+	}*/
+
+	order.push(req.orderEntry);
 }
 
 //Return value: Returns true on success and false otherwise (note: a return value of false does not necessarily indicate program failure).
@@ -74,14 +99,14 @@ function addToOrder(req, order)
 // - order: order list
 function removeFromOrder(req, order)
 {
-	let index = getOrderIndex(req.name, req.size, order);
+	/*let index = getOrderIndex(req.name, req.size, order);
 	if (index != -1)
 	{
 		order.splice(index, 1);
 		return true;
 	}
 
-	return false;
+	return false;*/
 }
 
 //Return value: Returns true on success and false otherwise (note: a return value of false does not necessarily indicate program failure).
@@ -90,7 +115,7 @@ function removeFromOrder(req, order)
 // - order: order list
 function changeQuantity(req, order)
 {
-	if (req.quantity == 0)
+	/*if (req.quantity == 0)
 		return removeFromOrder(req, order);
 
 	let index = getOrderIndex(req.name, req.size, order);
@@ -100,12 +125,12 @@ function changeQuantity(req, order)
 		return true;
 	}
 
-	return false;
+	return false;*/
 }
 
 function changeSize(req, order)
 {
-	let index = getOrderIndex(req.name, req.size, order);
+	/*let index = getOrderIndex(req.name, req.size, order);
 	if (index != -1)
 	{
 		let newSize = "null";
@@ -129,15 +154,11 @@ function changeSize(req, order)
 		return true;
 	}
 
-	return false;
+	return false;*/
 }
 
-//Return value: Returns index of the item identified by arguments name and size, if found in order. Returns -1 otherwise.
-//Argument(s):
-// - name: name of item
-// - size: size of item
-// - order: order list
-function getOrderIndex(name, size, order)
+//TODO: Remove this function
+function orderLookup(name, size, order)
 {
 	for (let i = 0; i < order.length; i++)
 		if (name == order[i].name && size == order[i].size)

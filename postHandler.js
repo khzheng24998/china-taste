@@ -4,7 +4,7 @@ const GetMenu = require("./getMenu.js");
 
 function validateUpdateOrder(req)
 {
-	let actionDef = (typeof(req.action) !== "undefined");
+	/*(let actionDef = (typeof(req.action) !== "undefined");
 	let nameDef = (typeof(req.name) !== "undefined");
 	let sizeDef = (typeof(req.size) !== "undefined");
 	let quantityDef = (typeof(req.quantity) !== "undefined");
@@ -13,12 +13,12 @@ function validateUpdateOrder(req)
 	if (actionDef && nameDef && sizeDef && quantityDef && lookupHandleDef)
 		return true;
 	else
-		return false;
+		return false;*/
 }
 
 function validateRequest(req, url)
 {
-	switch (url)
+	/*switch (url)
 	{
 		case "/update-order":
 			return validateUpdateOrder(req);
@@ -26,16 +26,16 @@ function validateRequest(req, url)
 			return (typeof(req.category) !== "undefined");
 		default:
 			break;
-	}
+	}*/
 }
 
 function updateOrder(req, order)
 {
-	if (!validateRequest(req, "/update-order"))
+	/*if (!validateRequest(req, "/update-order"))
 	{
 		console.log("Invalid POST data received!");
 		return;
-	}
+	}*/
 
 	EditOrder.updateOrder(req, order);
 }
@@ -47,11 +47,11 @@ function updateOrderInfo(req, orderInfo)
 
 function getMenu(req)
 {
-	if (!validateRequest(req, "/get-menu"))
+	/*if (!validateRequest(req, "/get-menu"))
 	{
 		console.log("Invalid POST data received!");
 		return;
-	}
+	}*/
 
 	let menu = GetMenu.getMenuGroup(req);
 	return menu;

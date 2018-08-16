@@ -1,15 +1,15 @@
-function getOrderIndex(menuItem, order)
+function menuLookup(name, menu)
 {
-	for (let i = 0; i < order.length; i++)
-	{
-		if (menuItem.name === order[i].name)
-			return i;
-	}
+	let menuItem = {};
 
-	return -1;
+	for (let i = 0; i < menu.length; i++)
+		if (name == menu[i].name)
+			menuItem = menu[i];
+
+	return menuItem;
 }
 
-function getItemNum(str)
+function getNumFromId(str)
 {
 	for(let i = 0; i < str.length; i++)
 	{
@@ -19,9 +19,10 @@ function getItemNum(str)
 	}
 }
 
-function getSize()
+function decodeHTML(str)
 {
-
+	let decoded = str.replace(/&amp;/g, '&');
+	return decoded;
 }
 
 function formatGetMenuReq(category)
@@ -32,14 +33,11 @@ function formatGetMenuReq(category)
 }
 
 //Formats POST requests to the URL http://localhost:3000/update-order
-function formatUpdateOrderReq(action, name, size, quantity, lookupHandle)
+function formatUpdateOrderReq(action, orderEntry)
 {
 	let req = {};
 	req.action = action;
-	req.name = name;
-	req.size = size;
-	req.quantity = quantity;
-	req.lookupHandle = lookupHandle;
+	req.orderEntry = orderEntry;
 	return req;
 }
 
@@ -60,12 +58,42 @@ function displayPageContents(menu, order)
 
 		$("#item" + i).find(".cost-text").html(costString);
 	}
+
+	displayCheckoutBox(order);
 }
 
-function displayModalBox(itemNum, menu, order)
+function displayCheckoutBox(order)
 {
-	let menuItem = menu[itemNum];
+	let subtotal = 0;
 
+	for (let i = 0; i < order.length; i++)
+	{
+		let $checkoutItem = $("#checkout-item" + i);
+		$checkoutItem.show();
+
+		if (i == order.length - 1)
+			$checkoutItem.css("border-bottom-style", "none");
+
+		let quantity = order[i].quantity;
+		let size = order[i].size;
+		let cost = order[i].menuEntry.cost;
+		let unitCost = (size == "large") ? cost[1] : cost[0];
+		let itemCost = (quantity * unitCost).toFixed(2);
+
+		$checkoutItem.find(".checkout-name").html(order[i].menuEntry.name);
+		$checkoutItem.find(".checkout-cost").html("$" + itemCost);
+
+		if (quantity > 1)
+			$checkoutItem.find(".checkout-quantity").html("(Qty: " + quantity + ")");
+
+		subtotal = (+subtotal) + (+itemCost);
+	}
+
+	$("#subtotal-text").html("$" + subtotal.toFixed(2));
+}
+
+function displayModalBox1(menuItem)
+{
 	$("#modal").show();
 	$("#modal-name-text").html(menuItem.name);
 
@@ -81,30 +109,95 @@ function displayModalBox(itemNum, menu, order)
 		$("#size-opt2-text").html("Lg ($" + menuItem.cost[1].toFixed(2) + ")");
 	}
 
-	let orderIndex = getOrderIndex(menuItem, order);
-	if (orderIndex != -1)
-		$("#modal-quantity-text").val(order[orderIndex].quantity);
-	else
-		$("#modal-quantity-text").val(1);
+	$('input[name=size][value="small"]').prop("checked", true);
+
+	$("#modal-quantity-text").val("1");
+
+	$("#add-item-btn").show();
+	$("#save-item-btn").hide();
+	$("#delete-btn-wrapper").hide();
 }
 
-function addToOrder()
+function displayModalBox2(orderItem)
 {
-	let name = $("#modal-name-text").html();
-	let quantity = $("#modal-quantity-text").val();
-	let lookupHandle = "";
-	let size = "N/A";
+	$("#modal").show();
+	$("#modal-name-text").html(orderItem.menuEntry.name);
 
-	let req = formatUpdateOrderReq("add", name, size, quantity, lookupHandle);
+	let menuItem = orderItem.menuEntry;
+
+	if (menuItem.cost.length == 1)
+	{	
+		$("#size-opt1-text").html("$" + parseFloat(menuItem.cost[0]).toFixed(2));
+		$("#size-opt2").hide();
+	}
+	else if (menuItem.cost.length == 2)
+	{
+		$("#size-opt1-text").html("Sm ($" + parseFloat(menuItem.cost[0]).toFixed(2) + ")");
+		$("#size-opt2").show();
+		$("#size-opt2-text").html("Lg ($" + parseFloat(menuItem.cost[1]).toFixed(2) + ")");
+	}
+
+	if (orderItem.size != "N/A")
+		$('input[name=size][value="' + orderItem.size + '"]').prop("checked", true);
+	else
+		$('input[name=size][value="small"]').prop("checked", true);
+
+	$("#modal-quantity-text").val(orderItem.quantity);
+
+	$("#add-item-btn").hide();
+	$("#save-item-btn").show();
+	$("#delete-btn-wrapper").show();
+}
+
+function formatOrderEntry(menuIndex, menu)
+{
+	let orderEntry = {};
+
+	//let name = decodeHTML($("#modal-name-text").html());
+	let name = menu[menuIndex].name;
+
+	let size = $('input[name=size]:checked').val();
+
+	//let menuEntry = menuLookup(name, menu);
+	let menuEntry = menu[menuIndex];
+
+	let quantity = $("#modal-quantity-text").val();
+	let special = "";
+
+	orderEntry.menuEntry = menuEntry;
+	orderEntry.quantity = quantity;
+	orderEntry.special = special;
+
+	if (menuEntry.cost.length != 2)
+		orderEntry.size = "N/A";
+	else
+		orderEntry.size = size;
+
+	return orderEntry;
+}
+
+function addToOrder(menuIndex, menu)
+{
+	let orderEntry = formatOrderEntry(menuIndex, menu);
+	let req = formatUpdateOrderReq("add", orderEntry);
 
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
 		if(status != "success")
 		{
 			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
-			location.reload();
 		}
 	});
+}
+
+function deleteItem(order)
+{
+
+}
+
+function updateItem(order)
+{
+
 }
 
 $(document).ready(function()
@@ -122,29 +215,59 @@ $(document).ready(function()
 		}
 
 		let menu = data.menu;
-		let order = data.order;
-		displayPageContents(menu);
+		let order = data.order.items;
+		displayPageContents(menu, order);
 
 		$(window).resize(function()
 		{
     		displayPageContents(menu, order);
 		});
 
+		let menuIndex, orderIndex;
+
 		$(".item").on("click", function()
 		{
-			let itemName = $(this).attr("id");
-			let itemNum = getItemNum(itemName);
-			displayModalBox(itemNum, menu, order);
+			let id = $(this).attr("id");
+			menuIndex = getNumFromId(id);
+			let menuItem = menu[menuIndex];
+			displayModalBox1(menuItem);
 		});
 
 		$("#add-item-btn").on("click", function()
 		{
-			addToOrder();
+			addToOrder(menuIndex, menu);
 		});
+
+		$("#save-item-btn").on("click", function()
+		{
+			updateItem(orderIndex, order);
+		});
+
+		$("delete-btn").on("click", function()
+		{
+			deleteItem(orderIndex, order);
+		})
 
 		$("#cancel-btn").on("click", function()
 		{
 			$("#modal").hide();
+		});
+
+		$(".checkout-name").on("click", function()
+		{
+			let id = $(this).closest(".checkout-item").attr("id");
+			orderIndex = getNumFromId(id);
+			let orderItem = order[orderIndex];
+			displayModalBox2(orderItem);
+		});
+
+		$(".checkout-name").hover(function()
+		{
+			$(this).css("text-decoration", "underline");
+		},
+		function()
+		{
+			$(this).css("text-decoration", "none");
 		});
 
 		$("#checkout-btn").on("click", function()

@@ -68,20 +68,20 @@
 
             <h5 id="modal-name-text"></h5>
 
-            <div class="row">
-
-              <div class="col-lg-6">
-                <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
-                  <input type="radio" checked="checked" name="radio">
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-              <div class="col-lg-6">
-                <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
-                  <input type="radio" name="radio">
-                  <span class="checkmark"></span>
-                </label>
-              </div>
+            <div class="row" id="size-select">
+              
+                <div class="col-lg-6">
+                  <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
+                    <input type="radio" checked="checked" name="size" value="small">
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-lg-6">
+                  <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
+                    <input type="radio" name="size" value="large">
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
 
             </div>
 
@@ -96,12 +96,17 @@
               <button id="q-sel-down">-</button><input id="modal-quantity-text" type="text" size="1"><button id="q-sel-up">+</button>
             </div>
 
-            <span id="modal-btn-wrapper">
+            <span class="modal-btn-wrapper">
               <button id="cancel-btn">Cancel</button>
             </span>
 
-            <span id="modal-btn-wrapper">
+            <span id="delete-btn-wrapper">
+              <button id="delete-btn">Delete</button>
+            </span>
+
+            <span class="modal-btn-wrapper">
               <button id="add-item-btn">Add to Order</button>
+              <button id="save-item-btn">Save Item</button>
             </span>
 
           </div>
@@ -219,7 +224,7 @@
         <div class="col-lg-4">
           <div id="checkout-box">
 
-            <div id="cob-header">
+            <div id="checkout-header">
               <h5>Your Order</p>
             </div>
 
@@ -228,11 +233,11 @@
               <div class="checkout-item" id="checkout-item0">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
@@ -240,11 +245,11 @@
               <div class="checkout-item" id="checkout-item1">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
@@ -252,11 +257,11 @@
               <div class="checkout-item" id="checkout-item2">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
@@ -264,11 +269,11 @@
               <div class="checkout-item" id="checkout-item3">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
@@ -276,11 +281,11 @@
               <div class="checkout-item" id="checkout-item4">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
@@ -291,17 +296,11 @@
                 <div class="row">
 
                   <div class="col-lg-8">
-                    <h6 class="cost-info-label">Subtotal</h6>
-                    <h6 class="cost-info-label">Tax</h6>
-                    <h6 class="cost-info-label">Delivery Charge</h6>
-                    <h6 class="cost-info-label">Total</h6>
+                    <h6 id="subtotal-label">Subtotal</h6>
                   </div>
 
                   <div class="col-lg-4">
                     <h6 id="subtotal-text"></h6>
-                    <h6 id="tax-text"></h6>
-                    <h6 id="del-charge-text"></h6>
-                    <h6 id="total-text"></h6>
                   </div>
 
                 </div>
