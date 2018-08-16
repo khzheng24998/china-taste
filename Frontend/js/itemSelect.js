@@ -33,11 +33,12 @@ function formatGetMenuReq(category)
 }
 
 //Formats POST requests to the URL http://localhost:3000/update-order
-function formatUpdateOrderReq(action, orderEntry)
+function formatUpdateOrderReq(action, orderEntry, newEntry)
 {
 	let req = {};
 	req.action = action;
 	req.orderEntry = orderEntry;
+	req.newEntry = newEntry;
 	return req;
 }
 
@@ -149,18 +150,13 @@ function displayModalBox2(orderItem)
 	$("#delete-btn-wrapper").show();
 }
 
-function formatOrderEntry(menuIndex, menu)
+function formatOrderEntry(menuEntry)
 {
 	let orderEntry = {};
 
 	//let name = decodeHTML($("#modal-name-text").html());
-	let name = menu[menuIndex].name;
-
+	let name = menuEntry.name;
 	let size = $('input[name=size]:checked').val();
-
-	//let menuEntry = menuLookup(name, menu);
-	let menuEntry = menu[menuIndex];
-
 	let quantity = $("#modal-quantity-text").val();
 	let special = "";
 
@@ -178,8 +174,9 @@ function formatOrderEntry(menuIndex, menu)
 
 function addToOrder(menuIndex, menu)
 {
-	let orderEntry = formatOrderEntry(menuIndex, menu);
-	let req = formatUpdateOrderReq("add", orderEntry);
+	let menuEntry = menu[menuIndex];
+	let orderEntry = formatOrderEntry(menuEntry);
+	let req = formatUpdateOrderReq("add-item", orderEntry);
 
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
@@ -190,14 +187,33 @@ function addToOrder(menuIndex, menu)
 	});
 }
 
-function deleteItem(order)
+function deleteItem(orderIndex, order)
 {
+	let orderEntry = order[orderIndex];
+	let req = formatUpdateOrderReq("remove-item", orderEntry);
 
+	$.post("http://localhost:3000/update-order", req, function(data, status) 
+	{
+		if(status != "success")
+		{
+			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
+		}
+	});
 }
 
-function updateItem(order)
+function updateItem(orderIndex, order)
 {
+	let orderEntry = order[orderIndex];
+	let newEntry = formatOrderEntry(orderEntry.menuEntry);
+	let req = formatUpdateOrderReq("update-item", orderEntry, newEntry);
 
+	$.post("http://localhost:3000/update-order", req, function(data, status) 
+	{
+		if(status != "success")
+		{
+			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
+		}
+	});
 }
 
 $(document).ready(function()
@@ -243,7 +259,7 @@ $(document).ready(function()
 			updateItem(orderIndex, order);
 		});
 
-		$("delete-btn").on("click", function()
+		$("#delete-btn").on("click", function()
 		{
 			deleteItem(orderIndex, order);
 		})
