@@ -115,7 +115,7 @@ app.post('/get-combined', function(req, res)
 	console.log("Received GET request from client! (get-combined)");
 	let combined = {};
 	combined.menu = postHandler.getMenu(req.body);
-	combined.order = order;
+	combined.order = order.items;
 
 	res.send(combined);
 });
