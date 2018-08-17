@@ -1,14 +1,3 @@
-function menuLookup(name, menu)
-{
-	let menuItem = {};
-
-	for (let i = 0; i < menu.length; i++)
-		if (name == menu[i].name)
-			menuItem = menu[i];
-
-	return menuItem;
-}
-
 function getNumFromId(str)
 {
 	for(let i = 0; i < str.length; i++)
@@ -25,7 +14,7 @@ function decodeHTML(str)
 	return decoded;
 }
 
-function formatGetMenuReq(category)
+function formatGetCombinedReq(category)
 {
 	let req = {};
 	req.category = category;
@@ -60,7 +49,17 @@ function displayPageContents(menu, order)
 		$("#item" + i).find(".cost-text").html(costString);
 	}
 
+	displayCategories();
 	displayCheckoutBox(order);
+
+	if(order.length === 0)
+		$("#empty").show();
+}
+
+function displayCategories()
+{
+	let cat = $("head").attr("id");
+	$("#cat-" + cat).css("background-color", "#dddddd");
 }
 
 function displayCheckoutBox(order)
@@ -79,10 +78,10 @@ function displayCheckoutBox(order)
 		let size = order[i].size;
 		let cost = order[i].menuEntry.cost;
 		let unitCost = (size == "large") ? cost[1] : cost[0];
-		let itemCost = (quantity * unitCost).toFixed(2);
+		let itemCost = (quantity * unitCost);
 
 		$checkoutItem.find(".checkout-name").html(order[i].menuEntry.name);
-		$checkoutItem.find(".checkout-cost").html("$" + itemCost);
+		$checkoutItem.find(".checkout-cost").html("$" + itemCost.toFixed(2));
 
 		if (quantity > 1)
 			$checkoutItem.find(".checkout-quantity").html("(Qty: " + quantity + ")");
@@ -113,6 +112,23 @@ function displayModalBox1(menuItem)
 	$('input[name=size][value="small"]').prop("checked", true);
 
 	$("#modal-quantity-text").val("1");
+
+	$("textarea").val("");
+
+	let textLen = $("textarea").val().length;
+	let charactersLeft;
+	if (textLen > 128)
+	{
+		charactersLeft = 0;
+		$("#char-count").css("color", "red");
+	}
+	else
+	{
+		charactersLeft = 128 - textLen;
+		$("#char-count").css("color", "black");
+	}
+
+	$("#char-count").html("Characters left: " + charactersLeft);
 
 	$("#add-item-btn").show();
 	$("#save-item-btn").hide();
@@ -145,6 +161,23 @@ function displayModalBox2(orderItem)
 
 	$("#modal-quantity-text").val(orderItem.quantity);
 
+	$("textarea").val(orderItem.special);
+
+	let textLen = $("textarea").val().length;
+	let charactersLeft;
+	if (textLen > 128)
+	{
+		charactersLeft = 0;
+		$("#char-count").css("color", "red");
+	}
+	else
+	{
+		charactersLeft = 128 - textLen;
+		$("#char-count").css("color", "black");
+	}
+
+	$("#char-count").html("Characters left: " + charactersLeft);
+
 	$("#add-item-btn").hide();
 	$("#save-item-btn").show();
 	$("#delete-btn-wrapper").show();
@@ -158,7 +191,9 @@ function formatOrderEntry(menuEntry)
 	let name = menuEntry.name;
 	let size = $('input[name=size]:checked').val();
 	let quantity = $("#modal-quantity-text").val();
-	let special = "";
+	let special = $("textarea").val();
+	if (special.length > 128)
+		special = special.substring(0, 128);
 
 	orderEntry.menuEntry = menuEntry;
 	orderEntry.quantity = quantity;
@@ -172,9 +207,8 @@ function formatOrderEntry(menuEntry)
 	return orderEntry;
 }
 
-function addToOrder(menuIndex, menu)
+function addToOrder(menuEntry)
 {
-	let menuEntry = menu[menuIndex];
 	let orderEntry = formatOrderEntry(menuEntry);
 	let req = formatUpdateOrderReq("add-item", orderEntry);
 
@@ -185,11 +219,12 @@ function addToOrder(menuIndex, menu)
 			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		}
 	});
+
+	location.reload();
 }
 
-function deleteItem(orderIndex, order)
+function deleteItem(orderEntry)
 {
-	let orderEntry = order[orderIndex];
 	let req = formatUpdateOrderReq("remove-item", orderEntry);
 
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
@@ -199,11 +234,12 @@ function deleteItem(orderIndex, order)
 			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		}
 	});
+
+	location.reload();
 }
 
-function updateItem(orderIndex, order)
+function updateItem(orderEntry)
 {
-	let orderEntry = order[orderIndex];
 	let newEntry = formatOrderEntry(orderEntry.menuEntry);
 	let req = formatUpdateOrderReq("update-item", orderEntry, newEntry);
 
@@ -214,12 +250,14 @@ function updateItem(orderIndex, order)
 			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		}
 	});
+
+	location.reload();
 }
 
 $(document).ready(function()
 {
 	let cat = $("head").attr("id");
-	let req = formatGetMenuReq(cat);
+	let req = formatGetCombinedReq(cat);
 
 	let getMenu = $.post("http://localhost:3000/get-combined", req);
 	$.when(getMenu).done(function(data, status)
@@ -231,7 +269,7 @@ $(document).ready(function()
 		}
 
 		let menu = data.menu;
-		let order = data.order.items;
+		let order = data.order;				//Note: order contains only the order items!
 		displayPageContents(menu, order);
 
 		$(window).resize(function()
@@ -249,24 +287,92 @@ $(document).ready(function()
 			displayModalBox1(menuItem);
 		});
 
+		$(".item").hover(function()
+		{
+			$(this).css("background-color", "#f1f1f1");
+		},
+		function()
+		{
+			$(this).css("background-color", "white");
+		});
+
+		$(".category").on("click", function()
+		{
+			let id = $(this).attr("id");
+			let substr = id.substring(4, 8);
+			if (substr === "apps")
+				window.location.href = "/";
+			else
+				window.location.href = "/" + substr;
+		});
+
+		$(".category").hover(function()
+		{
+			let id = $(this).attr("id");
+			let substr = id.substring(4, 8);
+			if (substr !== cat)
+				$(this).css("background-color", "#f1f1f1");
+		},
+		function()
+		{
+			let id = $(this).attr("id");
+			let substr = id.substring(4, 8);
+			if (substr !== cat)
+				$(this).css("background-color", "white");
+		});
+
+		$("#q-sel-down").on("click", function()
+		{
+			let currVal = $("#modal-quantity-text").val();
+			if (currVal > 1)
+				$("#modal-quantity-text").val((+currVal) - 1);
+		});
+
+		$("#q-sel-up").on("click", function()
+		{
+			let currVal = $("#modal-quantity-text").val();
+			$("#modal-quantity-text").val((+currVal) + 1);
+		});
+
 		$("#add-item-btn").on("click", function()
 		{
-			addToOrder(menuIndex, menu);
+			let menuItem = menu[menuIndex];
+			addToOrder(menuItem);
 		});
 
 		$("#save-item-btn").on("click", function()
 		{
-			updateItem(orderIndex, order);
+			let orderItem = order[orderIndex];
+			updateItem(orderItem);
 		});
 
 		$("#delete-btn").on("click", function()
 		{
-			deleteItem(orderIndex, order);
+			let orderItem = order[orderIndex];
+			deleteItem(orderItem);
 		})
 
 		$("#cancel-btn").on("click", function()
 		{
 			$("#modal").hide();
+		});
+
+		$("textarea").keyup(function()
+		{
+			let textLen = $(this).val().length;
+			let charactersLeft;
+			if (textLen > 128)
+			{
+				charactersLeft = 0;
+				$("#char-count").css("color", "red");
+			}
+			else
+			{
+				charactersLeft = 128 - textLen;
+				$("#char-count").css("color", "black");
+			}
+
+			$("#char-count").html("Characters left: " + charactersLeft);		
 		});
 
 		$(".checkout-name").on("click", function()
@@ -284,11 +390,6 @@ $(document).ready(function()
 		function()
 		{
 			$(this).css("text-decoration", "none");
-		});
-
-		$("#checkout-btn").on("click", function()
-		{
-
 		});
 	});
 });

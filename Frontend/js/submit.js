@@ -52,12 +52,12 @@ function displayBox(orderType, order)
 
 		let quantity = order[i].quantity;
 		let size = order[i].size;
-		let cost = order[i].cost;
+		let cost = order[i].menuEntry.cost;
 		let unitCost = (size == "large") ? cost[1] : cost[0];
-		let itemCost = (quantity * unitCost).toFixed(2);
+		let itemCost = (quantity * unitCost);
 
-		$item.find(".name-text").html(order[i].name);
-		$item.find(".cost-text").html("$" + itemCost);
+		$item.find(".name-text").html(order[i].menuEntry.name);
+		$item.find(".cost-text").html("$" + itemCost.toFixed(2));
 
 		if (quantity > 1)
 			$item.find(".quantity-text").html("(Qty: " + quantity + ")");
@@ -70,17 +70,17 @@ function displayBox(orderType, order)
 		subtotal = (+subtotal) + (+itemCost);
 	}
 
-	$("#subtotal-text").html("$" + subtotal);
+	$("#subtotal-text").html("$" + subtotal.toFixed(2));
 
 	const taxRate = 0.0635;
-	let tax = (subtotal * taxRate).toFixed(2);
-	$("#tax-text").html("$" + tax);
+	let tax = (subtotal * taxRate);
+	$("#tax-text").html("$" + tax.toFixed(2));
 	let dc = 0;
 
 	if(orderType == "delivery")
 	{
 		dc = calculateDeliveryCharge(((+subtotal) + (+tax)), order);
-		$("#del-charge-text").html("$" + dc);
+		$("#del-charge-text").html("$" + dc.toFixed(2));
 	}
 
 	else
@@ -121,7 +121,7 @@ function calculateDeliveryCharge(subTotalWithTax, order)
 	if (order.length == 0)
 		charge = 0;
 
-	return charge.toFixed(2);
+	return charge;
 }
 
 function intToStringDay(intDay)

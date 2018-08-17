@@ -69,7 +69,7 @@
 	display: none;
 }
 
-#modal-border
+#modal-border /* Currently removed */
 {
 	position: fixed;
 	float: left;
@@ -77,12 +77,13 @@
 	top: 50%;
 	transform: translate(-50%, -50%);
 	width: 510px;
-	height: 315px;
 	background-color: rgba(0,0,0,0.3);
+	display: none;
 }
 
 #modal-content
 {
+	border: solid 10px #595959;
 	position: fixed;
 	float: left;
 	left: 50%;
@@ -102,7 +103,7 @@
 
 #modal-quantity
 {
-	padding-top: 10px;
+	padding-top: 0px;
 	padding-bottom: 10px;
 }
 
@@ -120,6 +121,8 @@
 	border-style: solid;
 	border-width: 1px;
 	border-color: #999999;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
 	width: 30px;
 	height: 30px;
 }
@@ -129,6 +132,8 @@
 	border-style: solid;
 	border-width: 1px;
 	border-color: #999999;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
 	width: 30px;
 	height: 30px;
 }
@@ -148,9 +153,9 @@
 	display: none;
 }
 
-#save-btn
+button
 {
-	display: none;
+	cursor: pointer;
 }
 
 #textarea-wrapper
@@ -168,7 +173,38 @@ textarea
 	border-color: #999999;
 }
 
+#char-count
+{
+	text-align: right;
+	font-size: 12px;
+	padding-bottom: 0px;
+	margin-bottom: 0px;
+}
+
 /* End of modal box styles */
+
+/* Menu category selection styles */
+
+#category-select
+{
+	border: solid 2px #999999;
+}
+
+.category
+{
+	padding-top: 5px;
+	padding-left: 6px;
+	border-bottom: solid 1px #cccccc;
+	cursor: pointer;
+}
+
+.cat-text
+{
+	font-size: 15px;
+	margin-bottom: 5px;
+}
+
+/* End of menu category selection styles */
 
 /* Checkout box styles */
 
@@ -193,6 +229,19 @@ textarea
 	border-color: #999999;
 	border-bottom-left-radius: 10px;
 	border-bottom-right-radius: 10px;
+}
+
+#empty
+{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+	display: none;
+}
+
+#empty-text
+{
+	display: inline;
 }
 
 .checkout-item
@@ -250,6 +299,7 @@ textarea
 #subtotal-text
 {
 	font-weight: 400;
+	text-align: right;
 }
 
 #checkout-btn-wrapper
@@ -261,7 +311,6 @@ textarea
 #checkout-btn
 {
 	display: inline-block;
-	cursor: pointer;
 }
 
 /* End of checkout box styles */
@@ -277,6 +326,7 @@ textarea
 {
 	padding-top: 8px;
 	padding-right: 10px;
+	padding-left: 10px;
 	cursor: pointer;
 	border-bottom-style: solid;
 	border-bottom-width: 1px;

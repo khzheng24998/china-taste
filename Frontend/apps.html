@@ -43,9 +43,9 @@
             <li class="nav-item active">
               <a class="nav-link" href="/">Menu</a>
             </li>
-            <li class="nav-item">
+            <!--<li class="nav-item">
               <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
-            </li>
+            </li>-->
             <li class="nav-item">
               <a class="nav-link" href="#">Services</a>
             </li>
@@ -63,7 +63,7 @@
     <div class="container" id="page-body">
 
       <div id="modal">
-        <div id="modal-border">
+        <!--<div id="modal-border">-->
           <div id="modal-content">
 
             <h5 id="modal-name-text"></h5>
@@ -85,11 +85,12 @@
 
             </div>
 
-            <div id="special-instructions">
+            <div id="special">
               <h6>Special Instructions (128 char. limit)</h6>
               <div id="textarea-wrapper"> 
                 <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
               </div>
+              <p id="char-count">Characters left:</p>
             </div>
 
             <div id="modal-quantity">
@@ -110,7 +111,7 @@
             </span>
 
           </div>
-        </div>
+        <!--</div>-->
       </div>
 
       <div class="row">
@@ -121,10 +122,34 @@
 
             <div class="col-lg-3">
 
-              <div class="list-group">
-                <a href="/" class="list-group-item">Appetizers</a>
-                <a href="/soup" class="list-group-item">Soup</a>
-                <a href="#" class="list-group-item">Fried Rice</a>
+              <div id="category-select">
+                <div class="category" id="cat-apps">
+                  <p class="cat-text">Appetizers</p>
+                </div>
+                <div class="category" id="cat-soup">
+                  <p class="cat-text">Soup</p>
+                </div>
+                <div class="category" id="cat-chwm">
+                  <p class="cat-text">Chow Mein</p>
+                </div>
+                <div class="category" id="cat-chps">
+                  <p class="cat-text">Chop Suey</p>
+                </div>
+                <div class="category" id="cat-frir">
+                  <p class="cat-text">Fried Rice</p>
+                </div>
+                <div class="category" id="cat-lomn">
+                  <p class="cat-text">Lo Mein</p>
+                </div>
+                <div class="category" id="cat-egfy">
+                  <p class="cat-text">Egg Foo Young</p>
+                </div>
+                <div class="category" id="cat-swsr">
+                  <p class="cat-text">Sweet & Sour</p>
+                </div>
+                <div class="category" id="cat-hksn">
+                  <p class="cat-text">Hong Kong Style Noodles</p>
+                </div>
               </div>
 
               <br>
@@ -230,6 +255,9 @@
 
             <div id="box-body">
 
+              <div id="empty">
+              </div>
+
               <div class="checkout-item" id="checkout-item0">
                 <div class="row">
                   <div class="col-lg-8">
@@ -295,11 +323,11 @@
               <div id="cost-info">
                 <div class="row">
 
-                  <div class="col-lg-8">
+                  <div class="col-lg-9">
                     <h6 id="subtotal-label">Subtotal</h6>
                   </div>
 
-                  <div class="col-lg-4">
+                  <div class="col-lg-3">
                     <h6 id="subtotal-text"></h6>
                   </div>
 
