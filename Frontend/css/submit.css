@@ -51,6 +51,16 @@
 	color: red;
 	font-size: 14px;
 	display: none;
+	margin-bottom: 0px;
+}
+
+#closed-msg
+{
+	color: red;
+	font-size: 14px;
+	display: none;
+	padding-top: 10px;
+	margin-bottom: 0px;
 }
 
 #payment-info
@@ -63,28 +73,9 @@
 	padding-top: 10px;
 }
 
-#enter-time
-{
-	padding-right: 45px;
-}
+/* Checkout box styles */
 
-#time
-{
-	line-height: 19px;
-}
-
-#time-prompt
-{
-	padding-top: 6px;
-	display: none;
-}
-
-.inline-element
-{
-	display: inline;
-}
-
-#cob-header
+#checkout-header
 {
 	text-align: center;
 	width: 100%;
@@ -107,7 +98,7 @@
 	border-bottom-right-radius: 10px;
 }
 
-.item
+.checkout-item
 {
 	padding-top: 15px;
 	border-bottom-style: dashed;
@@ -116,25 +107,25 @@
 	min-height: 75px;
 }
 
-.name-text
+.checkout-name
 {
 	font-weight: 550;
-	font-size: 15px;
+	font-size: 14px;
 	cursor: pointer;
 }
 
-.cost-text
+.checkout-cost
 {
-	font-size: 15px;
+	font-size: 14px;
 	text-align: right;
 }
 
-.size-text
+.checkout-size
 {
 	font-size: 14px;
 }
 
-.quantity-text
+.checkout-quantity
 {
 	font-size: 14px;
 	text-align: right;
@@ -176,6 +167,66 @@
 	cursor: pointer;
 }
 
+/* End of checkout box styles */
+
+/* Custom radio button styles */
+
+.radio 
+{
+    display: inline-block;
+    position: relative;
+    padding-left: 23px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.radio input 
+{
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark 
+{
+    position: absolute;
+    top: 5px;
+    left: 0;
+    height: 16px;
+    width: 16px;
+    background-color: white;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #cccccc;
+}
+
+.radio input:checked ~ .checkmark 
+{
+    background-color: #183792;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.radio input:checked ~ .checkmark:after 
+{
+    display: block;
+}
+
+.radio .checkmark:after 
+{
+	border-radius: 50%;
+	background: #183792;
+}
+
+/* End of custom radio button styles */
+
+/* Modal box styles */
+
 #modal
 {
 	position: fixed;
@@ -189,34 +240,114 @@
 	display: none;
 }
 
-#modal-border
+#modal-border /* Currently removed */
 {
 	position: fixed;
 	float: left;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	width: 430px;
-	height: 280px;
+	width: 510px;
 	background-color: rgba(0,0,0,0.3);
+	display: none;
 }
 
 #modal-content
 {
+	border: solid 10px #595959;
 	position: fixed;
 	float: left;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	width: 400px;
-	height: 250px;
+	width: 485px;
 	background-color: white;
 	padding-top: 15px;
 	padding-right: 25px;
 	padding-left: 25px;
 }
 
+#modal-name-text
+{
+	padding-bottom: 7px;
+}
+
+#modal-quantity
+{
+	padding-top: 0px;
+	padding-bottom: 10px;
+}
+
+#modal-quantity-text
+{
+	border-style: solid;
+	border-width: 1px;
+	border-color: #999999;
+	text-align: center;
+	height: 30px;
+}
+
+#q-sel-up
+{
+	border-style: solid;
+	border-width: 1px;
+	border-color: #999999;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	width: 30px;
+	height: 30px;
+}
+
+#q-sel-down
+{
+	border-style: solid;
+	border-width: 1px;
+	border-color: #999999;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	width: 30px;
+	height: 30px;
+}
+
+.modal-btn-wrapper
+{
+	padding-right: 5px;
+	padding-bottom: 10px;
+	float: right;
+}
+
+#delete-btn-wrapper
+{
+	padding-right: 5px;
+	padding-bottom: 10px;
+	float: right;
+	display: none;
+}
+
+button
+{
+	cursor: pointer;
+}
+
+#textarea-wrapper
+{
+	text-align: center;
+}
+
 textarea
 {
-	font-size: 15px;
+	display: inline;
+	width: 100%;
+	font-size: 14px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #999999;
+}
+
+#char-count
+{
+	text-align: right;
+	font-size: 12px;
+	padding-bottom: 0px;
+	margin-bottom: 0px;
 }
