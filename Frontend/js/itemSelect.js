@@ -116,19 +116,12 @@ function displayModalBox1(menuItem)
 	$("textarea").val("");
 
 	let textLen = $("textarea").val().length;
-	let charactersLeft;
 	if (textLen > 128)
-	{
-		charactersLeft = 0;
 		$("#char-count").css("color", "red");
-	}
 	else
-	{
-		charactersLeft = 128 - textLen;
 		$("#char-count").css("color", "black");
-	}
 
-	$("#char-count").html("Characters left: " + charactersLeft);
+	$("#char-count").html("Character count: " + textLen);
 
 	$("#add-item-btn").show();
 	$("#save-item-btn").hide();
@@ -164,19 +157,12 @@ function displayModalBox2(orderItem)
 	$("textarea").val(orderItem.special);
 
 	let textLen = $("textarea").val().length;
-	let charactersLeft;
 	if (textLen > 128)
-	{
-		charactersLeft = 0;
 		$("#char-count").css("color", "red");
-	}
 	else
-	{
-		charactersLeft = 128 - textLen;
 		$("#char-count").css("color", "black");
-	}
 
-	$("#char-count").html("Characters left: " + charactersLeft);
+	$("#char-count").html("Character count: " + textLen);
 
 	$("#add-item-btn").hide();
 	$("#save-item-btn").show();
@@ -360,19 +346,12 @@ $(document).ready(function()
 		$("textarea").keyup(function()
 		{
 			let textLen = $(this).val().length;
-			let charactersLeft;
 			if (textLen > 128)
-			{
-				charactersLeft = 0;
 				$("#char-count").css("color", "red");
-			}
 			else
-			{
-				charactersLeft = 128 - textLen;
 				$("#char-count").css("color", "black");
-			}
 
-			$("#char-count").html("Characters left: " + charactersLeft);		
+			$("#char-count").html("Character count: " + textLen);		
 		});
 
 		$(".checkout-name").on("click", function()

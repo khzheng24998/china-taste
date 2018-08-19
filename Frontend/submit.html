@@ -63,16 +63,55 @@
     <div class="container" id="page-body">
 
       <div id="modal">
-        <div id="modal-border">
+        <!--<div id="modal-border">-->
           <div id="modal-content">
-            <h6>Size:</h6>
-            <h6>Sauce:</h6>
-            <h6>Spiciness level:</h6>
-            <textarea rows="6" cols="46" placeholder=" Click here to write a message."></textarea>
-            <button>Add to Order</button>
-            <button id="cancel-btn">Cancel</button>
+
+            <h5 id="modal-name-text"></h5>
+
+            <div class="row" id="size-select">
+              
+                <div class="col-lg-6">
+                  <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
+                    <input type="radio" checked="checked" name="size" value="small">
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+                <div class="col-lg-6">
+                  <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
+                    <input type="radio" name="size" value="large">
+                    <span class="checkmark"></span>
+                  </label>
+                </div>
+
+            </div>
+
+            <div id="special">
+              <h6>Special Instructions (128 char. limit)</h6>
+              <div id="textarea-wrapper"> 
+                <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
+              </div>
+              <p id="char-count">Character count:</p>
+            </div>
+
+            <div id="modal-quantity">
+              <button id="q-sel-down">-</button><input id="modal-quantity-text" type="text" size="1"><button id="q-sel-up">+</button>
+            </div>
+
+            <span class="modal-btn-wrapper">
+              <button id="cancel-btn">Cancel</button>
+            </span>
+
+            <span id="delete-btn-wrapper">
+              <button id="delete-btn">Delete</button>
+            </span>
+
+            <span class="modal-btn-wrapper">
+              <button id="add-item-btn">Add to Order</button>
+              <button id="save-item-btn">Save Item</button>
+            </span>
+
           </div>
-        </div>
+        <!--</div>-->
       </div>
 
       <div class="row">
@@ -196,12 +235,87 @@
                   <div class="col-lg-6">
                     <h6 class="label">Request Time*</h6>
                     <select id="request-time">
-                      <option value="asap">ASAP</option>
-                      <option value="other">Other</option>
+                      <option value="closed" id="closed" class="sel-req-time">---</option>
+                      <option value="asap" id="asap" class="sel-req-time">ASAP</option>
+                      <option value="1100" id="660" class="sel-req-time">11:00 AM</option>
+                      <option value="1110" id="670" class="sel-req-time">11:10 AM</option>
+                      <option value="1120" id="680" class="sel-req-time">11:20 AM</option>
+                      <option value="1130" id="690" class="sel-req-time">11:30 AM</option>
+                      <option value="1140" id="700" class="sel-req-time">11:40 AM</option>
+                      <option value="1150" id="710" class="sel-req-time">11:50 AM</option>
+                      <option value="1200" id="720" class="sel-req-time">12:00 PM</option>
+                      <option value="1210" id="730" class="sel-req-time">12:10 PM</option>
+                      <option value="1220" id="740" class="sel-req-time">12:20 PM</option>
+                      <option value="1230" id="750" class="sel-req-time">12:30 PM</option>
+                      <option value="1240" id="760" class="sel-req-time">12:40 PM</option>
+                      <option value="1250" id="770" class="sel-req-time">12:50 PM</option>
+                      <option value="100" id="780" class="sel-req-time">1:00 PM</option>
+                      <option value="110" id="790" class="sel-req-time">1:10 PM</option>
+                      <option value="120" id="800" class="sel-req-time">1:20 PM</option>
+                      <option value="130" id="810" class="sel-req-time">1:30 PM</option>
+                      <option value="140" id="820" class="sel-req-time">1:40 PM</option>
+                      <option value="150" id="830" class="sel-req-time">1:50 PM</option>
+                      <option value="200" id="840" class="sel-req-time">2:00 PM</option>
+                      <option value="210" id="850" class="sel-req-time">2:10 PM</option>
+                      <option value="220" id="860" class="sel-req-time">2:20 PM</option>
+                      <option value="230" id="870" class="sel-req-time">2:30 PM</option>
+                      <option value="240" id="880" class="sel-req-time">2:40 PM</option>
+                      <option value="250" id="890" class="sel-req-time">2:50 PM</option>
+                      <option value="300" id="900" class="sel-req-time">3:00 PM</option>
+                      <option value="310" id="910" class="sel-req-time">3:10 PM</option>
+                      <option value="320" id="920" class="sel-req-time">3:20 PM</option>
+                      <option value="330" id="930" class="sel-req-time">3:30 PM</option>
+                      <option value="340" id="940" class="sel-req-time">3:40 PM</option>
+                      <option value="350" id="950" class="sel-req-time">3:50 PM</option>
+                      <option value="400" id="960" class="sel-req-time">4:00 PM</option>
+                      <option value="410" id="970" class="sel-req-time">4:10 PM</option>
+                      <option value="420" id="980" class="sel-req-time">4:20 PM</option>
+                      <option value="430" id="990" class="sel-req-time">4:30 PM</option>
+                      <option value="440" id="1000" class="sel-req-time">4:40 PM</option>
+                      <option value="450" id="1010" class="sel-req-time">4:50 PM</option>
+                      <option value="500" id="1020" class="sel-req-time">5:00 PM</option>
+                      <option value="510" id="1030" class="sel-req-time">5:10 PM</option>
+                      <option value="520" id="1040" class="sel-req-time">5:20 PM</option>
+                      <option value="530" id="1050" class="sel-req-time">5:30 PM</option>
+                      <option value="540" id="1060" class="sel-req-time">5:40 PM</option>
+                      <option value="550" id="1070" class="sel-req-time">5:50 PM</option>
+                      <option value="600" id="1080" class="sel-req-time">6:00 PM</option>
+                      <option value="610" id="1090" class="sel-req-time">6:10 PM</option>
+                      <option value="620" id="1100" class="sel-req-time">6:20 PM</option>
+                      <option value="630" id="1110" class="sel-req-time">6:30 PM</option>
+                      <option value="640" id="1120" class="sel-req-time">6:40 PM</option>
+                      <option value="650" id="1130" class="sel-req-time">6:50 PM</option>
+                      <option value="700" id="1140" class="sel-req-time">7:00 PM</option>
+                      <option value="710" id="1150" class="sel-req-time">7:10 PM</option>
+                      <option value="720" id="1160" class="sel-req-time">7:20 PM</option>
+                      <option value="730" id="1170" class="sel-req-time">7:30 PM</option>
+                      <option value="740" id="1180" class="sel-req-time">7:40 PM</option>
+                      <option value="750" id="1190" class="sel-req-time">7:50 PM</option>
+                      <option value="800" id="1200" class="sel-req-time">8:00 PM</option>
+                      <option value="810" id="1210" class="sel-req-time">8:10 PM</option>
+                      <option value="820" id="1220" class="sel-req-time">8:20 PM</option>
+                      <option value="830" id="1230" class="sel-req-time">8:30 PM</option>
+                      <option value="840" id="1240" class="sel-req-time">8:40 PM</option>
+                      <option value="850" id="1250" class="sel-req-time">8:50 PM</option>
+                      <option value="900" id="1260" class="sel-req-time">9:00 PM</option>
+                      <option value="910" id="1270" class="sel-req-time">9:10 PM</option>
+                      <option value="920" id="1280" class="sel-req-time">9:20 PM</option>
+                      <option value="930" id="1290" class="sel-req-time">9:30 PM</option>
+                      <option value="940" id="1300" class="sel-req-time">9:40 PM</option>
+                      <option value="950" id="1310" class="sel-req-time">9:50 PM</option>
+                      <option value="1000" id="1320" class="sel-req-time">10:00 PM</option>
+                      <option value="1010" id="1330" class="sel-req-time">10:10 PM</option>
+                      <option value="1020" id="1340" class="sel-req-time">10:20 PM</option>
+                      <option value="1030" id="1350" class="sel-req-time">10:30 PM</option>
+                      <option value="1040" id="1360" class="sel-req-time">10:40 PM</option>
+                      <option value="1050" id="1370" class="sel-req-time">10:50 PM</option>
+                      <option value="1100" id="1380" class="sel-req-time">11:00 PM</option>
                     </select>
                   </div>
 
                 </div>
+
+                <p id="closed-msg">Ordering is closed for today! Please choose another request date.</p>
 
                 <div id="payment-info">
                   <h6>Payment Method:*</h6>
@@ -216,15 +330,7 @@
                   </div>
                 </div>
 
-                <div id="time-prompt">
-                  <h6 class="inline-element" id="enter-time">Enter time:</h6>
-                  <input class="inline-element" type="time" size="5" id="time-text">
-                  <select class="inline-element" id="time-period">
-                    <option value="am">AM</option>
-                    <option value="pm">PM</option>
-                  </select>
-                  <br>
-                </div>
+                <p class="err-msg" id="payment-method-err">Must select a payment option.</p>
 
                 <div id="special-instructions">
                   <h6>Special Instructions (256 char. limit)</h6>
@@ -245,68 +351,68 @@
         <div class="col-lg-4">
           <div id="checkout-box">
 
-            <div id="cob-header">
+            <div id="checkout-header">
               <h5>Your Order</p>
             </div>
 
             <div id="box-body">
 
-              <div class="item" id="item0">
+              <div class="checkout-item" id="checkout-item0">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
 
-              <div class="item" id="item1">
+              <div class="checkout-item" id="checkout-item1">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
 
-              <div class="item" id="item2">
+              <div class="checkout-item" id="checkout-item2">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
 
-              <div class="item" id="item3">
+              <div class="checkout-item" id="checkout-item3">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
 
-              <div class="item" id="item4">
+              <div class="checkout-item" id="checkout-item4">
                 <div class="row">
                   <div class="col-lg-8">
-                    <p class="name-text"></p>
+                    <p class="checkout-name"></p>
                   </div>
                   <div class="col-lg-4">
-                    <p class="cost-text"></p>
-                    <p class="quantity-text"></p>
+                    <p class="checkout-cost"></p>
+                    <p class="checkout-quantity"></p>
                   </div>
                 </div>
               </div>
