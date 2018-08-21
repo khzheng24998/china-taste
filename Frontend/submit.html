@@ -85,12 +85,12 @@
 
             </div>
 
-            <div id="special">
+            <div id="modal-special">
               <h6>Special Instructions (128 char. limit)</h6>
               <div id="textarea-wrapper"> 
-                <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
+                <textarea id="modal-textarea" rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
               </div>
-              <p id="char-count">Character count:</p>
+              <p id="modal-char-count">Character count:</p>
             </div>
 
             <div id="modal-quantity">
@@ -187,15 +187,19 @@
               <div id="customer-info">
                 <h5>Customer Information</h5>
 
+                <h6 class="label">Email</h6>
+                <input type="text" size="44" id="email" class="required">
+                <p class="err-msg" id="email-err">Required field.</p>
+
                 <div class="row">
                   <div class="col-lg-6">
                     <h6 class="label">First Name*</h6>
-                    <input type="text" size="18" id="first-name" class="required">
+                    <input type="text" size="16" id="first-name" class="required">
                     <p class="err-msg" id="first-name-err">Required field.</p>
                   </div>
                   <div class="col-lg-6">
                     <h6 class="label">Last Name*</h6>
-                    <input type="text" size="18" id="last-name" class="required">
+                    <input type="text" size="16" id="last-name" class="required">
                     <p class="err-msg" id="last-name-err">Required field.</p>
                   </div>
                 </div>
@@ -203,13 +207,13 @@
                 <div class="row">
                   <div class="col-lg-6">
                     <h6 class="label">Phone Number*</h6>
-                    <input type="text" size="18" id="phone-number" class="required">
+                    <input type="text" size="16" id="phone-number" class="required">
                     <p class="err-msg" id="phone-number-err">Required field.</p>
                   </div>
                   <div class="col-lg-6">
                     <div id="customer-count-div">
                       <h6 class="label">Customer Count*</h6>
-                      <input type="text" size="18" id="customer-count" class="required">
+                      <input type="text" size="16" id="customer-count" class="required">
                       <p class="err-msg" id="customer-count-err">Required field.</p>
                     </div>
                   </div>
@@ -332,9 +336,9 @@
 
                 <p class="err-msg" id="payment-method-err">Must select a payment option.</p>
 
-                <div id="special-instructions">
-                  <h6>Special Instructions (256 char. limit)</h6>
-                  <textarea rows="6" cols="46" placeholder=" Click here to write a message."></textarea>
+                <div id="order-info-special">
+                  <h6>Special Instructions (128 char. limit)</h6>
+                  <textarea rows="4" cols="37" placeholder=" Click here to write a message."></textarea>
                 </div>
 
                 <br>
