@@ -8,19 +8,6 @@ function getNumFromId(str)
 	}
 }
 
-function decodeHTML(str)
-{
-	let decoded = str.replace(/&amp;/g, '&');
-	return decoded;
-}
-
-function formatGetCombinedReq(category)
-{
-	let req = {};
-	req.category = category;
-	return req;
-}
-
 //Formats POST requests to the URL http://localhost:3000/update-order
 function formatUpdateOrderReq(action, orderEntry, newEntry)
 {
@@ -33,9 +20,7 @@ function formatUpdateOrderReq(action, orderEntry, newEntry)
 
 function displayPageContents(menu, order)
 {
-	let winHeight = window.innerHeight;
-	winHeight = Math.floor(0.8 * winHeight);
-	$("#page-body").css("min-height", winHeight);
+	resizePage();
 
 	for(let i = 0; i < menu.length; i++)
 	{
@@ -54,6 +39,15 @@ function displayPageContents(menu, order)
 
 	if(order.length === 0)
 		$("#empty").show();
+	else
+		$("#empty").hide();
+}
+
+function resizePage()
+{
+	let winHeight = window.innerHeight;
+	winHeight = Math.floor(0.8 * winHeight);
+	$("#page-body").css("min-height", winHeight);
 }
 
 function displayCategories()
@@ -173,7 +167,6 @@ function formatOrderEntry(menuEntry)
 {
 	let orderEntry = {};
 
-	//let name = decodeHTML($("#modal-name-text").html());
 	let name = menuEntry.name;
 	let size = $('input[name=size]:checked').val();
 	let quantity = $("#modal-quantity-text").val();
@@ -243,7 +236,8 @@ function updateItem(orderEntry)
 $(document).ready(function()
 {
 	let cat = $("head").attr("id");
-	let req = formatGetCombinedReq(cat);
+	let req = {};
+	req.category = cat;
 
 	let getMenu = $.post("http://localhost:3000/get-combined", req);
 	$.when(getMenu).done(function(data, status)
@@ -260,7 +254,7 @@ $(document).ready(function()
 
 		$(window).resize(function()
 		{
-    		displayPageContents(menu, order);
+    		resizePage();
 		});
 
 		let menuIndex, orderIndex;
@@ -370,5 +364,13 @@ $(document).ready(function()
 		{
 			$(this).css("text-decoration", "none");
 		});
+
+		$("#checkout-btn").on("click", function()
+		{
+			if (order.length === 0)
+				alert("Add items to order before checking out!");
+			else
+				window.location.href = "/submit";
+		})
 	});
 });

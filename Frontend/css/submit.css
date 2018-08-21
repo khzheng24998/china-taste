@@ -68,7 +68,7 @@
 	padding-top: 12px;
 }
 
-#special-instructions
+#order-info-special
 {
 	padding-top: 10px;
 }
@@ -137,6 +137,7 @@
 	height: 1px;
 	border-top-style: solid;
 	border-top-color: #999999;
+	display: none;
 }
 
 #cost-info
@@ -334,7 +335,7 @@ button
 	text-align: center;
 }
 
-textarea
+#modal-textarea
 {
 	display: inline;
 	width: 100%;
@@ -344,7 +345,7 @@ textarea
 	border-color: #999999;
 }
 
-#char-count
+#modal-char-count
 {
 	text-align: right;
 	font-size: 12px;

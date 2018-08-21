@@ -45,6 +45,11 @@ function updateOrderInfo(req, orderInfo)
 	orderInfo.type = req.type;
 }
 
+function submitOrder(order, orderInfo)
+{
+	
+}
+
 function getMenu(req)
 {
 	/*if (!validateRequest(req, "/get-menu"))

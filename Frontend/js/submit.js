@@ -120,7 +120,12 @@ function displayBox(orderType, order)
 	displayTotalCost(orderType, subtotal);
 
 	if (order.length == 0)
+	{
 		$("#del-charge-text").html("$0.00");
+		$("#divider").hide()
+	}
+	else
+		$("#divider").show();
 }
 
 function displayTotalCost(orderType, subtotal)
@@ -188,15 +193,15 @@ function displayModalBox(orderItem)
 
 	$("#modal-quantity-text").val(orderItem.quantity);
 
-	$("textarea").val(orderItem.special);
+	$("#modal-textarea").val(orderItem.special);
 
-	let textLen = $("textarea").val().length;
+	let textLen = $("#modal-textarea").val().length;
 	if (textLen > 128)
-		$("#char-count").css("color", "red");
+		$("#modal-char-count").css("color", "red");
 	else
-		$("#char-count").css("color", "black");
+		$("#modal-char-count").css("color", "black");
 
-	$("#char-count").html("Character count: " + textLen);
+	$("#modal-char-count").html("Character count: " + textLen);
 
 	$("#add-item-btn").hide();
 	$("#save-item-btn").show();
@@ -374,11 +379,13 @@ function formatCustomerInfo()
 {
 	let req = {};
 
+	let email = $("#email").val();
 	let firstName = $("#first-name").val();
 	let lastName = $("#last-name").val();
 	let phoneNumber = $("#phone-number").val();
 	let customerCount = $("#customer-count").val();
 
+	req.email = email;
 	req.firstName = firstName;
 	req.lastName = lastName;
 	req.phoneNumber = phoneNumber;
@@ -410,7 +417,7 @@ function formatOrderEntry(menuEntry)
 	let name = menuEntry.name;
 	let size = $('input[name=size]:checked').val();
 	let quantity = $("#modal-quantity-text").val();
-	let special = $("textarea").val();
+	let special = $("#modal-textarea").val();
 	if (special.length > 128)
 		special = special.substring(0, 128);
 
@@ -436,7 +443,7 @@ function formatUpdateOrderReq(action, orderEntry, newEntry)
 	return req;
 }
 
-function formatUpdateOrderInfoReq(orderType)
+function formatSubmitOrderReq(orderType)
 {
 	let req = {};
 	req.ordertype = orderType;
@@ -519,11 +526,13 @@ function validateCustomerInfo(orderType)
 	const generalErrorMsg = "Required field.";
 	let phoneNumberErrMsg = generalErrorMsg;
 
+	let email = $("#email").val();
 	let firstName = $("#first-name").val();
 	let lastName = $("#last-name").val();
 	let phoneNumber = $("#phone-number").val();
 	let customerCount = $("#customer-count").val();
 
+	let emailErr = (email.length == 0) ? true : false;
 	let firstNameErr = (firstName.length == 0) ? true : false;
 	let lastNameErr = (lastName.length == 0) ? true : false;
 	let phoneNumberErr = (phoneNumber.length == 0) ? true : false;
@@ -541,12 +550,13 @@ function validateCustomerInfo(orderType)
 	if (orderType !== "dine-in")
 		customerCountErr = false;
 
+	displayErrorMessage(emailErr, "#email-err", generalErrorMsg);
 	displayErrorMessage(firstNameErr, "#first-name-err", generalErrorMsg);
 	displayErrorMessage(lastNameErr, "#last-name-err", generalErrorMsg);
 	displayErrorMessage(phoneNumberErr, "#phone-number-err", phoneNumberErrMsg);
 	displayErrorMessage(customerCountErr, "#customer-count-err", generalErrorMsg);
 
-	return !(firstNameErr || lastNameErr || phoneNumberErr || customerCountErr);
+	return !(emailErr || firstNameErr || lastNameErr || phoneNumberErr || customerCountErr);
 }
 
 function validateDeliveryInfo(orderType)
@@ -632,29 +642,20 @@ function validateOrderInfo(orderType)
 	return (validCustomerInfo && validDeliveryInfo && validOrderDetails);
 }
 
-function updateOrderInfo(orderType)
+function submitOrder(orderType)
 {
 	if (validateOrderInfo(orderType))
 	{
 		console.log("Order info updated!");
-		let req = formatUpdateOrderReq(orderType);
-		$.post("http://localhost:3000/update-order-info", req, function(data, status) 
+		let req = formatSubmitOrderReq(orderType);
+		$.post("http://localhost:3000/submit-order", req, function(data, status) 
 		{
 			return;
 		});
 
-		window.location.href = "/";
+		window.location.href = "/confirmation";
 	}
 }
-
-/*function sendOrderType(type)
-{
-	let req = formatUpdateOrderInfoReq(type);
-	$.post("http://localhost:3000/update-order-info", req, function(data, status) 
-	{
-		return;
-	});	
-}*/
 
 $(document).ready(function()
 {
@@ -680,6 +681,12 @@ $(document).ready(function()
 		{
     		resizePage();
 		});
+
+		if (order.length == 0)
+		{
+			alert("You have no items in your order! Returning to menu!");
+			window.location.href = "/";
+		}
 
 		$(".order-type-sel").hover(function()
 		{
@@ -736,7 +743,7 @@ $(document).ready(function()
 
 		$("#order-btn").on("click", function()
 		{
-			updateOrderInfo(orderType);
+			submitOrder(orderType);
 		});
 
 		/* Modal box event listeners */
@@ -771,15 +778,15 @@ $(document).ready(function()
 			$("#modal").hide();
 		});
 
-		$("textarea").keyup(function()
+		$("#modal-textarea").keyup(function()
 		{
 			let textLen = $(this).val().length;
 			if (textLen > 128)
-				$("#char-count").css("color", "red");
+				$("#modal-char-count").css("color", "red");
 			else
-				$("#char-count").css("color", "black");
+				$("#modal-char-count").css("color", "black");
 
-			$("#char-count").html("Character count: " + textLen);		
+			$("#modal-char-count").html("Character count: " + textLen);		
 		});
 	});
 });
