@@ -2,10 +2,15 @@
 const express = require("express");
 const app = express();
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
 //For parsing JSON
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+const crypto = require('crypto');
 
 //Additional modules
 const postHandler = require("./postHandler.js");
@@ -72,25 +77,41 @@ app.get('/Frontend/js/confirmation.js', function(req, res)
 //////////////////////////////////////////////////////////////////
 
 let placedOrders = [];
+let currentOrders = {};
 
-let currentOrder = {};
-currentOrder.info = {};
-currentOrder.items = [];
+app.get('/generate-order-id', function(req, res)
+{
+	console.log("Received GET request from client! (generate-user-id)");
+
+	let orderId = crypto.randomBytes(16).toString('hex');
+	currentOrders[orderId] = {};
+	currentOrders[orderId].info = {};
+	currentOrders[orderId].items = [];
+	res.cookie("orderId", orderId);
+	res.sendStatus(200);
+});
 
 //Update order
 app.post('/update-order', function(req, res)
 {
 	console.log("Received POST request from client! (update-order)");
-	postHandler.updateOrder(req.body, currentOrder.items);
-	res.sendStatus(200);
+
+	let orderId = req.cookies.orderId;
+	if (typeof(currentOrders[orderId]) !== "undefined")
+	{
+		postHandler.updateOrder(req.body, currentOrders[orderId].items);
+		res.sendStatus(200);
+	}
+	else
+		res.send();
 });
 
-//Update order info
+/*//Update order info
 app.post('/submit-order', function(req, res)
 {
 	console.log("Received POST request from client! (submit-order)");
 	
-	
+
 
 	placedOrders.push(currentOrder);
 	resetCurrentOrder();
@@ -98,7 +119,7 @@ app.post('/submit-order', function(req, res)
 	console.log(placedOrders);
 
 	res.sendStatus(200);
-});
+});*/
 
 //Send menu to client browser
 app.post('/get-menu', function(req, res)
@@ -112,16 +133,29 @@ app.post('/get-menu', function(req, res)
 app.get('/my-order', function(req, res)
 {
 	console.log("Received GET request from client! (my-order)");
-  	res.send(currentOrder);
+
+	let empty = {};
+	empty.info = {};
+	empty.items = [];
+
+	let orderId = req.cookies.orderId;
+	if (typeof(currentOrders[orderId]) !== "undefined")
+		res.send(currentOrders[orderId]);
+	else
+		res.send(empty);
 });
 
 app.post('/get-combined', function(req, res)
 {
 	console.log("Received GET request from client! (get-combined)");
-	let combined = {};
 
+	let orderId = req.cookies.orderId;
+	let combined = {};
 	combined.menu = postHandler.getMenu(req.body);
-	combined.order = currentOrder.items;
+	if (typeof(currentOrders[orderId]) !== "undefined")
+		combined.orderItems = currentOrders[orderId].items;
+	else
+		combined.orderItems = [];
 
 	res.send(combined);
 });

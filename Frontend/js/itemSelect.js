@@ -186,7 +186,50 @@ function formatOrderEntry(menuEntry)
 	return orderEntry;
 }
 
+function getCookie(cname)
+{
+	let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
+
+function checkForCookie()
+{
+	let id = getCookie("orderId");
+    if (id == "")
+    {
+    	document.cookie = "orderId=setme";
+    	return false;
+    }
+
+    return true;
+}
+
 function addToOrder(menuEntry)
+{
+	let orderExists = checkForCookie();
+	if (!orderExists)
+	{
+		let getOrderId = $.get("http://localhost:3000/generate-order-id");
+		$.when(getOrderId).done(function(data, status)
+		{
+			addToOrderHelper(menuEntry);
+		});
+	}
+	else
+		addToOrderHelper(menuEntry);
+}
+
+function addToOrderHelper(menuEntry)
 {
 	let orderEntry = formatOrderEntry(menuEntry);
 	let req = formatUpdateOrderReq("add-item", orderEntry);
@@ -207,7 +250,7 @@ function deleteItem(orderEntry)
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
 		if(status != "success")
-			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
+			alert("An issue occurred while deleting item from your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
 			location.reload();
 	});
@@ -221,7 +264,7 @@ function updateItem(orderEntry)
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
 		if(status != "success")
-			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
+			alert("An issue occurred while updating item in your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
 			location.reload();
 	});
@@ -243,7 +286,7 @@ $(document).ready(function()
 		}
 
 		let menu = data.menu;
-		let order = data.order;				//Note: order contains only the order items!
+		let order = data.orderItems;				//Note: order contains only the order items!
 		displayPageContents(menu, order);
 
 		$(window).resize(function()
