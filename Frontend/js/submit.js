@@ -324,12 +324,10 @@ function deleteItem(orderEntry)
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
 		if(status != "success")
-		{
 			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
-		}
+		else
+			location.reload();
 	});
-
-	location.reload();
 }
 
 function updateItem(orderEntry)
@@ -340,12 +338,10 @@ function updateItem(orderEntry)
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
 		if(status != "success")
-		{
 			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
-		}
+		else
+			location.reload();
 	});
-
-	location.reload();
 }
 
 /* Format data */
