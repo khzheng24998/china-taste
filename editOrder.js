@@ -42,11 +42,6 @@ function updateOrder(req, order)
 	}
 }
 
-function orderItem(req, order)
-{
-
-}
-
 function addToOrder(req, order)
 {
 	let index = orderLookup(req.orderEntry, order);

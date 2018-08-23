@@ -8,16 +8,6 @@ function getNumFromId(str)
 	}
 }
 
-//Formats POST requests to the URL http://localhost:3000/update-order
-function formatUpdateOrderReq(action, orderEntry, newEntry)
-{
-	let req = {};
-	req.action = action;
-	req.orderEntry = orderEntry;
-	req.newEntry = newEntry;
-	return req;
-}
-
 function displayPageContents(menu, order)
 {
 	resizePage();
@@ -190,22 +180,22 @@ function getCookie(cname)
 {
 	let name = cname + "=";
     let ca = document.cookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
+    for(let i = 0; i < ca.length; i++) 
+    {
         let c = ca[i];
-        while (c.charAt(0) == ' ') {
+        while (c.charAt(0) == ' ')
             c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
+
+        if (c.indexOf(name) == 0)
             return c.substring(name.length, c.length);
-        }
     }
     return "";
 }
 
 function checkForCookie()
 {
-	let id = getCookie("orderId");
-    if (id == "")
+	let orderId = getCookie("orderId");
+    if (orderId == "")
     {
     	document.cookie = "orderId=setme";
     	return false;
@@ -214,60 +204,47 @@ function checkForCookie()
     return true;
 }
 
-function addToOrder(menuEntry)
+//Formats POST requests to the URL http://localhost:3000/update-order
+function formatUpdateOrderReq(action, orderEntry, newEntry)
 {
-	let orderExists = checkForCookie();
-	if (!orderExists)
-	{
-		let getOrderId = $.get("http://localhost:3000/generate-order-id");
-		$.when(getOrderId).done(function(data, status)
-		{
-			addToOrderHelper(menuEntry);
-		});
-	}
-	else
-		addToOrderHelper(menuEntry);
+	let req = {};
+	req.action = action;
+	req.orderEntry = orderEntry;
+	req.newEntry = newEntry;
+	return req;
 }
 
-function addToOrderHelper(menuEntry)
+function sendUpdateOrderReq(req)
 {
-	let orderEntry = formatOrderEntry(menuEntry);
-	let req = formatUpdateOrderReq("add-item", orderEntry);
+	checkForCookie();
 
 	$.post("http://localhost:3000/update-order", req, function(data, status) 
 	{
 		if(status != "success")
-			alert("An issue occurred while adding item to your order!\nIf this problem persists, please call us at (860) 871-9311.");
+			alert("An issue occurred while updating your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
 			location.reload();
 	});
+}
+
+function addToOrder(menuEntry)
+{
+	let orderEntry = formatOrderEntry(menuEntry);
+	let req = formatUpdateOrderReq("add-item", orderEntry);
+	sendUpdateOrderReq(req);
 }
 
 function deleteItem(orderEntry)
 {
 	let req = formatUpdateOrderReq("remove-item", orderEntry);
-
-	$.post("http://localhost:3000/update-order", req, function(data, status) 
-	{
-		if(status != "success")
-			alert("An issue occurred while deleting item from your order!\nIf this problem persists, please call us at (860) 871-9311.");
-		else
-			location.reload();
-	});
+	sendUpdateOrderReq(req);
 }
 
 function updateItem(orderEntry)
 {
 	let newEntry = formatOrderEntry(orderEntry.menuEntry);
 	let req = formatUpdateOrderReq("update-item", orderEntry, newEntry);
-
-	$.post("http://localhost:3000/update-order", req, function(data, status) 
-	{
-		if(status != "success")
-			alert("An issue occurred while updating item in your order!\nIf this problem persists, please call us at (860) 871-9311.");
-		else
-			location.reload();
-	});
+	sendUpdateOrderReq(req);
 }
 
 $(document).ready(function()
@@ -302,6 +279,8 @@ $(document).ready(function()
 			menuIndex = getNumFromId(id);
 			let menuItem = menu[menuIndex];
 			displayModalBox1(menuItem);
+
+			console.log(document.cookie);
 		});
 
 		$(".item").hover(function()
@@ -391,6 +370,8 @@ $(document).ready(function()
 			orderIndex = getNumFromId(id);
 			let orderItem = order[orderIndex];
 			displayModalBox2(orderItem);
+			
+			console.log(document.cookie);
 		});
 
 		$(".checkout-name").hover(function()
@@ -407,7 +388,7 @@ $(document).ready(function()
 			if (order.length === 0)
 				alert("Add items to order before checking out!");
 			else
-				window.location.href = "/submit";
+				window.location.href = "/checkout";
 		})
 	});
 });
