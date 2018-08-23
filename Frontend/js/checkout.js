@@ -442,7 +442,7 @@ function formatUpdateOrderReq(action, orderEntry, newEntry)
 function formatSubmitOrderReq(orderType)
 {
 	let req = {};
-	req.ordertype = orderType;
+	req.orderType = orderType;
 	req.addressInfo = formatAddressInfo(orderType);
 	req.customerInfo = formatCustomerInfo();
 	req.orderDetails = formatOrderDetails();
@@ -646,10 +646,11 @@ function submitOrder(orderType)
 		let req = formatSubmitOrderReq(orderType);
 		$.post("http://localhost:3000/submit-order", req, function(data, status) 
 		{
-			return;
+			if(status != "success")
+	    		alert("An issue occurred retreiving your order!\nIf this problem persists, please call us at (860) 871-9311.");
+			else
+				window.location.href = "/confirmation";
 		});
-
-		window.location.href = "/confirmation";
 	}
 }
 
@@ -726,6 +727,8 @@ $(document).ready(function()
 			orderIndex = getNumFromId(id);
 			let orderItem = order[orderIndex];
 			displayModalBox(orderItem);
+
+			console.log(document.cookie);
 		});
 
 		$(".checkout-name").hover(function()
