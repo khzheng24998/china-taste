@@ -223,7 +223,15 @@ function sendUpdateOrderReq(req)
 		if(status != "success")
 			alert("An issue occurred while updating your order!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
-			location.reload();
+		{
+			console.log(data.msg);
+
+			if (data.msg === "signed-out")
+				window.location.href = "/login";
+
+			else if (data.msg === "ok")
+				location.reload();
+		}
 	});
 }
 

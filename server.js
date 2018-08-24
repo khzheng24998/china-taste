@@ -45,6 +45,16 @@ app.get('/confirmation', function(req, res)
 	res.sendFile(__dirname + '/Frontend/confirmation.html');
 });
 
+app.get('/login', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/login.html');
+});
+
+app.get('/create-account', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/create-account.html');
+});
+
 /*---------------Send CSS files to client browser---------------*/
 
 app.get('/Frontend/css/shop-homepage.css', function(req, res) 
@@ -62,6 +72,15 @@ app.get('/Frontend/css/checkout.css', function(req, res)
   	res.sendFile(__dirname + "/Frontend/css/checkout.css");
 });
 
+app.get('/Frontend/css/login.css', function(req, res) 
+{
+  	res.sendFile(__dirname + "/Frontend/css/login.css");
+});
+
+app.get('/Frontend/css/create-account.css', function(req, res) 
+{
+  	res.sendFile(__dirname + "/Frontend/css/create-account.css");
+});
 
 /*---------------Send JS files to client browser---------------*/
 
@@ -80,8 +99,20 @@ app.get('/Frontend/js/confirmation.js', function(req, res)
   	res.sendFile(__dirname + "/Frontend/js/confirmation.js");
 });
 
+app.get('/Frontend/js/login.js', function(req, res)
+{
+  	res.sendFile(__dirname + "/Frontend/js/login.js");
+});
+
+app.get('/Frontend/js/create-account.js', function(req, res)
+{
+  	res.sendFile(__dirname + "/Frontend/js/create-account.js");
+});
 
 //////////////////////////////////////////////////////////////////
+
+let validUserIds = [];
+let users = [];
 
 let placedOrders = [];
 let currentOrders = {};
@@ -96,7 +127,18 @@ function generateOrderId()
 	return orderId;
 }
 
-//Update order
+function userExists(userId, validUserIds)
+{
+	for (let i = 0; i < validUserIds.length; i++)
+	{
+		if (validUserIds[i].userId === userId)
+			return i;
+	}
+
+	return -1;
+}
+
+/*//Update order
 app.post('/update-order', function(req, res)
 {
 	console.log("Received POST request from client! (update-order)");
@@ -112,6 +154,26 @@ app.post('/update-order', function(req, res)
 
 	postHandler.updateOrder(req.body, currentOrders[orderId].items);
 	res.sendStatus(200);
+});*/
+
+//Update order
+app.post('/update-order', function(req, res)
+{
+	console.log("Received POST request from client! (update-order)");
+
+	let userId = req.cookies.orderId;
+	let obj = {};
+
+	//No user account exists for user ID cookie
+	if (userExists(userId, validUserIds) === -1)
+		obj.msg = "signed-out";
+	else
+	{
+		obj.msg = "ok";
+		postHandler.updateOrder(req.body, currentOrders[orderId].items);
+	}
+
+	res.send(obj);
 });
 
 //Update order info
