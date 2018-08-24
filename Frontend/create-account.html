@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head id="apps">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>China Taste LLC</title>
+
+    <!--JQuery library-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom CSS styles for this template -->
+    <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
+    <link href="Frontend/css/create-account.css" rel="stylesheet">
+
+    <!--Custom JavaScript files-->
+    <script src="Frontend/js/create-account.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">China Taste of Vernon, LLC</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Menu</a>
+            </li>
+            <!--<li class="nav-item">
+              <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
+            </li>-->
+            <li class="nav-item">
+            </li>
+            <li class="nav-item">
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <br>
+
+    <!-- Page Content -->
+    <div class="container" id="page-body">
+
+      <div id="main-box">
+        <div id="box-header">
+          <h5>Create your account</h5>
+        </div>
+          <div id="box-content">
+            <div class="row">
+              <div class="col-lg-7">
+                <!--<h6>First Name:</h6>
+                <input type="text" size="50">
+                <h6 class="label">Last Name:</h6>
+                <input type="text" size="50">-->
+                <h6>Email Address:</h6>
+                <input type="text" size="50" id="email">
+                <p class="err-msg" id="email-err">Required field.</p>
+                <h6 class="label">Password:</h6>
+                <input type="password" size="50" id="password">
+                <p class="err-msg" id="password-err"></p>
+                <h6 class="label">Confirm Password:</h6>
+                <input type="password" size="50" id="confirmation">
+                <p class="err-msg" id="confirmation-err"></p>
+              </div>
+              <div class="col-lg-5">
+                <p id="password-req-label" style="font-size: 14px;">New password must:</p>
+                <ul style="list-style-type: square; font-size: 14px">
+                  <li>Have at least 8 characters.</li>
+                  <li>Have at least 1 alphabetic character.</li>
+                  <li>Have at least 1 numeric character.</li>
+                  <li>Contain no spaces.</li>
+                </ul>
+              </div>
+            </div>
+            <br><button id="create-account-btn">Create Account</button>
+          </div>
+        </div>
+
+      <br>
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; China Taste of Vernon, LLC 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+  </body>
+
+</html>

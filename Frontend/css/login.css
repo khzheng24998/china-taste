@@ -1,0 +1,65 @@
+#login-box
+{
+	margin: auto;
+	min-height: 275px;
+	width: 650px;
+	border-style: solid;
+	border-color: #e6e6e6;
+	border-width: 2px;
+	border-radius: 4px;
+}
+
+#login-header
+{
+	background-color: #f1f1f1;
+	padding-left: 6px;
+	padding-top: 3px;
+	padding-bottom: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #e6e6e6;
+	border-bottom-width: 2px;
+}
+
+#box-contents
+{
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-right: 30px;
+	padding-left: 30px;
+}
+
+#left-col
+{
+
+}
+
+#right-col
+{
+	padding-left: 20px;
+	border-left-style: solid;
+	border-left-color: #e6e6e6;
+	border-left-width: 2px;
+	height: 200px;
+}
+
+.inline-el
+{
+	display: inline-block;
+	font-size: 14px;
+}
+
+#btn-wrapper
+{
+	padding-right: 3px;
+	text-align: right;
+}
+
+#sign-in
+{
+	display: inline-block;
+	cursor: pointer;
+}
+
+{
+	font-size: 14px;
+}

@@ -1,0 +1,52 @@
+#main-box
+{
+	margin: auto;
+	/*min-height: 475px;*/
+	min-height: 350px;
+	width: 750px;
+	border-style: solid;
+	border-color: #e6e6e6;
+	border-width: 2px;
+	border-radius: 4px;
+}
+
+#box-header
+{
+	background-color: #f1f1f1;
+	padding-left: 6px;
+	padding-top: 3px;
+	padding-bottom: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #e6e6e6;
+	border-bottom-width: 2px;
+}
+
+#box-content
+{
+	padding-top: 15px;
+	padding-left: 15px;
+	padding-right: 20px;
+}
+
+.label
+{
+	margin-top: 10px;
+}
+
+#password-req-label
+{
+	padding-left: 20px;
+	margin-bottom: 5px;
+}
+
+.err-msg
+{
+	color: red;
+	font-size: 14px;
+	display: none;
+}
+
+#create-account-btn
+{
+	cursor: pointer;
+}
