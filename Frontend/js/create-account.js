@@ -21,6 +21,7 @@ function createAccount()
 	if (!error)
 	{
 		let req = {};
+		req.username = $("#username").val();
 		req.email = $("#email").val();
 		req.password = $("#password").val();
 
@@ -29,14 +30,7 @@ function createAccount()
 			if(status != "success")
 				alert("An issue occurred while creating your account!\nIf this problem persists, please call us at (860) 871-9311.");
 			else
-			{
-				if(data.msg === "error")
-				{
-
-				}
-				else
-					window.location.href = "/";
-			}
+				window.location.href = "/";
 		});
 	}
 }

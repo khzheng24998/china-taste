@@ -111,13 +111,9 @@ app.get('/Frontend/js/create-account.js', function(req, res)
 
 //////////////////////////////////////////////////////////////////
 
-let validUserIds = [];
 let users = [];
 
-let placedOrders = [];
-let currentOrders = {};
-
-function generateOrderId()
+/*function generateOrderId()
 {
 	let orderId = crypto.randomBytes(16).toString('hex');
 	currentOrders[orderId] = {};
@@ -125,18 +121,7 @@ function generateOrderId()
 	currentOrders[orderId].items = [];
 
 	return orderId;
-}
-
-function userExists(userId, validUserIds)
-{
-	for (let i = 0; i < validUserIds.length; i++)
-	{
-		if (validUserIds[i].userId === userId)
-			return i;
-	}
-
-	return -1;
-}
+}*/
 
 /*//Update order
 app.post('/update-order', function(req, res)
@@ -156,27 +141,117 @@ app.post('/update-order', function(req, res)
 	res.sendStatus(200);
 });*/
 
+function createAccount(req)
+{
+	let account = {};
+
+	account.key = crypto.randomBytes(16).toString('hex');
+
+	account.userInfo = {};
+	account.userInfo.username = req.username;
+	account.userInfo.email = req.email;
+	account.userInfo.password = req.password;
+
+	account.currentOrder = {};
+	account.currentOrder.info = {};
+	account.currentOrder.items = [];
+
+	account.pastOrders = [];
+
+	users.push(account);
+
+	return account.key;
+}
+
+function getAccountByKey(key)
+{
+	for (let i = 0; i < users.length; i++)
+	{
+		if (users[i].key === key)
+			return i;
+	}
+
+	return -1;
+}
+
+function getAccountByName(username)
+{
+	for (let i = 0; i < users.length; i++)
+	{
+		if (users[i].userInfo.username === username)
+			return i;
+	}
+
+	return -1;
+}
+
+function validateCredentials(req, res)
+{
+	let index = getAccountByName(req.username);
+	if (index === -1)
+		res.msg = "not-found";
+	else if (users[index].userInfo.password !== req.password)
+		res.msg = "invalid-credentials";
+	else
+	{
+		res.msg = "ok";
+		return index;
+	}
+
+	return -1;
+}
+
+app.post('/create-account', function(req, res)
+{
+	console.log("Received POST request from client! (create-account)");
+
+	let key = createAccount(req.body);
+	res.cookie("key", key);
+	res.sendStatus(200);
+});
+
+app.post('/log-in', function(req, res)
+{
+	console.log("Received POST request from client! (log-in)");
+
+	let response = {};
+	let index = validateCredentials(req.body, response);
+
+	if (index !== -1)
+		res.cookie("key", users[index].key);
+
+	res.send(response);
+});
+
+app.get('/log-out', function(req, res)
+{
+	console.log("Received GET request from client! (log-out)");
+
+	res.clearCookie("key");
+	res.sendStatus(200);
+});
+
 //Update order
 app.post('/update-order', function(req, res)
 {
 	console.log("Received POST request from client! (update-order)");
 
-	let userId = req.cookies.orderId;
-	let obj = {};
+	let key = req.cookies.key;
+	let response = {};
 
-	//No user account exists for user ID cookie
-	if (userExists(userId, validUserIds) === -1)
-		obj.msg = "signed-out";
+	let index = getAccountByKey(key);
+	if (index === -1)
+		response.msg = "signed-out";
 	else
 	{
-		obj.msg = "ok";
-		postHandler.updateOrder(req.body, currentOrders[orderId].items);
+		response.msg = "ok";
+		postHandler.updateOrder(req.body, users[index].currentOrder.items);
 	}
 
-	res.send(obj);
+	res.send(response);
 });
 
-//Update order info
+/*//Update order info
 app.post('/submit-order', function(req, res)
 {
 	console.log("Received POST request from client! (submit-order)");
@@ -191,7 +266,7 @@ app.post('/submit-order', function(req, res)
 	res.clearCookie("orderId");
 
 	res.sendStatus(200);
-});
+});*/
 
 //Send menu to client browser
 app.post('/get-menu', function(req, res)
@@ -202,7 +277,7 @@ app.post('/get-menu', function(req, res)
 });
 
 //Send order to client browser
-app.get('/my-order', function(req, res)
+/*app.get('/my-order', function(req, res)
 {
 	console.log("Received GET request from client! (my-order)");
 
@@ -210,24 +285,34 @@ app.get('/my-order', function(req, res)
 	empty.info = {};
 	empty.items = [];
 
-	let orderId = req.cookies.orderId;
+	let key = req.cookies.key;
+	let index = getAccountByKey(key);
+	if (key === -1)
+		res.send(empty);
+	else
+	{
+		let order = users[index].currentOrder;
+	}
+
 	if (typeof(currentOrders[orderId]) !== "undefined")
 		res.send(currentOrders[orderId]);
 	else
 		res.send(empty);
-});
+});*/
 
 app.post('/get-combined', function(req, res)
 {
 	console.log("Received GET request from client! (get-combined)");
 
-	let orderId = req.cookies.orderId;
+	let key = req.cookies.key;
 	let combined = {};
 	combined.menu = postHandler.getMenu(req.body);
-	if (typeof(currentOrders[orderId]) !== "undefined")
-		combined.orderItems = currentOrders[orderId].items;
-	else
+
+	let index = getAccountByKey(key);
+	if (index === -1)
 		combined.orderItems = [];
+	else
+		combined.orderItems = users[index].currentOrder.items;
 
 	res.send(combined);
 });
