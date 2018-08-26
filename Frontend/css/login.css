@@ -64,3 +64,33 @@
 {
 	font-size: 14px;
 }
+
+.err-msg
+{
+	color: red;
+	display: none;
+	font-size: 14px;
+	margin-bottom: 0px;
+}
+
+#login-err
+{
+	padding-left: 7px;
+	padding-right: 0px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #ae3b1d;
+	border-radius: 3px;
+	background-color: #FAD4CA;
+	margin-bottom: 7px;
+	display: none;
+}
+
+#login-err-msg
+{
+	font-size: 14px;
+	color: #ae3b1d;
+	margin-bottom: 0px;
+}

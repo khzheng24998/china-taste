@@ -8,21 +8,51 @@ function resizePage()
 function sendCredentials()
 {
 	let req = {};
-	req.userName = $("#user-name").val();
+	req.username = $("#username").val();
 	req.password = $("#password").val();
 
-	$.post("/validate-credentials", req, function(data, status)
+	let err = false;
+
+	if (req.username.length === 0)
+	{
+		$("#username-err").show();
+		err = true;
+	}
+	else
+		$("#username-err").hide();
+
+	if (req.password.length === 0)
+	{
+		$("#password-err").show();
+		err = true;
+	}
+	else
+		$("#password-err").hide();
+
+	if (err)
+		return;
+
+	$.post("/log-in", req, function(data, status)
 	{
 		if(status != "success")
 			alert("An issue occurred while signing in!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
 		{
-			if(data.msg === "error")
-			{
+			console.log(data.msg);
 
+			switch(data.msg)
+			{
+				case "not-found":
+				case "invalid-credentials":
+					$("#login-err").show();
+					break;
+				case "ok":
+					$("#login-err").hide();
+					window.location.href = "/";
+					break;
+				default:
+					break;
 			}
-			else
-				window.location.href = "/";
 		}
 	});
 }
@@ -39,5 +69,10 @@ $(document).ready(function()
 	$("#sign-in").on("click", function()
 	{
 		sendCredentials();
+	});
+
+	$(".required").on("change", function()
+	{
+		$(this).next(".err-msg").hide();
 	});
 });

@@ -337,3 +337,36 @@ textarea
 {
 	text-align: right;
 }
+
+#my-account
+{
+	position: relative;
+}
+
+#drop-down
+{
+	width: 125px;
+	z-index: 1;
+	background-color: #f1f1f1;
+	display: none;
+	position: absolute;
+	top: 50px;
+	right: 0px;
+	box-shadow: 1px 1px 1px 1px;
+	padding-top: 2px;
+	padding-bottom: 1px;
+}
+
+.drop-option
+{
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-left: 5px;
+	margin-bottom: 3px;
+	cursor: pointer;
+}
+
+.nav-item
+{
+	font-size: 17px;
+}

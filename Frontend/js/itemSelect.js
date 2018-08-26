@@ -194,10 +194,10 @@ function getCookie(cname)
 
 function checkForCookie()
 {
-	let orderId = getCookie("orderId");
+	let orderId = getCookie("key");
     if (orderId == "")
     {
-    	document.cookie = "orderId=setme";
+    	document.cookie = "key=setme";
     	return false;
     }
 
@@ -253,6 +253,20 @@ function updateItem(orderEntry)
 	let newEntry = formatOrderEntry(orderEntry.menuEntry);
 	let req = formatUpdateOrderReq("update-item", orderEntry, newEntry);
 	sendUpdateOrderReq(req);
+}
+
+function logOut()
+{
+	$.get("/log-out", function(data, status)
+	{
+		if (status !== "success")
+		{
+			console.log(status);
+    		alert("An issue occurred signing out from system!\nIf this problem persists, please call us at (860) 871-9311.");
+		}
+		else
+			location.reload();
+	});
 }
 
 $(document).ready(function()
@@ -397,6 +411,30 @@ $(document).ready(function()
 				alert("Add items to order before checking out!");
 			else
 				window.location.href = "/checkout";
-		})
+		});
+
+		$("#my-account").on("click", function()
+		{
+			$("#drop-down").toggle();
+		});
+
+		$("#page-body").on("click", function()
+		{
+			$("#drop-down").hide();
+		});
+
+		$(".drop-option").hover(function()
+		{
+			$(this).css("background-color", "#dddddd");
+		},
+		function()
+		{
+			$(this).css("background-color", "#f1f1f1");
+		});
+
+		$("#log-out").on("click", function()
+		{
+			logOut();
+		});
 	});
 });
