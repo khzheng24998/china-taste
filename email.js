@@ -1,8 +1,44 @@
 var nodemailer = require('nodemailer');
+const Crypto = require("crypto");
 
 function formatEmailBody(emailBody, order)
 {
 
+}
+
+function sendResetLink(password, pending)
+{
+	let pendingReset = {};
+	let randString = Crypto.randomBytes(16).toString('hex');
+	pendingReset.resetKey = randString;
+
+	pending.push(pendingReset);
+
+	let emailBody = "http://localhost:3000/password-reset/?" + randString;
+
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: 
+		{
+			user: 'chinatasteofvernon@gmail.com',
+			pass: password
+		}
+  	});
+
+	let mailOptions = {
+		from: 'chinatasteofvernon@gmail.com',
+  		to: 'kennyzheng24998@gmail.com',
+  		subject: 'Password Reset',
+  		html: emailBody
+	};
+
+	transporter.sendMail(mailOptions, function(error, info)
+	{
+		if (error) 
+      		console.log(error);
+    	else 
+      		console.log('Email sent: ' + info.response);
+    });
 }
 
 function sendMail(password, order)
@@ -56,3 +92,4 @@ function sendMail(password, order)
 }
 
 module.exports.sendMail = sendMail;
+module.exports.sendResetLink = sendResetLink;

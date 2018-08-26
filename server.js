@@ -14,7 +14,10 @@ const crypto = require('crypto');
 
 //Additional modules
 const postHandler = require("./postHandler.js");
-const emailModule = require("./sendEmail.js");
+
+const Email = require("./email.js");
+const Database = require("./database.js");
+const Login = require("./login.js");
 
 if (process.argv.length < 3)
 {
@@ -55,6 +58,16 @@ app.get('/create-account', function(req, res)
 	res.sendFile(__dirname + '/Frontend/create-account.html');
 });
 
+app.get('/forgot-username', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/forgot-username.html');
+});
+
+app.get('/forgot-password', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/forgot-password.html');
+});
+
 /*---------------Send CSS files to client browser---------------*/
 
 app.get('/Frontend/css/shop-homepage.css', function(req, res) 
@@ -80,6 +93,11 @@ app.get('/Frontend/css/login.css', function(req, res)
 app.get('/Frontend/css/create-account.css', function(req, res) 
 {
   	res.sendFile(__dirname + "/Frontend/css/create-account.css");
+});
+
+app.get('/Frontend/css/forgot.css', function(req, res) 
+{
+  	res.sendFile(__dirname + "/Frontend/css/forgot.css");
 });
 
 /*---------------Send JS files to client browser---------------*/
@@ -109,105 +127,59 @@ app.get('/Frontend/js/create-account.js', function(req, res)
   	res.sendFile(__dirname + "/Frontend/js/create-account.js");
 });
 
+app.get('/Frontend/js/forgot-password.js', function(req, res)
+{
+  	res.sendFile(__dirname + "/Frontend/js/forgot-password.js");
+});
+
 //////////////////////////////////////////////////////////////////
 
+let pendingPasswordResets = [];
 let users = [];
 
-/*function generateOrderId()
+app.post('/forgot-username', function(req, res)
 {
-	let orderId = crypto.randomBytes(16).toString('hex');
-	currentOrders[orderId] = {};
-	currentOrders[orderId].info = {};
-	currentOrders[orderId].items = [];
 
-	return orderId;
-}*/
+});
 
-/*//Update order
-app.post('/update-order', function(req, res)
+app.post('/forgot-password', function(req, res)
 {
-	console.log("Received POST request from client! (update-order)");
+	console.log("Received POST request from client! (forgot-password)");
 
-	let orderId = req.cookies.orderId;
+	let index = Database.getAccountByName(req.body.username, users);
+	if (index !== -1)
+		Email.sendResetLink(process.argv[2], pendingPasswordResets);
+});
 
-	//No order entry exists for cookie
-	if (typeof(currentOrders[orderId]) === "undefined")
-	{
-		orderId = generateOrderId();
-		res.cookie("orderId", orderId);
-	}
-
-	postHandler.updateOrder(req.body, currentOrders[orderId].items);
-	res.sendStatus(200);
-});*/
-
-function createAccount(req)
+app.get('/password-reset', function(req, res)
 {
-	let account = {};
 
-	account.key = crypto.randomBytes(16).toString('hex');
+});
 
-	account.userInfo = {};
-	account.userInfo.username = req.username;
-	account.userInfo.email = req.email;
-	account.userInfo.password = req.password;
-
-	account.currentOrder = {};
-	account.currentOrder.info = {};
-	account.currentOrder.items = [];
-
-	account.pastOrders = [];
-
-	users.push(account);
-
-	return account.key;
-}
-
-function getAccountByKey(key)
+app.get('/account-status', function(req, res)
 {
-	for (let i = 0; i < users.length; i++)
-	{
-		if (users[i].key === key)
-			return i;
-	}
+	console.log("Received GET request from client! (account-status)");
 
-	return -1;
-}
+	let response = {};
+	let key = req.cookies.key;
+	let index = Database.getAccountByKey(key, users);
 
-function getAccountByName(username)
-{
-	for (let i = 0; i < users.length; i++)
-	{
-		if (users[i].userInfo.username === username)
-			return i;
-	}
-
-	return -1;
-}
-
-function validateCredentials(req, res)
-{
-	let index = getAccountByName(req.username);
-	if (index === -1)
-		res.msg = "not-found";
-	else if (users[index].userInfo.password !== req.password)
-		res.msg = "invalid-credentials";
+	if (index !== -1)
+		response.msg = "signed-in";
 	else
-	{
-		res.msg = "ok";
-		return index;
-	}
-
-	return -1;
-}
+		response.msg = "signed-out";
+});
 
 app.post('/create-account', function(req, res)
 {
 	console.log("Received POST request from client! (create-account)");
 
-	let key = createAccount(req.body);
-	res.cookie("key", key);
-	res.sendStatus(200);
+	let response = {};
+
+	if (Login.createAccount(req.body, response, users))
+		res.cookie("key", users[users.length - 1].key);
+
+	res.send(response);
 });
 
 app.post('/log-in', function(req, res)
@@ -215,10 +187,13 @@ app.post('/log-in', function(req, res)
 	console.log("Received POST request from client! (log-in)");
 
 	let response = {};
-	let index = validateCredentials(req.body, response);
+	let index = Login.validateCredentials(req.body, response, users);
 
 	if (index !== -1)
+	{
+		users[index].key = Login.generateKey(users);
 		res.cookie("key", users[index].key);
+	}
 
 	res.send(response);
 });
@@ -227,7 +202,15 @@ app.get('/log-out', function(req, res)
 {
 	console.log("Received GET request from client! (log-out)");
 
-	res.clearCookie("key");
+	let key = req.cookies.key;
+	let index = Database.getAccountByKey(key, users);
+
+	if (index !== -1)
+	{
+		delete users[index].key;
+		res.clearCookie("key");	
+	}
+	
 	res.sendStatus(200);
 });
 
@@ -239,14 +222,14 @@ app.post('/update-order', function(req, res)
 	let key = req.cookies.key;
 	let response = {};
 
-	let index = getAccountByKey(key);
-	if (index === -1)
-		response.msg = "signed-out";
-	else
+	let index = Database.getAccountByKey(key, users);
+	if (index !== -1)
 	{
 		response.msg = "ok";
 		postHandler.updateOrder(req.body, users[index].currentOrder.items);
 	}
+	else
+		response.msg = "signed-out";
 
 	res.send(response);
 });
@@ -286,7 +269,7 @@ app.post('/get-menu', function(req, res)
 	empty.items = [];
 
 	let key = req.cookies.key;
-	let index = getAccountByKey(key);
+	let index = Database.getAccountByKey(key);
 	if (key === -1)
 		res.send(empty);
 	else
@@ -308,7 +291,7 @@ app.post('/get-combined', function(req, res)
 	let combined = {};
 	combined.menu = postHandler.getMenu(req.body);
 
-	let index = getAccountByKey(key);
+	let index = Database.getAccountByKey(key, users);
 	if (index === -1)
 		combined.orderItems = [];
 	else
