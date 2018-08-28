@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const crypto = require('crypto');
+const Crypto = require('crypto');
 
 //Additional modules
 const postHandler = require("./postHandler.js");
@@ -66,6 +66,17 @@ app.get('/forgot-username', function(req, res)
 app.get('/forgot-password', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/forgot-password.html');
+});
+
+
+app.get('/reset-success', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/reset-success.html');
+});
+
+app.get('/instructions-sent', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/instructions-sent.html');
 });
 
 /*---------------Send CSS files to client browser---------------*/
@@ -132,28 +143,153 @@ app.get('/Frontend/js/forgot-password.js', function(req, res)
   	res.sendFile(__dirname + "/Frontend/js/forgot-password.js");
 });
 
+app.get('/Frontend/js/password-reset.js', function(req, res)
+{
+  	res.sendFile(__dirname + "/Frontend/js/password-reset.js");
+});
+
+app.get('/Frontend/js/generic.js', function(req, res)
+{
+  	res.sendFile(__dirname + "/Frontend/js/generic.js");
+});
+
+
 //////////////////////////////////////////////////////////////////
 
-let pendingPasswordResets = [];
+let resetKeys = [];
+let activeSessions = [];
+
 let users = [];
+
+function findResetRequest(username, resetKeys)
+{
+	for (let i = 0; i < resetKeys.length; i++)
+	{
+		if (resetKeys[i].username === username)
+			return i;
+	}
+
+	return -1;
+}
+
+function generateResetRequest(username, resetKeys)
+{
+	let randString = Login.generateKey(resetKeys);
+	let date = new Date();
+	let currentTime = date.getTime();
+	let expirationDate = (+currentTime) + (+900000);
+
+	let index = findResetRequest(username, resetKeys);		//Reset key expires in 15 minutes
+	if (index !== -1)
+	{
+		resetKeys[index].key = randString;
+		resetKeys[index].expirationDate = expirationDate;
+	}
+	else
+	{
+		let pendingReset = {};
+		pendingReset.key = randString;
+		pendingReset.username = username;
+		pendingReset.expirationDate = expirationDate;
+		resetKeys.push(pendingReset);
+	}
+
+	return randString;
+}
 
 app.post('/forgot-username', function(req, res)
 {
-
+	console.log("Received GET request from client! (forgot-username)");
 });
 
 app.post('/forgot-password', function(req, res)
 {
 	console.log("Received POST request from client! (forgot-password)");
 
-	let index = Database.getAccountByName(req.body.username, users);
-	if (index !== -1)
-		Email.sendResetLink(process.argv[2], pendingPasswordResets);
+	let randString = "";
+	let response = {};
+
+	if (typeof(req.body.email) !== "undefined")
+	{
+		let index = Database.getAccountByEmail(req.body.email, users);
+		if (index !== -1)
+		{
+			randString = generateResetRequest(users[index].userInfo.username, resetKeys);
+			let sent = Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
+			response.msg = sent ? "ok" : "error";
+		}
+		else
+			response.msg = "not-found";
+
+	}
+
+	else if (typeof(req.body.username) !== "undefined")
+	{
+		let index = Database.getAccountByName(req.body.username, users);
+		if (index !== -1)
+		{
+			randString = generateResetRequest(users[index].userInfo.username, resetKeys);
+			let sent = Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
+			response.msg = sent ? "ok" : "error";
+		}
+		else
+			response.msg = "not-found";
+	}
+
+	else
+	{
+		response.msg = "bad-input";
+	}
+
+	res.send(response);
 });
 
 app.get('/password-reset', function(req, res)
 {
+	console.log("Received GET request from client! (password-reset)");
 
+	let url = req.originalUrl.replace("/password-reset?", "");
+
+	console.log(req.originalUrl);
+	console.log(url);
+
+	let index = Database.getAccountByKey(url, resetKeys);
+	if (index !== -1)
+	{
+		res.cookie("resetKey", url);
+		res.sendFile(__dirname + '/Frontend/password-reset.html');
+	}
+	else
+	{
+		res.sendFile(__dirname + '/Frontend/invalid-link.html');
+	}
+});
+
+app.post('/password-reset', function(req, res)
+{
+	console.log("Received POST request from client! (password-reset)");
+
+	let resetKey = req.cookies.resetKey;
+	let response = {};
+
+	let index = Database.getAccountByKey(resetKey, resetKeys)
+	if (index !== -1)
+	{
+		let idx = Database.getAccountByName(resetKeys[index].username, users);
+		users[idx].userInfo.password = Login.hashPassword(req.body.newPassword);
+
+		//Delete reset key after use
+		if (resetKeys.length > 1)
+			delete resetKeys[index];
+		else
+			resetKeys = [];
+
+		response.msg = "ok";
+	}
+	else
+		response.msg = "not-found";
+
+	res.send(response);
 });
 
 app.get('/account-status', function(req, res)

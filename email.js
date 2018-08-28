@@ -6,15 +6,9 @@ function formatEmailBody(emailBody, order)
 
 }
 
-function sendResetLink(password, pending)
+function sendResetLink(password, key, receiver)
 {
-	let pendingReset = {};
-	let randString = Crypto.randomBytes(16).toString('hex');
-	pendingReset.resetKey = randString;
-
-	pending.push(pendingReset);
-
-	let emailBody = "http://localhost:3000/password-reset/?" + randString;
+	let emailBody = "http://localhost:3000/password-reset?" + key;
 
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -27,7 +21,7 @@ function sendResetLink(password, pending)
 
 	let mailOptions = {
 		from: 'chinatasteofvernon@gmail.com',
-  		to: 'kennyzheng24998@gmail.com',
+  		to: receiver,
   		subject: 'Password Reset',
   		html: emailBody
 	};
@@ -35,9 +29,15 @@ function sendResetLink(password, pending)
 	transporter.sendMail(mailOptions, function(error, info)
 	{
 		if (error) 
+		{
       		console.log(error);
-    	else 
+      		return false;
+		}
+    	else
+    	{
       		console.log('Email sent: ' + info.response);
+      		return true;
+    	}
     });
 }
 

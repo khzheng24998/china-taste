@@ -41,6 +41,7 @@
 #instructions
 {
 	margin-bottom: 5px;
+	font-size: 14px;
 }
 
 #or
@@ -53,4 +54,9 @@
 	color: red;
 	font-size: 14px;
 	display: none;
+}
+
+button
+{
+	cursor: pointer;
 }
