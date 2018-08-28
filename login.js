@@ -101,6 +101,7 @@ function verifyEmail()
 	
 }
 
+module.exports.hashPassword = hashPassword;
 module.exports.generateKey = generateKey;
 module.exports.createAccount = createAccount;
 module.exports.validateCredentials = validateCredentials;

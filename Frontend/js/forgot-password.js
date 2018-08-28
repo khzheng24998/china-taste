@@ -5,53 +5,49 @@ function resizePage()
 	$("#page-body").css("min-height", winHeight);
 }
 
-function sendCredentials()
+function sendAccountToken()
 {
 	let req = {};
-	req.username = $("#username").val();
-	req.password = $("#password").val();
+	let email = $("#email").val();
+	let username = $("#username").val();
 
-	let err = false;
+	let success = false;
 
-	if (req.username.length === 0)
+	if (email.length === 0 && username.length === 0)
 	{
-		$("#username-err").show();
-		err = true;
+		$("#error").show();
+		$("#error").html("Must enter a value for at least one of the follow fields!");
 	}
 	else
-		$("#username-err").hide();
-
-	if (req.password.length === 0)
 	{
-		$("#password-err").show();
-		err = true;
+		$("#error").hide();
+		success = true;
 	}
-	else
-		$("#password-err").hide();
 
-	if (err)
+	if (email.length !== 0)
+		req.email = email;
+
+	if (username.length !== 0)
+		req.username = username;
+
+	if (!success)
 		return;
 
-	$.post("/log-in", req, function(data, status)
+	$.post("/forgot-password", req, function(data, status)
 	{
 		if(status != "success")
-			alert("An issue occurred while signing in!\nIf this problem persists, please call us at (860) 871-9311.");
+			alert("An issue occurred!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
 		{
-			console.log(data.msg);
-
-			switch(data.msg)
+			if (data.msg === "not-found")
 			{
-				case "not-found":
-				case "invalid-credentials":
-					$("#login-err").show();
-					break;
-				case "ok":
-					$("#login-err").hide();
-					window.location.href = "/";
-					break;
-				default:
-					break;
+				$("#error").show();
+				$("#error").html("An account under the provided email/username was not found.");
+			}
+			else
+			{
+				$("#error").hide();
+				window.location.href = "/instructions-sent";
 			}
 		}
 	});
@@ -68,19 +64,11 @@ $(document).ready(function()
 
 	$("#submit").on("click", function()
 	{
-		let req = {};
-		req.username = $("#username").val();
-
-		$.post("/forgot-password", req, function(data, status)
-		{
-			if(status != "success")
-				alert("An issue occurred while signing in!\nIf this problem persists, please call us at (860) 871-9311.");
-		});
-
+		sendAccountToken();
 	});
 
-	/*$(".required").on("change", function()
+	$("input").on("change", function()
 	{
 		$(this).next(".err-msg").hide();
-	});*/
+	});
 });
