@@ -8,7 +8,8 @@ function formatEmailBody(emailBody, order)
 
 function sendResetLink(password, key, receiver)
 {
-	let emailBody = "http://localhost:3000/password-reset?" + key;
+	let url = "http://localhost:3000/password-reset?" + key;
+	let emailBody = "<p>To reset your password, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not request a password reset, please disregard this message.</p>";
 
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
