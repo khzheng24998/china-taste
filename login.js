@@ -59,6 +59,7 @@ function createAccount(req, res, users)
 	let account = {};
 
 	account.key = generateKey(users);
+	account.verified = false;
 
 	account.userInfo = {};
 	account.userInfo.username = req.username;
@@ -94,11 +95,6 @@ function validateCredentials(req, res, users)
 	}
 
 	return -1;
-}
-
-function verifyEmail()
-{
-	
 }
 
 module.exports.hashPassword = hashPassword;

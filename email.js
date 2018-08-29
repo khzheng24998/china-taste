@@ -42,6 +42,42 @@ function sendResetLink(password, key, receiver)
     });
 }
 
+function sendVerificationLink(password, key, receiver)
+{
+	let url = "http://localhost:3000/verify-email?" + key;
+	let emailBody = "<p>To verify your email, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not recently create an account with us or change your email, please disregard this message.</p>";
+
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: 
+		{
+			user: 'chinatasteofvernon@gmail.com',
+			pass: password
+		}
+  	});
+
+	let mailOptions = {
+		from: 'chinatasteofvernon@gmail.com',
+  		to: receiver,
+  		subject: 'Password Reset',
+  		html: emailBody
+	};
+
+	transporter.sendMail(mailOptions, function(error, info)
+	{
+		if (error) 
+		{
+      		console.log(error);
+      		return false;
+		}
+    	else
+    	{
+      		console.log('Email sent: ' + info.response);
+      		return true;
+    	}
+    });
+}
+
 function sendMail(password, order)
 {
 	let emailBody = "";
@@ -94,3 +130,4 @@ function sendMail(password, order)
 
 module.exports.sendMail = sendMail;
 module.exports.sendResetLink = sendResetLink;
+module.exports.sendVerificationLink = sendVerificationLink;

@@ -30,7 +30,7 @@ function createAccount()
 			if(status != "success")
 				alert("An issue occurred while creating your account!\nIf this problem persists, please call us at (860) 871-9311.");
 			else
-				window.location.href = "/";
+				window.location.href = "/verify-email";
 		});
 	}
 }
