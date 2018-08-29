@@ -156,34 +156,36 @@ app.get('/Frontend/js/generic.js', function(req, res)
 
 //////////////////////////////////////////////////////////////////
 
-let resetKeys = [];
+let resetRequests = [];
+let verificationRequests = [];
+
 let activeSessions = [];
 
 let users = [];
 
-function findResetRequest(username, resetKeys)
+function findRequest(username, requests)
 {
-	for (let i = 0; i < resetKeys.length; i++)
+	for (let i = 0; i < requests.length; i++)
 	{
-		if (resetKeys[i].username === username)
+		if (requests[i].username === username)
 			return i;
 	}
 
 	return -1;
 }
 
-function generateResetRequest(username, resetKeys)
+function generateResetRequest(username, resetRequests)
 {
-	let randString = Login.generateKey(resetKeys);
+	let randString = Login.generateKey(resetRequests);
 	let date = new Date();
 	let currentTime = date.getTime();
 	let expirationDate = (+currentTime) + (+900000);
 
-	let index = findResetRequest(username, resetKeys);		//Reset key expires in 15 minutes
+	let index = findRequest(username, resetRequests);		//Reset key expires in 15 minutes
 	if (index !== -1)
 	{
-		resetKeys[index].key = randString;
-		resetKeys[index].expirationDate = expirationDate;
+		resetRequests[index].key = randString;
+		resetRequests[index].expirationDate = expirationDate;
 	}
 	else
 	{
@@ -191,11 +193,74 @@ function generateResetRequest(username, resetKeys)
 		pendingReset.key = randString;
 		pendingReset.username = username;
 		pendingReset.expirationDate = expirationDate;
-		resetKeys.push(pendingReset);
+		resetRequests.push(pendingReset);
 	}
 
 	return randString;
 }
+
+function generateVerificationRequest(username, verificationRequests)
+{
+	let randString = "";
+
+	let index = findRequest(username, verificationRequests);
+	if (index !== -1)
+	{
+		randString = verificationRequests[index].key;
+	}
+	else
+	{
+		randString = Login.generateKey(verificationRequests);
+
+		let pendingVerification = {};
+		pendingVerification.key = randString;
+		pendingVerification.username = username;
+		verificationRequests.push(pendingVerification);
+	}
+
+	return randString;
+}
+
+app.get('/get-verification-email', function(req, res)
+{
+	console.log("Received GET request from client (get-verification-email)");
+
+	let key = req.cookies.key;
+
+	let index = Database.getAccountByKey(key, users);
+	if (index !== -1)
+	{
+		let randString = generateVerificationRequest(users[index].userInfo.username, verificationRequests);
+		let sent = Email.sendVerificationLink(process.argv[2], randString, users[index].userInfo.email);
+		response.msg = sent ? "ok" : "error";
+	}
+	else
+		response.msg = "error";
+
+	res.send(response);
+});
+
+app.get('/verify-email', function(req, res)
+{
+	console.log("Received GET request from client (verify-email)");
+
+	let url = req.originalUrl.replace("/verify-email?", "");
+
+	console.log(req.originalUrl);
+	console.log(url);
+
+	let index = Database.getAccountByKey(url, verificationRequests);
+	if (index !== -1)
+	{
+		let idx = Database.getAccountByName(verificationRequests[index].username, users);
+		users[idx].verified = true;
+		res.sendFile(__dirname + '/Frontend/verification-success.html');
+	}
+	else
+	{
+		res.sendFile(__dirname + '/Frontend/invalid-link.html');
+	}
+});
 
 app.post('/forgot-username', function(req, res)
 {
@@ -206,7 +271,6 @@ app.post('/forgot-password', function(req, res)
 {
 	console.log("Received POST request from client! (forgot-password)");
 
-	let randString = "";
 	let response = {};
 
 	if (typeof(req.body.email) !== "undefined")
@@ -214,7 +278,7 @@ app.post('/forgot-password', function(req, res)
 		let index = Database.getAccountByEmail(req.body.email, users);
 		if (index !== -1)
 		{
-			randString = generateResetRequest(users[index].userInfo.username, resetKeys);
+			let randString = generateResetRequest(users[index].userInfo.username, resetRequests);
 			let sent = Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
 			response.msg = sent ? "ok" : "error";
 		}
@@ -228,7 +292,7 @@ app.post('/forgot-password', function(req, res)
 		let index = Database.getAccountByName(req.body.username, users);
 		if (index !== -1)
 		{
-			randString = generateResetRequest(users[index].userInfo.username, resetKeys);
+			let randString = generateResetRequest(users[index].userInfo.username, resetRequests);
 			let sent = Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
 			response.msg = sent ? "ok" : "error";
 		}
@@ -253,7 +317,7 @@ app.get('/password-reset', function(req, res)
 	console.log(req.originalUrl);
 	console.log(url);
 
-	let index = Database.getAccountByKey(url, resetKeys);
+	let index = Database.getAccountByKey(url, resetRequests);
 	if (index !== -1)
 	{
 		res.cookie("resetKey", url);
@@ -272,17 +336,17 @@ app.post('/password-reset', function(req, res)
 	let resetKey = req.cookies.resetKey;
 	let response = {};
 
-	let index = Database.getAccountByKey(resetKey, resetKeys)
+	let index = Database.getAccountByKey(resetKey, resetRequests)
 	if (index !== -1)
 	{
-		let idx = Database.getAccountByName(resetKeys[index].username, users);
+		let idx = Database.getAccountByName(resetRequests[index].username, users);
 		users[idx].userInfo.password = Login.hashPassword(req.body.newPassword);
 
 		//Delete reset key after use
-		if (resetKeys.length > 1)
-			delete resetKeys[index];
+		if (resetRequests.length > 1)
+			delete resetRequests[index];
 		else
-			resetKeys = [];
+			resetRequests = [];
 
 		response.msg = "ok";
 	}
