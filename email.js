@@ -59,7 +59,7 @@ function sendVerificationLink(password, key, receiver)
 	let mailOptions = {
 		from: 'chinatasteofvernon@gmail.com',
   		to: receiver,
-  		subject: 'Password Reset',
+  		subject: 'Email Verification',
   		html: emailBody
 	};
 
