@@ -79,6 +79,11 @@ app.get('/instructions-sent', function(req, res)
 	res.sendFile(__dirname + '/Frontend/instructions-sent.html');
 });
 
+app.get('/verification-request-sent', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/verification-request-sent.html');
+});
+
 /*---------------Send CSS files to client browser---------------*/
 
 app.get('/Frontend/css/shop-homepage.css', function(req, res) 
@@ -110,6 +115,12 @@ app.get('/Frontend/css/forgot.css', function(req, res)
 {
   	res.sendFile(__dirname + "/Frontend/css/forgot.css");
 });
+
+app.get('/Frontend/css/verification-success.css', function(req, res) 
+{
+  	res.sendFile(__dirname + "/Frontend/css/verification-success.css");
+});
+
 
 /*---------------Send JS files to client browser---------------*/
 
@@ -226,6 +237,7 @@ app.get('/get-verification-email', function(req, res)
 	console.log("Received GET request from client (get-verification-email)");
 
 	let key = req.cookies.key;
+	let response = {};
 
 	let index = Database.getAccountByKey(key, users);
 	if (index !== -1)
@@ -254,6 +266,13 @@ app.get('/verify-email', function(req, res)
 	{
 		let idx = Database.getAccountByName(verificationRequests[index].username, users);
 		users[idx].verified = true;
+
+		//Delete verification request
+		if (verificationRequests.length > 1)
+			delete verificationRequests[index];
+		else
+			verificationRequests = [];
+
 		res.sendFile(__dirname + '/Frontend/verification-success.html');
 	}
 	else
@@ -342,7 +361,7 @@ app.post('/password-reset', function(req, res)
 		let idx = Database.getAccountByName(resetRequests[index].username, users);
 		users[idx].userInfo.password = Login.hashPassword(req.body.newPassword);
 
-		//Delete reset key after use
+		//Delete reset request
 		if (resetRequests.length > 1)
 			delete resetRequests[index];
 		else

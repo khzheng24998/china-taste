@@ -30,7 +30,7 @@ function createAccount()
 			if(status != "success")
 				alert("An issue occurred while creating your account!\nIf this problem persists, please call us at (860) 871-9311.");
 			else
-				window.location.href = "/verify-email";
+				$("#annoy").show();
 		});
 	}
 }
@@ -111,5 +111,21 @@ $(document).ready(function()
 	$("#create-account-btn").on("click", function()
 	{
 		createAccount();
+	});
+
+	$("#verify-btn").on("click", function()
+	{
+		$.get("/get-verification-email", function(data, status)
+		{
+			if(status != "success")
+				alert("An issue occurred while creating your account!\nIf this problem persists, please call us at (860) 871-9311.");
+			else		
+				window.location.href = "/verification-request-sent";
+		});
+	});
+
+	$("#skip-btn").on("click", function()
+	{
+		window.location.href = "/";
 	});
 });
