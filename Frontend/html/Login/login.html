@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head id="apps">
+  <head>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,7 +22,8 @@
 
     <!-- Custom CSS styles for this template -->
     <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
-    <link href="Frontend/css/login.css" rel="stylesheet">
+    <link href="Frontend/css/Login/login-styles.css" rel="stylesheet">
+    <link href="Frontend/css/Login/login.css" rel="stylesheet">
 
     <!--Custom JavaScript files-->
     <script src="Frontend/js/login.js"></script>
@@ -43,14 +44,16 @@
             <li class="nav-item active">
               <a class="nav-link" href="/">Menu</a>
             </li>
-            <!--<li class="nav-item">
-              <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
-            </li>-->
             <li class="nav-item">
               <a class="nav-link" href="#">About Us</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/login">Login</a>
+            <li class="nav-item" style="position: relative;">
+              <a class="nav-link" id="account-login-opt">My Account &nbsp;&#9660;</a>
+              <div id="drop-down">
+                <p class="drop-option" id="profile">Profile</p>
+                <p class="drop-option" id="past-orders">Past Orders</p>
+                <p class="drop-option" id="log-out">Log Out</p>
+              </div>
             </li>
           </ul>
         </div>
@@ -62,11 +65,13 @@
     <!-- Page Content -->
     <div class="container" id="page-body">
 
-      <div id="login-box">
-        <div id="login-header">
+      <div id="main-box">
+
+        <div id="box-header">
           <h5>User Login</h5>
         </div>
-        <div id="box-contents">
+
+        <div id="box-content">
           <div class="row">
             <div class="col-lg-6">
               <div id="left-col">
@@ -76,23 +81,19 @@
                 <h6>Username</h6>
                 <input id="username" type="text" size="33" class="required">
                 <p class="err-msg" id="username-err">Required field.</p>
-                <h6 style="margin-top: 4px;">Password</h6>
+                <h6 class="label">Password</h6>
                 <input id="password" type="password" size="33" class="required">
                 <p class="err-msg" id="password-err">Required field.</p>
               </div>
-              <a href="/password-reset" class="link">Forgot user name?</a><br>
-              <a href="/forgot-password" class="link">Forgot password?</a>
-              <br>
+              <a href="/password-reset" style="font-size:14px;">Forgot user name?</a><br>
+              <a href="/forgot-password" style="font-size:14px;">Forgot password?</a>
 
-              <div id="btn-wrapper">
-                <button id="sign-in">Sign In</button>
-              </div>
             </div>
             <div class="col-lg-6">
               <div id="right-col">
                 <h6>Don't have an account?</h6>
-                <a href="/create-account" class="link">Create one now.</a>
-                <p class="inline-el">It's simple and free!</p>
+                <a href="/create-account" style="font-size:14px;">Create one now.</a>
+                <p style="display:inline-block; font-size:14px;">It's simple and free!</p>
                 <h6>Creating an account allows you to:</h6>
                 <ul style="font-size:14px; list-style-type: square;">
                   <li>Save order info for quick checkout</li>
@@ -103,6 +104,11 @@
             </div>
           </div>
         </div>
+
+        <div id="box-footer">
+          <button id="sign-in" class="my-button">Sign In</button>
+        </div>
+
       </div>
 
       <br>

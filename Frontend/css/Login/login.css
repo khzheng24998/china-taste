@@ -1,0 +1,34 @@
+/* Custom styles for login page */
+
+#right-col
+{
+	padding-left: 20px;
+	border-left-style: solid;
+	border-left-color: #e6e6e6;
+	border-left-width: 2px;
+	height: 180px;
+}
+
+#login-err
+{
+	padding-left: 7px;
+	padding-right: 0px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #ae3b1d;
+	border-radius: 3px;
+	background-color: #FAD4CA;
+	margin-bottom: 7px;
+	display: none;
+}
+
+#login-err-msg
+{
+	font-size: 14px;
+	color: #ae3b1d;
+	margin-bottom: 0px;
+}
+
+/* End of custom login page styles */
