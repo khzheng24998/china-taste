@@ -5,6 +5,20 @@ function resizePage()
 	$("#page-body").css("min-height", winHeight);
 }
 
+function isUserSignedIn()
+{
+	$.get("/account-status", function(data, status)
+	{
+		if (status !== "success")
+    		alert("An issue occurred signing out from system!\nIf this problem persists, please call us at (860) 871-9311.");
+		else
+		{
+			let label = (data.msg === "signed-in") ? "My Account &nbsp;&#9660;" : "Login";
+			$("#account-login-opt").html(label);
+		}
+	});
+}
+
 function sendCredentials()
 {
 	let req = {};
@@ -60,6 +74,8 @@ function sendCredentials()
 $(document).ready(function()
 {
 	resizePage();
+
+	let signedIn = isUserSignedIn();
 
 	$(window).resize(function()
 	{

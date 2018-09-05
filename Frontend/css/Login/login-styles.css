@@ -38,13 +38,21 @@
 	padding-bottom: 20px;
 }
 
-#instructions
+#drop-down
 {
-	margin-bottom: 5px;
-	font-size: 14px;
+	width: 125px;
+	z-index: 1;
+	background-color: #f1f1f1;
+	display: none;
+	position: absolute;
+	top: 50px;
+	right: 0px;
+	box-shadow: 1px 1px 1px 1px;
+	padding-top: 2px;
+	padding-bottom: 1px;
 }
 
-#or
+.label
 {
 	margin-top: 8px;
 }
@@ -53,10 +61,11 @@
 {
 	color: red;
 	font-size: 14px;
+	margin-bottom: 0px;
 	display: none;
 }
 
-button
+.my-button
 {
 	cursor: pointer;
 }

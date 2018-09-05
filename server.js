@@ -86,41 +86,40 @@ app.get('/verification-request-sent', function(req, res)
 
 /*---------------Send CSS files to client browser---------------*/
 
-app.get('/Frontend/css/shop-homepage.css', function(req, res) 
+app.get('/Frontend/css/shop-homepage.css', function(req, res)
 {
-  	res.sendFile(__dirname + "/Frontend/css/shop-homepage.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
 app.get('/Frontend/css/itemSelect.css', function(req, res) 
 {
-  	res.sendFile(__dirname + "/Frontend/css/itemSelect.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
 app.get('/Frontend/css/checkout.css', function(req, res) 
 {
-  	res.sendFile(__dirname + "/Frontend/css/checkout.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
-app.get('/Frontend/css/login.css', function(req, res) 
+app.get('/Frontend/css/Login/login.css', function(req, res) 
 {
-  	res.sendFile(__dirname + "/Frontend/css/login.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
-app.get('/Frontend/css/create-account.css', function(req, res) 
+app.get('/Frontend/css/Login/create-account.css', function(req, res) 
 {
-  	res.sendFile(__dirname + "/Frontend/css/create-account.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
-app.get('/Frontend/css/forgot.css', function(req, res) 
+app.get('/Frontend/css/Login/verification-success.css', function(req, res) 
 {
-  	res.sendFile(__dirname + "/Frontend/css/forgot.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
-app.get('/Frontend/css/verification-success.css', function(req, res) 
+app.get('/Frontend/css/Login/login-styles.css', function(req, res) 
 {
-  	res.sendFile(__dirname + "/Frontend/css/verification-success.css");
+  	res.sendFile(__dirname + req.originalUrl);
 });
-
 
 /*---------------Send JS files to client browser---------------*/
 
@@ -387,6 +386,10 @@ app.get('/account-status', function(req, res)
 		response.msg = "signed-in";
 	else
 		response.msg = "signed-out";
+
+	console.log(response);
+
+	res.send(response);
 });
 
 app.post('/create-account', function(req, res)

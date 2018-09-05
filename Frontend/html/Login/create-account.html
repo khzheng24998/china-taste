@@ -22,7 +22,8 @@
 
     <!-- Custom CSS styles for this template -->
     <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
-    <link href="Frontend/css/create-account.css" rel="stylesheet">
+    <link href="Frontend/css/Login/login-styles.css" rel="stylesheet">
+    <link href="Frontend/css/Login/create-account.css" rel="stylesheet">
 
     <!--Custom JavaScript files-->
     <script src="Frontend/js/create-account.js"></script>
@@ -62,8 +63,8 @@
     <!-- Page Content -->
     <div class="container" id="page-body">
 
-      <div id="annoy">
-          <div id="annoy-content">
+      <div id="modal">
+          <div id="modal-content">
 
           <h5 style="margin-top: 0px;">You're almost there - just one last step!</h5>
 
@@ -99,7 +100,7 @@
                 <p class="err-msg" id="confirmation-err"></p>
               </div>
               <div class="col-lg-5">
-                <p id="password-req-label" style="font-size: 14px;">New password must:</p>
+                <p style="font-size: 14px; padding-left: 20px; margin-bottom: 5px;">New password must:</p>
                 <ul style="list-style-type: square; font-size: 14px">
                   <li>Have at least 8 characters.</li>
                   <li>Have at least 1 alphabetic character.</li>
@@ -108,8 +109,10 @@
                 </ul>
               </div>
             </div>
-            <br><button id="create-account-btn">Create Account</button>
           </div>
+          <div id="box-footer">
+              <button id="create-account-btn" class="my-button">Create Account</button>
+            </div>
         </div>
 
       <br>
