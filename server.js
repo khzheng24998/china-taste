@@ -30,58 +30,58 @@ if (process.argv.length < 3)
 //Send base HTML to client browser
 app.get('/', function(req, res) 
 {
-	res.sendFile(__dirname + '/Frontend/apps.html');
+	res.sendFile(__dirname + '/Frontend/html/Menu/apps.html');
 });
 
 app.get('/soup', function(req, res) 
 {
-	res.sendFile(__dirname + '/Frontend/soup.html');
+	res.sendFile(__dirname + '/Frontend/html/Menu/soup.html');
 });
 
 app.get('/checkout', function(req, res) 
 {
-	res.sendFile(__dirname + '/Frontend/checkout.html');
+	res.sendFile(__dirname + '/Frontend/html/checkout.html');
 });
 
 app.get('/confirmation', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/confirmation.html');
+	res.sendFile(__dirname + '/Frontend/html/confirmation.html');
 });
 
 app.get('/login', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/login.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/login.html');
 });
 
 app.get('/create-account', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/create-account.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/create-account.html');
 });
 
 app.get('/forgot-username', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/forgot-username.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/forgot-username.html');
 });
 
 app.get('/forgot-password', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/forgot-password.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/forgot-password.html');
 });
 
 
 app.get('/reset-success', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/reset-success.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/reset-success.html');
 });
 
 app.get('/instructions-sent', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/instructions-sent.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/instructions-sent.html');
 });
 
 app.get('/verification-request-sent', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/verification-request-sent.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/verification-request-sent.html');
 });
 
 /*---------------Send CSS files to client browser---------------*/
@@ -273,11 +273,11 @@ app.get('/verify-email', function(req, res)
 		else
 			verificationRequests = [];
 
-		res.sendFile(__dirname + '/Frontend/verification-success.html');
+		res.sendFile(__dirname + '/Frontend/html/Login/Simple/verification-success.html');
 	}
 	else
 	{
-		res.sendFile(__dirname + '/Frontend/invalid-link.html');
+		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
 	}
 });
 
@@ -340,11 +340,11 @@ app.get('/password-reset', function(req, res)
 	if (index !== -1)
 	{
 		res.cookie("resetKey", url);
-		res.sendFile(__dirname + '/Frontend/password-reset.html');
+		res.sendFile(__dirname + '/Frontend/html/Login/password-reset.html');
 	}
 	else
 	{
-		res.sendFile(__dirname + '/Frontend/invalid-link.html');
+		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
 	}
 });
 
