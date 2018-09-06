@@ -84,6 +84,11 @@ app.get('/verification-request-sent', function(req, res)
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/verification-request-sent.html');
 });
 
+app.get('/my-profile', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Profile/profile.html');
+});
+
 /*---------------Send CSS files to client browser---------------*/
 
 app.get('/Frontend/css/shop-homepage.css', function(req, res)
@@ -117,6 +122,11 @@ app.get('/Frontend/css/Login/verification-success.css', function(req, res)
 });
 
 app.get('/Frontend/css/Login/login-styles.css', function(req, res) 
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/css/profile.css', function(req, res) 
 {
   	res.sendFile(__dirname + req.originalUrl);
 });
@@ -161,6 +171,16 @@ app.get('/Frontend/js/password-reset.js', function(req, res)
 app.get('/Frontend/js/generic.js', function(req, res)
 {
   	res.sendFile(__dirname + "/Frontend/js/generic.js");
+});
+
+app.get('/Frontend/js/functions.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/js/Profile/profile.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
 
