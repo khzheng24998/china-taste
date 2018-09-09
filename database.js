@@ -9,17 +9,6 @@ function getAccountByKey(key, users)
 	return -1;
 }
 
-function getAccountByName(username, users)
-{
-	for (let i = 0; i < users.length; i++)
-	{
-		if (users[i].userInfo.username === username)
-			return i;
-	}
-
-	return -1;
-}
-
 function getAccountByEmail(email, users)
 {
 	for (let i = 0; i < users.length; i++)
@@ -32,5 +21,4 @@ function getAccountByEmail(email, users)
 }
 
 module.exports.getAccountByKey = getAccountByKey;
-module.exports.getAccountByName = getAccountByName;
 module.exports.getAccountByEmail = getAccountByEmail;

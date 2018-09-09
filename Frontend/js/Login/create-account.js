@@ -1,102 +1,62 @@
-function resizePage()
-{
-	let winHeight = window.innerHeight;
-	winHeight = Math.floor(0.8 * winHeight);
-	$("#page-body").css("min-height", winHeight);
-}
-
 function createAccount()
 {
-	let error = false;
-
-	if (!validateEmail())
-		error = true;
-
-	if (!validatePassword())
-		error = true;
-
-	if (!validateConfirmation())
-		error = true;
-
-	if (!error)
+	if (validateInputs())
 	{
 		let req = {};
-		req.username = $("#username").val();
+		req.firstName = $("#first-name").val();
+		req.lastName = $("#last-name").val();
 		req.email = $("#email").val();
+		req.phoneNumber = $("#phone-number").val();
 		req.password = $("#password").val();
 
 		$.post("/create-account", req, function(data, status)
 		{
-			if(status != "success")
+			if(status != "success" || data.msg === "error")
 				alert("An issue occurred while creating your account!\nIf this problem persists, please call us at (860) 871-9311.");
-			else
+			else if (data.msg === "account-exists")
+				alert("An account under this email already exists!\nIf you believe this to be an error, please call us at (860) 871-9311.")
+			else if (data.msg === "ok")
 				$("#modal").show();
 		});
 	}
 }
 
-function validateEmail()
+function validateInputs()
 {
+	let firstName = $("#first-name").val();
+	let lastName = $("#last-name").val();
 	let email = $("#email").val();
-	if (email.length === 0)
-	{
-		$("#email-err").show();
-		return false;
-	}
-	else
-	{
-		$("#email-err").hide();
-		return true;
-	}
-}
-
-function validatePassword()
-{
-	let password = $("#password").val();
-	let letters = password.match(/[A-Za-z]/g);
-	let numbers = password.match(/[0-9]/g);
-
-	if (password.length === 0)
-	{
-		$("#password-err").show();
-		$("#password-err").html("Required field.");
-	}
-	else if (password.length < 8 || letters === null || numbers === null)
-	{
-		$("#password-err").show();
-		$("#password-err").html("Does not meet requirements.");
-	}
-	else
-	{
-		$("#password-err").hide();
-		return true;
-	}
-
-	return false;
-}
-
-function validateConfirmation()
-{
+	let phoneNumber = $("#phone-number").val();
 	let password = $("#password").val();
 	let confirmation = $("#confirmation").val();
 
-	if (confirmation.length === 0)
+	let firstNameErrMsg = validateRequiredInput(firstName);
+	let lastNameErrMsg = validateRequiredInput(lastName);
+	let emailErrMsg = validateRequiredInput(email);
+
+	let phoneNumberErrMsg = validatePhoneNumber(phoneNumber);
+	let passwordErrMsg = validatePassword(password);
+	let confirmationErrMsg = validateConfirmation(password, confirmation);
+
+	let textFields = ["first-name", "last-name", "email", "phone-number", "password", "confirmation"];
+	let errorMsgs = [firstNameErrMsg, lastNameErrMsg, emailErrMsg, phoneNumberErrMsg, passwordErrMsg, confirmationErrMsg];
+
+	let success = true;
+
+	for (let i = 0; i < textFields.length; i++)
 	{
-		$("#confirmation-err").show();
-		$("#confirmation-err").html("Required field.");
-	}
-	else if (password !== confirmation)
-	{
-		$("#confirmation-err").show();
-		$("#confirmation-err").html("Does not match password.");
-	}
-	else
-	{
-		$("#confirmation-err").hide();
-		return true;
+		let selector = "#" + textFields[i] + "-err";
+		if (errorMsgs[i] !== "ok")
+		{
+			$(selector).show();
+			$(selector).html(errorMsgs[i]);
+			success = false;
+		}
+		else
+			$(selector).hide();
 	}
 
-	return false;
+	return success;
 }
 
 $(document).ready(function()
@@ -106,6 +66,16 @@ $(document).ready(function()
 	$(window).resize(function()
 	{
     	resizePage();
+	});
+
+	$(".single").on("change", function()
+	{
+		$(this).next(".err-msg").hide();
+	});
+
+	$(".double").on("change", function()
+	{
+		$(this).next(".err-msg").hide();
 	});
 
 	$("#create-account-btn").on("click", function()
@@ -118,7 +88,7 @@ $(document).ready(function()
 		$.get("/get-verification-email", function(data, status)
 		{
 			if(status != "success")
-				alert("An issue occurred while creating your account!\nIf this problem persists, please call us at (860) 871-9311.");
+				alert("An issue occurred while sending your verification email!\nIf this problem persists, please call us at (860) 871-9311.");
 			else		
 				window.location.href = "/verification-request-sent";
 		});
@@ -126,6 +96,6 @@ $(document).ready(function()
 
 	$("#skip-btn").on("click", function()
 	{
-		window.location.href = "/";
+		window.location.href = "/account-created";
 	});
 });

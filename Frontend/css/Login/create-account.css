@@ -25,7 +25,7 @@
 	background-color: white;
 	min-height: 235px;
 	padding-right: 25px;
-	padding-left: 25px;
+	padding-left: 30px;
 	padding-top: 18px;
 }
 
@@ -57,3 +57,25 @@
 }
 
 /* End of custom create account page styles */
+
+.double
+{
+	width: 280px;
+}
+
+.single
+{
+	width: 592px;
+}
+
+#req-box
+{
+	margin: auto;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #dddddd;
+	padding-top: 16px;
+	padding-right: 16px;
+	height: 200px;
+	width: 240px;
+}

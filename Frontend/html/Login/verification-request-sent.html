@@ -24,7 +24,8 @@
     <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
 
     <!--Custom JavaScript files-->
-    <script src="Frontend/js/confirmation.js"></script>
+    <script src="Frontend/js/functions.js"></script>
+    <script src="Frontend/js/Login/verification-request-sent.js"></script>
 
   </head>
 
@@ -42,9 +43,6 @@
             <li class="nav-item active">
               <a class="nav-link" href="/">Menu</a>
             </li>
-            <!--<li class="nav-item">
-              <a class="nav-link" href="/checkout">Checkout<span class="sr-only">(current)</span></a>
-            </li>-->
             <li class="nav-item">
               <a class="nav-link" href="#">Services</a>
             </li>
@@ -62,7 +60,11 @@
     <div class="container" id="page-body">
 
       <h4>A verification email has been sent to you with a link to activate your account.</h4>
-      <a href="/">Return to menu</a><br><br>
+      <p style="display: inline;">If you do not receive an email within 30 seconds, click</p>
+      <p style="display: inline; color: #007bff; cursor: pointer;" id="resend">here</p>
+      <p style="display: inline;">to resend the link.</p>
+      <br>
+      <p style="margin-top: 10px;"><a href="/">Return to menu.</a></p>
 
     </div>
     <!-- /.container -->

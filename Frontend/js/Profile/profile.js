@@ -1,6 +1,6 @@
 function displayPage1()
 {
-	$.get("/get-profile-info", function(data, status)
+	$.get("/get-profile-data", function(data, status)
 	{
 		if (status !== "success")
 		{
@@ -11,9 +11,9 @@ function displayPage1()
 		{
 			$("#username").html(data.username);
 			$("#email").html(data.email);
-			$("#first-name").html(data.firstName);
-			$("#last-name").html(data.lastName);
-			$("#phone-number").html(data.phoneNumber);
+			//$("#first-name").html(data.firstName);
+			//$("#last-name").html(data.lastName);
+			//$("#phone-number").html(data.phoneNumber);
 		}
 	});
 }
@@ -23,6 +23,7 @@ $(document).ready(function()
 	let active = $("head").attr("id");
 
 	resizePage();
+	displayPage1();
 
 	$(window).resize(function()
 	{

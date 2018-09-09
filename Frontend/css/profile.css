@@ -42,7 +42,17 @@
 	padding-left: 10px;
 }
 
-.label
+.profile-label
 {
 	font-weight: 550;
+}
+
+.profile-val
+{
+	font-size: 15px;
+}
+
+.center
+{
+	text-align: center;
 }
