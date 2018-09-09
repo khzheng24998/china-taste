@@ -52,6 +52,11 @@
 	padding-bottom: 1px;
 }
 
+.label-top
+{
+	margin-top: 0px;
+}
+
 .label
 {
 	margin-top: 8px;

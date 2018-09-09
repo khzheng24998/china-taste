@@ -1,3 +1,4 @@
+const inputLimit = 512;
 const Database = require("./database.js");
 const Crypto = require("crypto");
 
@@ -10,16 +11,57 @@ function hashPassword(password)
 function generateKey(users)
 {
 	let key;
-
-	do {
-		key = Crypto.randomBytes(16).toString('hex');
-	} while (Database.getAccountByKey(key, users) !== -1);
-
+	do { key = Crypto.randomBytes(16).toString('hex'); } while (Database.getAccountByKey(key, users) !== -1);
 	return key;
+}
+
+function validateRequiredInput(input)
+{
+	let retVal = (typeof(input) === "undefined" || input.length === 0 || input.length > inputLimit) ? false : true;
+	return retVal;
+}
+
+function validatePhoneNumber(phoneNumber)
+{
+	if (!validateRequiredInput(phoneNumber))
+		return false;
+
+	//Immediately return false if input is too long
+	if (phoneNumber.length > 25)
+		return false;
+
+	//Phone number contains letters
+	let letters = phoneNumber.match(/[A-Za-z]/g);
+	if (letters != null)
+		return false;
+
+	//Remove common optional characters found in phone numbers
+	let numbers = phoneNumber.replace(/[-() +]/g, "");
+
+	//Phone number has no digits
+	let arr = phoneNumber.match(/[0-9]/g);
+	if (arr == null)
+		return false;
+
+	//Phone number contains special characters
+	let noSpecialChars = arr.toString();
+	noSpecialChars = noSpecialChars.replace(/,/g, "");
+
+	if (numbers != noSpecialChars)
+		return false;
+
+	//Phone number is too long/short
+	if (numbers.length != 10 && numbers.length != 11)	//with country call code
+		return false;
+
+	return true;
 }
 
 function validatePassword(password)
 {
+	if (!validateRequiredInput(password))
+		return false;
+
 	let letters = password.match(/[A-Za-z]/g);
 	let numbers = password.match(/[0-9]/g);
 
@@ -29,30 +71,29 @@ function validatePassword(password)
 	return true;
 }
 
-function validateCreateAccount(req)
+function validateCreateAccount(req, users)
 {
-	let usernameDef = (typeof(req.username) !== "undefined") ? 1 : 0;
-	let emailDef = (typeof(req.email) !== "undefined") ? 1 : 0;
-	let passwordDef = (typeof(req.email) !== "undefined") ? 1 : 0;
+	let firstNameVal = validateRequiredInput(req.firstName);
+	let lastNameVal = validateRequiredInput(req.lastName);
+	let emailVal = validateRequiredInput(req.email);
+	let phoneNumberVal = validatePhoneNumber(req.phoneNumber);
+	let passwordVal = validatePassword(req.password);
 
-	if (passwordDef)
-		passwordDef = validatePassword(req.password) ? 1 : 0;
-
-	return (usernameDef && emailDef && passwordDef);
+	return (firstNameVal && lastNameVal && emailVal && phoneNumberVal && passwordVal);
 }
 
 function createAccount(req, res, users)
 {
 	if (!validateCreateAccount(req))
 	{
-		res.msg = "invalid-request";
+		res.msg = "error";
 		return false;
 	}
 
-	let userExists = (Database.getAccountByName(req.username, users) !== -1) ? true : false;
+	let userExists = (Database.getAccountByEmail(req.email, users) !== -1) ? true : false;
 	if (userExists)
 	{
-		res.msg = "user-exists";
+		res.msg = "account-exists";
 		return false;
 	}
 
@@ -62,8 +103,10 @@ function createAccount(req, res, users)
 	account.verified = false;
 
 	account.userInfo = {};
-	account.userInfo.username = req.username;
+	account.userInfo.firstName = req.firstName;
+	account.userInfo.lastName = req.lastName;
 	account.userInfo.email = req.email;
+	account.userInfo.phoneNumber = req.phoneNumber;
 	account.userInfo.password = hashPassword(req.password);
 
 	account.currentOrder = {};

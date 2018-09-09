@@ -25,6 +25,64 @@ if (process.argv.length < 3)
 	return;
 }
 
+/*---------------Simple Pages---------------*/
+
+app.get('/account-created', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/account-created.html');
+});
+
+/*---------------Login---------------*/
+
+app.get('/login', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/login.html');
+});
+
+app.get('/Frontend/css/Login/login-styles.css', function(req, res) 
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/css/Login/login.css', function(req, res) 
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/js/Login/login.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+/*---------------Create Account---------------*/
+
+app.get('/create-account', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/create-account.html');
+});
+
+app.get('/Frontend/css/Login/create-account.css', function(req, res) 
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/js/Login/create-account.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+/*---------------Verification Email Sent---------------*/
+
+app.get('/verification-request-sent', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/verification-request-sent.html');
+});
+
+app.get('/Frontend/js/Login/verification-request-sent.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
 /*---------------Send HTML files to client browser---------------*/
 
 //Send base HTML to client browser
@@ -48,16 +106,6 @@ app.get('/confirmation', function(req, res)
 	res.sendFile(__dirname + '/Frontend/html/confirmation.html');
 });
 
-app.get('/login', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/login.html');
-});
-
-app.get('/create-account', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/create-account.html');
-});
-
 app.get('/forgot-username', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/html/Login/forgot-username.html');
@@ -77,11 +125,6 @@ app.get('/reset-success', function(req, res)
 app.get('/instructions-sent', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/instructions-sent.html');
-});
-
-app.get('/verification-request-sent', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/Simple/verification-request-sent.html');
 });
 
 app.get('/my-profile', function(req, res)
@@ -106,22 +149,7 @@ app.get('/Frontend/css/checkout.css', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
-app.get('/Frontend/css/Login/login.css', function(req, res) 
-{
-  	res.sendFile(__dirname + req.originalUrl);
-});
-
-app.get('/Frontend/css/Login/create-account.css', function(req, res) 
-{
-  	res.sendFile(__dirname + req.originalUrl);
-});
-
 app.get('/Frontend/css/Login/verification-success.css', function(req, res) 
-{
-  	res.sendFile(__dirname + req.originalUrl);
-});
-
-app.get('/Frontend/css/Login/login-styles.css', function(req, res) 
 {
   	res.sendFile(__dirname + req.originalUrl);
 });
@@ -146,16 +174,6 @@ app.get('/Frontend/js/checkout.js', function(req, res)
 app.get('/Frontend/js/confirmation.js', function(req, res)
 {
   	res.sendFile(__dirname + "/Frontend/js/confirmation.js");
-});
-
-app.get('/Frontend/js/login.js', function(req, res)
-{
-  	res.sendFile(__dirname + "/Frontend/js/login.js");
-});
-
-app.get('/Frontend/js/create-account.js', function(req, res)
-{
-  	res.sendFile(__dirname + "/Frontend/js/create-account.js");
 });
 
 app.get('/Frontend/js/forgot-password.js', function(req, res)
@@ -412,6 +430,8 @@ app.get('/account-status', function(req, res)
 	res.send(response);
 });
 
+/* Account creation */
+
 app.post('/create-account', function(req, res)
 {
 	console.log("Received POST request from client! (create-account)");
@@ -423,6 +443,8 @@ app.post('/create-account', function(req, res)
 
 	res.send(response);
 });
+
+/* End of account creation */
 
 app.post('/log-in', function(req, res)
 {
@@ -454,6 +476,27 @@ app.get('/log-out', function(req, res)
 	}
 	
 	res.sendStatus(200);
+});
+
+app.get('/get-profile-data', function(req, res)
+{
+	console.log("Received GET request from client! (get-profile-data)");
+
+	let key = req.cookies.key;
+	let index = Database.getAccountByKey(key, users);
+
+	let response = {};
+
+	if (index !== -1)
+	{
+		response = users[index].userInfo;
+		response.msg = "ok";
+		delete response.password;
+	}
+	else
+		response.msg = "error";
+
+	res.send(response);
 });
 
 //Update order
