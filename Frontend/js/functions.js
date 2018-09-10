@@ -15,10 +15,17 @@ function checkIfUserIsSignedIn()
     		alert("An issue occurred communicating with our server!\nIf this problem persists, please call us at (860) 871-9311.");
 		else
 		{
-			let label = (data.msg === "signed-in") ? "My Account" : "Login";
-			let link = (data.msg === "signed-in") ? "/my-profile" : "/login";
-			$("#my-account-login-opt").html(label);
-			$("#my-account-login-opt").attr("href", link);
+			if (data.msg === "signed-in")
+			{
+				$("#dynamic-nav-link").html("My Account<span style='font-size: 13px;''>&nbsp;&nbsp;&#9660;</span>");
+				$("#dynamic-nav-link").attr("href", "/my-profile");
+			}
+
+			else if (data.msg === "signed-out")
+			{
+				$("#dynamic-nav-link").html("Login");
+				$("#dynamic-nav-link").attr("href", "/login");
+			}
 		}
 	});
 }
