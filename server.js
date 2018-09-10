@@ -30,9 +30,16 @@ app.get('/account-created', function(req, res)
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/account-created.html');
 });
 
+/*---------------General purpose CSS files---------------*/
+
+app.get('/Frontend/css/generic.css', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
 /*--------------General purpose JS files---------------*/
 
-app.get('/Frontend/js/generic.js', function(req, res)
+app.get('/Frontend/js/simple.js', function(req, res)
 {
   	res.sendFile(__dirname + req.originalUrl);
 });

@@ -413,9 +413,13 @@ $(document).ready(function()
 				window.location.href = "/checkout";
 		});
 
-		$("#my-account").on("click", function()
+		$("#my-account").hover(function()
 		{
-			$("#drop-down").toggle();
+			$("#drop-down").show();
+		},
+		function()
+		{
+			$("#drop-down").hide();
 		});
 
 		$("#page-body").on("click", function()
@@ -425,11 +429,13 @@ $(document).ready(function()
 
 		$(".drop-option").hover(function()
 		{
-			$(this).css("background-color", "#dddddd");
+			$(this).css("background-color", "#0366d6");
+			$(this).css("color", "white");
 		},
 		function()
 		{
-			$(this).css("background-color", "#f1f1f1");
+			$(this).css("background-color", "white");
+			$(this).css("color", "black");
 		});
 
 		$("#log-out").on("click", function()
