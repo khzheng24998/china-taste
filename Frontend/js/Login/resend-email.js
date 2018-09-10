@@ -60,6 +60,7 @@ $(document).ready(function()
 	let lastSentTime = date.getTime();
 
 	resizePage();
+	checkIfUserIsSignedIn();
 
 	$(window).resize(function()
 	{

@@ -19,7 +19,7 @@ function sendResetEmail()
 		if (status !== "success" || data.msg === "error")
 			alert("An issue occurred communicating with our server!\nIf this problem persists, please call us at (860) 871-9311.");
 		else if (data.msg === "not-found")
-			alert("An account under the provided email was not found.\n If you believe this to be an error, please call us at (860) 871-9311.");
+			alert("An account under the provided email was not found.\nIf you believe this to be an error, please call us at (860) 871-9311.");
 		else if (data.msg === "ok")
 		{
 			let email = $("#email").val();
@@ -32,6 +32,7 @@ function sendResetEmail()
 $(document).ready(function()
 {
 	resizePage();
+	checkIfUserIsSignedIn();
 
 	$(window).resize(function()
 	{
