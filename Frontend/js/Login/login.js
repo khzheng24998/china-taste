@@ -1,43 +1,27 @@
-function resizePage()
-{
-	let winHeight = window.innerHeight;
-	winHeight = Math.floor(0.8 * winHeight);
-	$("#page-body").css("min-height", winHeight);
-}
-
-function isUserSignedIn()
-{
-	$.get("/account-status", function(data, status)
-	{
-		if (status !== "success")
-    		alert("An issue occurred signing out from system!\nIf this problem persists, please call us at (860) 871-9311.");
-		else
-		{
-			let label = (data.msg === "signed-in") ? "My Account &nbsp;&#9660;" : "Login";
-			$("#account-login-opt").html(label);
-		}
-	});
-}
-
 function sendCredentials()
 {
 	let req = {};
-	req.username = $("#username").val();
+	req.email = $("#email").val();
 	req.password = $("#password").val();
+
+	let emailErrMsg = validateRequiredInput(req.email);
+	let passwordErrMsg = validateRequiredInput(req.password);
 
 	let err = false;
 
-	if (req.username.length === 0)
+	if (emailErrMsg !== "ok")
 	{
-		$("#username-err").show();
+		$("#email-err").show();
+		$("#email-err").html(emailErrMsg);
 		err = true;
 	}
 	else
-		$("#username-err").hide();
+		$("#email-err").hide();
 
-	if (req.password.length === 0)
+	if (passwordErrMsg !== "ok")
 	{
 		$("#password-err").show();
+		$("#password-err").html(passwordErrMsg);
 		err = true;
 	}
 	else
@@ -48,25 +32,14 @@ function sendCredentials()
 
 	$.post("/log-in", req, function(data, status)
 	{
-		if(status != "success")
+		if(status != "success" || data.msg === "error")
 			alert("An issue occurred while signing in!\nIf this problem persists, please call us at (860) 871-9311.");
-		else
+		else if (data.msg === "not-found" || data.msg === "invalid-credentials")
+			$("#login-err").show();
+		else if (data.msg === "ok")
 		{
-			console.log(data.msg);
-
-			switch(data.msg)
-			{
-				case "not-found":
-				case "invalid-credentials":
-					$("#login-err").show();
-					break;
-				case "ok":
-					$("#login-err").hide();
-					window.location.href = "/";
-					break;
-				default:
-					break;
-			}
+			$("#login-err").hide();
+			window.location.href = "/";
 		}
 	});
 }
@@ -74,8 +47,6 @@ function sendCredentials()
 $(document).ready(function()
 {
 	resizePage();
-
-	let signedIn = isUserSignedIn();
 
 	$(window).resize(function()
 	{
@@ -87,8 +58,9 @@ $(document).ready(function()
 		sendCredentials();
 	});
 
-	$(".required").on("change", function()
+	$(".required").on("keyup", function()
 	{
 		$(this).next(".err-msg").hide();
+		$("#login-err").hide();
 	});
 });

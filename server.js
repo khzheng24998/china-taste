@@ -10,8 +10,6 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const Crypto = require('crypto');
-
 //Additional modules
 const postHandler = require("./postHandler.js");
 
@@ -25,11 +23,23 @@ if (process.argv.length < 3)
 	return;
 }
 
-/*---------------Simple Pages---------------*/
+/*---------------Simple HTML files---------------*/
 
 app.get('/account-created', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/account-created.html');
+});
+
+/*--------------General purpose JS files---------------*/
+
+app.get('/Frontend/js/generic.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/js/functions.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
 });
 
 /*---------------Login---------------*/
@@ -54,7 +64,7 @@ app.get('/Frontend/js/Login/login.js', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
-/*---------------Create Account---------------*/
+/*---------------Create account---------------*/
 
 app.get('/create-account', function(req, res)
 {
@@ -71,17 +81,41 @@ app.get('/Frontend/js/Login/create-account.js', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
-/*---------------Verification Email Sent---------------*/
+/*---------------Verification request sent---------------*/
 
 app.get('/verification-request-sent', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/html/Login/verification-request-sent.html');
 });
 
-app.get('/Frontend/js/Login/verification-request-sent.js', function(req, res)
+app.get('/Frontend/js/Login/resend-email.js', function(req, res)
 {
   	res.sendFile(__dirname + req.originalUrl);
 });
+
+/*---------------Forgot password---------------*/
+
+app.get('/forgot-password', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/forgot-password.html');
+});
+
+app.get('/Frontend/js/Login/forgot-password.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+/*---------------Reset Request Sent---------------*/
+
+app.get('/reset-request-sent', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/reset-request-sent.html');
+});
+
+
+
+
+
 
 /*---------------Send HTML files to client browser---------------*/
 
@@ -106,25 +140,9 @@ app.get('/confirmation', function(req, res)
 	res.sendFile(__dirname + '/Frontend/html/confirmation.html');
 });
 
-app.get('/forgot-username', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/forgot-username.html');
-});
-
-app.get('/forgot-password', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/forgot-password.html');
-});
-
-
 app.get('/reset-success', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/reset-success.html');
-});
-
-app.get('/instructions-sent', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/Simple/instructions-sent.html');
 });
 
 app.get('/my-profile', function(req, res)
@@ -176,24 +194,9 @@ app.get('/Frontend/js/confirmation.js', function(req, res)
   	res.sendFile(__dirname + "/Frontend/js/confirmation.js");
 });
 
-app.get('/Frontend/js/forgot-password.js', function(req, res)
-{
-  	res.sendFile(__dirname + "/Frontend/js/forgot-password.js");
-});
-
 app.get('/Frontend/js/password-reset.js', function(req, res)
 {
   	res.sendFile(__dirname + "/Frontend/js/password-reset.js");
-});
-
-app.get('/Frontend/js/generic.js', function(req, res)
-{
-  	res.sendFile(__dirname + "/Frontend/js/generic.js");
-});
-
-app.get('/Frontend/js/functions.js', function(req, res)
-{
-  	res.sendFile(__dirname + req.originalUrl);
 });
 
 app.get('/Frontend/js/Profile/profile.js', function(req, res)
@@ -211,83 +214,73 @@ let activeSessions = [];
 
 let users = [];
 
-function findRequest(username, requests)
+/* Login */
+
+app.post('/log-in', function(req, res)
 {
-	for (let i = 0; i < requests.length; i++)
-	{
-		if (requests[i].username === username)
-			return i;
-	}
+	console.log("Received POST request from client! (log-in)");
 
-	return -1;
-}
-
-function generateResetRequest(username, resetRequests)
-{
-	let randString = Login.generateKey(resetRequests);
-	let date = new Date();
-	let currentTime = date.getTime();
-	let expirationDate = (+currentTime) + (+900000);
-
-	let index = findRequest(username, resetRequests);		//Reset key expires in 15 minutes
-	if (index !== -1)
-	{
-		resetRequests[index].key = randString;
-		resetRequests[index].expirationDate = expirationDate;
-	}
-	else
-	{
-		let pendingReset = {};
-		pendingReset.key = randString;
-		pendingReset.username = username;
-		pendingReset.expirationDate = expirationDate;
-		resetRequests.push(pendingReset);
-	}
-
-	return randString;
-}
-
-function generateVerificationRequest(username, verificationRequests)
-{
-	let randString = "";
-
-	let index = findRequest(username, verificationRequests);
-	if (index !== -1)
-	{
-		randString = verificationRequests[index].key;
-	}
-	else
-	{
-		randString = Login.generateKey(verificationRequests);
-
-		let pendingVerification = {};
-		pendingVerification.key = randString;
-		pendingVerification.username = username;
-		verificationRequests.push(pendingVerification);
-	}
-
-	return randString;
-}
-
-app.get('/get-verification-email', function(req, res)
-{
-	console.log("Received GET request from client (get-verification-email)");
-
-	let key = req.cookies.key;
 	let response = {};
+	let index = Login.validateCredentials(req.body, response, users);
 
-	let index = Database.getAccountByKey(key, users);
 	if (index !== -1)
 	{
-		let randString = generateVerificationRequest(users[index].userInfo.username, verificationRequests);
-		let sent = Email.sendVerificationLink(process.argv[2], randString, users[index].userInfo.email);
-		response.msg = sent ? "ok" : "error";
+		users[index].key = Login.generateKey(users);
+		res.cookie("key", users[index].key);
 	}
-	else
-		response.msg = "error";
 
 	res.send(response);
 });
+
+/* End of login */
+
+/* Account creation */
+
+app.post('/create-account', function(req, res)
+{
+	console.log("Received POST request from client! (create-account)");
+
+	let response = {};
+
+	if (Login.createAccount(req.body, response, users))
+		res.cookie("key", users[users.length - 1].key);
+
+	res.send(response);
+});
+
+/* End of account creation */
+
+/* Send reset email */
+
+app.post('/send-reset-email', function(req, res)
+{
+	console.log("Received POST request from client! (send-reset-email)");
+
+	let response = {};
+	Login.sendResetLink(req.body, response, users, resetRequests);
+	res.send(response);
+});
+
+/* End of send reset email */
+
+/* Send verification email */
+
+app.get('/send-verification-email', function(req, res)
+{
+	console.log("Received GET request from client (send-verification-email)");
+
+	let key = req.cookies.key;
+	let response = {};
+	Login.sendVerificationLink(key, response, users, verificationRequests);
+	res.send(response);
+});
+
+/* End of send verification email */
+
+
+
+
+
 
 app.get('/verify-email', function(req, res)
 {
@@ -316,52 +309,6 @@ app.get('/verify-email', function(req, res)
 	{
 		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
 	}
-});
-
-app.post('/forgot-username', function(req, res)
-{
-	console.log("Received GET request from client! (forgot-username)");
-});
-
-app.post('/forgot-password', function(req, res)
-{
-	console.log("Received POST request from client! (forgot-password)");
-
-	let response = {};
-
-	if (typeof(req.body.email) !== "undefined")
-	{
-		let index = Database.getAccountByEmail(req.body.email, users);
-		if (index !== -1)
-		{
-			let randString = generateResetRequest(users[index].userInfo.username, resetRequests);
-			let sent = Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
-			response.msg = sent ? "ok" : "error";
-		}
-		else
-			response.msg = "not-found";
-
-	}
-
-	else if (typeof(req.body.username) !== "undefined")
-	{
-		let index = Database.getAccountByName(req.body.username, users);
-		if (index !== -1)
-		{
-			let randString = generateResetRequest(users[index].userInfo.username, resetRequests);
-			let sent = Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
-			response.msg = sent ? "ok" : "error";
-		}
-		else
-			response.msg = "not-found";
-	}
-
-	else
-	{
-		response.msg = "bad-input";
-	}
-
-	res.send(response);
 });
 
 app.get('/password-reset', function(req, res)
@@ -426,38 +373,6 @@ app.get('/account-status', function(req, res)
 		response.msg = "signed-out";
 
 	console.log(response);
-
-	res.send(response);
-});
-
-/* Account creation */
-
-app.post('/create-account', function(req, res)
-{
-	console.log("Received POST request from client! (create-account)");
-
-	let response = {};
-
-	if (Login.createAccount(req.body, response, users))
-		res.cookie("key", users[users.length - 1].key);
-
-	res.send(response);
-});
-
-/* End of account creation */
-
-app.post('/log-in', function(req, res)
-{
-	console.log("Received POST request from client! (log-in)");
-
-	let response = {};
-	let index = Login.validateCredentials(req.body, response, users);
-
-	if (index !== -1)
-	{
-		users[index].key = Login.generateKey(users);
-		res.cookie("key", users[index].key);
-	}
 
 	res.send(response);
 });

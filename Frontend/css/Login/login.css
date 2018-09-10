@@ -1,12 +1,10 @@
 /* Custom styles for login page */
 
-#right-col
+#left-col
 {
-	padding-left: 20px;
-	border-left-style: solid;
-	border-left-color: #e6e6e6;
-	border-left-width: 2px;
-	height: 180px;
+	border-right-style: solid;
+	border-right-width: 2px;
+	border-right-color: #e6e6e6;
 }
 
 #login-err
@@ -22,6 +20,7 @@
 	background-color: #FAD4CA;
 	margin-bottom: 7px;
 	display: none;
+	width: 248px;
 }
 
 #login-err-msg

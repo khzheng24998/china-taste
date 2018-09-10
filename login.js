@@ -1,5 +1,6 @@
 const inputLimit = 512;
 const Database = require("./database.js");
+const Email = require("./email.js");
 const Crypto = require("crypto");
 
 function hashPassword(password)
@@ -123,24 +124,126 @@ function createAccount(req, res, users)
 
 function validateCredentials(req, res, users)
 {
-	let index = Database.getAccountByName(req.username, users);
+	let emailVal = validateRequiredInput(req.email);
+	let passwordVal = validateRequiredInput(req.password);
 
-	if (typeof(req.username) === "undefined" || typeof(req.password) === "undefined")
-		res.msg = "invalid-request";
-	else if (index === -1)
-		res.msg = "not-found";
-	else if (users[index].userInfo.password !== hashPassword(req.password))
-		res.msg = "invalid-credentials";
-	else
+	if (!emailVal || !passwordVal)
 	{
-		res.msg = "ok";
-		return index;
+		res.msg = "error";
+		return -1;
+	}
+
+	let index = Database.getAccountByEmail(req.email, users);
+
+	if (index === -1)
+	{
+		res.msg = "not-found";
+		return -1;
+	}
+	else if (users[index].userInfo.password !== hashPassword(req.password))
+	{
+		res.msg = "invalid-credentials";
+		return -1;
+	}
+	
+	res.msg = "ok";
+	return index;
+}
+
+function findRequest(email, requests)
+{
+	for (let i = 0; i < requests.length; i++)
+	{
+		if (requests[i].email === email)
+			return i;
 	}
 
 	return -1;
+}
+
+function sendResetLink(req, res, users, resetRequests)
+{
+	let emailVal = validateRequiredInput(req.email);
+
+	if (!emailVal)
+		res.msg = "error";
+	else
+	{
+		let index = Database.getAccountByEmail(req.email, users);
+		if (index !== -1)
+		{
+			let randString = generateResetRequest(users[index].userInfo.email, resetRequests);
+			Email.sendResetLink(process.argv[2], randString, users[index].userInfo.email);
+			res.msg = "ok";
+		}
+		else
+			res.msg = "not-found";
+	}
+}
+
+function generateResetRequest(email, resetRequests)
+{
+	let randString = generateKey(resetRequests);
+	let date = new Date();
+	let currentTime = date.getTime();
+	let expirationDate = (+currentTime) + (+900000);
+
+	let index = findRequest(email, resetRequests);		//Reset key expires in 15 minutes
+	if (index !== -1)
+	{
+		resetRequests[index].key = randString;
+		resetRequests[index].expirationDate = expirationDate;
+	}
+	else
+	{
+		let pendingReset = {};
+		pendingReset.key = randString;
+		pendingReset.email = email;
+		pendingReset.expirationDate = expirationDate;
+		resetRequests.push(pendingReset);
+	}
+
+	return randString;
+}
+
+function sendVerificationLink(key, res, users, verificationRequests)
+{
+	let index = Database.getAccountByKey(key, users);
+	if (index !== -1)
+	{
+		let randString = generateVerificationRequest(users[index].userInfo.username, verificationRequests);
+		let sent = Email.sendVerificationLink(process.argv[2], randString, users[index].userInfo.email);
+		res.msg = sent ? "ok" : "error";
+	}
+	else
+		res.msg = "error";
+}
+
+function generateVerificationRequest(username, verificationRequests)
+{
+	let randString = "";
+
+	let index = findRequest(username, verificationRequests);
+	if (index !== -1)
+	{
+		randString = verificationRequests[index].key;
+	}
+	else
+	{
+		randString = generateKey(verificationRequests);
+
+		let pendingVerification = {};
+		pendingVerification.key = randString;
+		pendingVerification.username = username;
+		verificationRequests.push(pendingVerification);
+	}
+
+	return randString;
 }
 
 module.exports.hashPassword = hashPassword;
 module.exports.generateKey = generateKey;
 module.exports.createAccount = createAccount;
 module.exports.validateCredentials = validateCredentials;
+module.exports.sendResetLink = sendResetLink;
+module.exports.sendVerificationLink = sendVerificationLink;

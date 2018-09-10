@@ -59,6 +59,17 @@ function validateInputs()
 	return success;
 }
 
+function sendVerificationEmail()
+{
+	$.get("/send-verification-email", function(data, status)
+	{
+		if(status !== "success")
+			alert("An issue occurred sending your verification email!\nIf this problem persists, please call us at (860) 871-9311.");
+		else		
+			window.location.href = "/verification-request-sent";
+	});
+}
+
 $(document).ready(function()
 {
 	resizePage();
@@ -85,13 +96,7 @@ $(document).ready(function()
 
 	$("#verify-btn").on("click", function()
 	{
-		$.get("/get-verification-email", function(data, status)
-		{
-			if(status != "success")
-				alert("An issue occurred while sending your verification email!\nIf this problem persists, please call us at (860) 871-9311.");
-			else		
-				window.location.href = "/verification-request-sent";
-		});
+		sendVerificationEmail();
 	});
 
 	$("#skip-btn").on("click", function()
