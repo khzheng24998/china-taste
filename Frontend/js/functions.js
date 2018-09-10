@@ -7,6 +7,22 @@ function resizePage()
 	$("#page-body").css("min-height", winHeight);
 }
 
+function checkIfUserIsSignedIn()
+{
+	$.get("/account-status", function(data, status)
+	{
+		if (status !== "success")
+    		alert("An issue occurred communicating with our server!\nIf this problem persists, please call us at (860) 871-9311.");
+		else
+		{
+			let label = (data.msg === "signed-in") ? "My Account" : "Login";
+			let link = (data.msg === "signed-in") ? "/my-profile" : "/login";
+			$("#my-account-login-opt").html(label);
+			$("#my-account-login-opt").attr("href", link);
+		}
+	});
+}
+
 /* Cookie accessor functions */
 
 function setCookie(cname, cvalue, lifespan) 

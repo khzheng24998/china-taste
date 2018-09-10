@@ -232,7 +232,23 @@ app.post('/log-in', function(req, res)
 	res.send(response);
 });
 
-/* End of login */
+/* Logout */
+
+app.get('/log-out', function(req, res)
+{
+	console.log("Received GET request from client! (log-out)");
+
+	let key = req.cookies.key;
+	let index = Database.getAccountByKey(key, users);
+
+	if (index !== -1)
+	{
+		delete users[index].key;
+		res.clearCookie("key");
+	}
+	
+	res.sendStatus(200);
+});
 
 /* Account creation */
 
@@ -248,8 +264,6 @@ app.post('/create-account', function(req, res)
 	res.send(response);
 });
 
-/* End of account creation */
-
 /* Send reset email */
 
 app.post('/send-reset-email', function(req, res)
@@ -260,8 +274,6 @@ app.post('/send-reset-email', function(req, res)
 	Login.sendResetLink(req.body, response, users, resetRequests);
 	res.send(response);
 });
-
-/* End of send reset email */
 
 /* Send verification email */
 
@@ -275,8 +287,23 @@ app.get('/send-verification-email', function(req, res)
 	res.send(response);
 });
 
-/* End of send verification email */
+/* Get account status */
 
+app.get('/account-status', function(req, res)
+{
+	console.log("Received GET request from client! (account-status)");
+
+	let response = {};
+	let key = req.cookies.key;
+	let index = Database.getAccountByKey(key, users);
+
+	if (index !== -1)
+		response.msg = "signed-in";
+	else
+		response.msg = "signed-out";
+
+	res.send(response);
+});
 
 
 
@@ -357,40 +384,6 @@ app.post('/password-reset', function(req, res)
 		response.msg = "not-found";
 
 	res.send(response);
-});
-
-app.get('/account-status', function(req, res)
-{
-	console.log("Received GET request from client! (account-status)");
-
-	let response = {};
-	let key = req.cookies.key;
-	let index = Database.getAccountByKey(key, users);
-
-	if (index !== -1)
-		response.msg = "signed-in";
-	else
-		response.msg = "signed-out";
-
-	console.log(response);
-
-	res.send(response);
-});
-
-app.get('/log-out', function(req, res)
-{
-	console.log("Received GET request from client! (log-out)");
-
-	let key = req.cookies.key;
-	let index = Database.getAccountByKey(key, users);
-
-	if (index !== -1)
-	{
-		delete users[index].key;
-		res.clearCookie("key");	
-	}
-	
-	res.sendStatus(200);
 });
 
 app.get('/get-profile-data', function(req, res)

@@ -47,6 +47,7 @@ function sendCredentials()
 $(document).ready(function()
 {
 	resizePage();
+	checkIfUserIsSignedIn();
 
 	$(window).resize(function()
 	{
