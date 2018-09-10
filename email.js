@@ -30,15 +30,9 @@ function sendResetLink(password, key, receiver)
 	transporter.sendMail(mailOptions, function(error, info)
 	{
 		if (error) 
-		{
       		console.log(error);
-      		return false;
-		}
     	else
-    	{
       		console.log('Email sent: ' + info.response);
-      		return true;
-    	}
     });
 }
 

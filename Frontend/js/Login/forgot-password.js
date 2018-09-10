@@ -1,54 +1,30 @@
-function resizePage()
-{
-	let winHeight = window.innerHeight;
-	winHeight = Math.floor(0.8 * winHeight);
-	$("#page-body").css("min-height", winHeight);
-}
-
-function sendAccountToken()
+function sendResetEmail()
 {
 	let req = {};
-	let email = $("#email").val();
-	let username = $("#username").val();
+	req.email = $("#email").val();
 
-	let success = false;
+	let emailErrMsg = validateRequiredInput(req.email);
 
-	if (email.length === 0 && username.length === 0)
+	if (emailErrMsg !== "ok")
 	{
-		$("#error").show();
-		$("#error").html("Must enter a value for at least one of the follow fields!");
-	}
-	else
-	{
-		$("#error").hide();
-		success = true;
-	}
-
-	if (email.length !== 0)
-		req.email = email;
-
-	if (username.length !== 0)
-		req.username = username;
-
-	if (!success)
+		$("#email-err").show();
+		$("#email-err").html(emailErrMsg);
 		return;
+	}
+	
+	$("#email-err").hide();
 
-	$.post("/forgot-password", req, function(data, status)
+	$.post("/send-reset-email", req, function(data, status)
 	{
-		if(status != "success")
-			alert("An issue occurred!\nIf this problem persists, please call us at (860) 871-9311.");
-		else
+		if (status !== "success" || data.msg === "error")
+			alert("An issue occurred communicating with our server!\nIf this problem persists, please call us at (860) 871-9311.");
+		else if (data.msg === "not-found")
+			alert("An account under the provided email was not found.\n If you believe this to be an error, please call us at (860) 871-9311.");
+		else if (data.msg === "ok")
 		{
-			if (data.msg === "not-found")
-			{
-				$("#error").show();
-				$("#error").html("An account under the provided email/username was not found.");
-			}
-			else
-			{
-				$("#error").hide();
-				window.location.href = "/instructions-sent";
-			}
+			let email = $("#email").val();
+			setCookie("email", email, 300000);				//Cookie set to expire in 5 minutes
+			window.location.href = "/reset-request-sent";
 		}
 	});
 }
@@ -64,11 +40,11 @@ $(document).ready(function()
 
 	$("#submit").on("click", function()
 	{
-		sendAccountToken();
+		sendResetEmail();
 	});
 
-	$("input").on("change", function()
+	$("#email").on("change", function()
 	{
-		$(this).next(".err-msg").hide();
+		$("#email-err").hide();
 	});
 });

@@ -7,6 +7,35 @@ function resizePage()
 	$("#page-body").css("min-height", winHeight);
 }
 
+/* Cookie accessor functions */
+
+function setCookie(cname, cvalue, lifespan) 
+{
+    let date = new Date();
+    date.setTime(date.getTime() + lifespan);
+    let expires = "expires=" + date.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";";
+}
+
+function getCookie(cname) 
+{
+    let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) 
+    {
+        let c = ca[i];
+        while (c.charAt(0) == ' ')
+            c = c.substring(1);
+      	
+        if (c.indexOf(name) == 0)
+            return c.substring(name.length, c.length);
+    }
+
+    return "";
+}
+
+/* End of cookie accessor functions */
+
 /* Input validation functions */
 
 function validateRequiredInput(input)
