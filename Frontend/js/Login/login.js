@@ -47,7 +47,7 @@ function sendCredentials()
 $(document).ready(function()
 {
 	resizePage();
-	checkIfUserIsSignedIn();
+	displayNavBar();
 
 	$(window).resize(function()
 	{
@@ -56,7 +56,13 @@ $(document).ready(function()
 
 	$("#sign-in").on("click", function()
 	{
-		sendCredentials();
+		let navLink = $("#dynamic-nav-link").attr("href");
+		let signedIn = (navLink === "/my-profile") ? true : false;
+
+		if (signedIn)
+			alert("You are already signed in!");
+		else
+			sendCredentials();
 	});
 
 	$(".required").on("keyup", function()
@@ -115,7 +121,7 @@ $(document).ready(function()
 			if (status !== "success")
 	    		alert("An issue occurred signing out from system!\nIf this problem persists, please call us at (860) 871-9311.");
 			else
-				window.location.href = "/";
+				window.location.href = "/signed-out";
 		});
 	});
 });

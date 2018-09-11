@@ -7,9 +7,9 @@ function resizePage()
 	$("#page-body").css("min-height", winHeight);
 }
 
-function checkIfUserIsSignedIn()
+function displayNavBar()
 {
-	$.get("/account-status", function(data, status)
+	$.get("/get-navbar-info", function(data, status)
 	{
 		if (status !== "success")
     		alert("An issue occurred communicating with our server!\nIf this problem persists, please call us at (860) 871-9311.");
@@ -19,6 +19,7 @@ function checkIfUserIsSignedIn()
 			{
 				$("#dynamic-nav-link").html("My Account<span style='font-size: 13px;''>&nbsp;&nbsp;&#9660;</span>");
 				$("#dynamic-nav-link").attr("href", "/my-profile");
+				$("#username").html(data.firstName + " " + data.lastName);
 			}
 
 			else if (data.msg === "signed-out")

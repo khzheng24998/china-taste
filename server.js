@@ -30,6 +30,11 @@ app.get('/account-created', function(req, res)
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/account-created.html');
 });
 
+app.get('/signed-out', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/signed-out.html');
+});
+
 /*---------------General purpose CSS files---------------*/
 
 app.get('/Frontend/css/generic.css', function(req, res)
@@ -294,23 +299,31 @@ app.get('/send-verification-email', function(req, res)
 	res.send(response);
 });
 
-/* Get account status */
+/* Get navigation bar info */
 
-app.get('/account-status', function(req, res)
+app.get('/get-navbar-info', function(req, res)
 {
-	console.log("Received GET request from client! (account-status)");
+	console.log("Received GET request from client! (get-navbar-info)");
 
 	let response = {};
 	let key = req.cookies.key;
 	let index = Database.getAccountByKey(key, users);
 
 	if (index !== -1)
+	{
 		response.msg = "signed-in";
+		response.firstName = users[index].userInfo.firstName;
+		response.lastName = users[index].userInfo.lastName;
+	}
 	else
 		response.msg = "signed-out";
 
 	res.send(response);
 });
+
+
+
+
 
 
 
