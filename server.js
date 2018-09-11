@@ -49,7 +49,12 @@ app.get('/Frontend/js/simple.js', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
-app.get('/Frontend/js/functions.js', function(req, res)
+app.get('/Frontend/js/Helper/functions.js', function(req, res)
+{
+  	res.sendFile(__dirname + req.originalUrl);
+});
+
+app.get('/Frontend/js/Helper/validation.js', function(req, res)
 {
   	res.sendFile(__dirname + req.originalUrl);
 });
