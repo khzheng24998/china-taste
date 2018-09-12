@@ -1,8 +1,13 @@
-function getAccountByKey(key, users)
+function getRequestByEmail(email, requests)
 {
-	for (let i = 0; i < users.length; i++)
+	return getAccountByEmail(email, requests);
+}
+
+function getRequestByKey(key, requests)
+{
+	for (let i = 0; i < requests.length; i++)
 	{
-		if (typeof(users[i].key) !== "undefined" && users[i].key === key)
+		if (typeof(requests[i].key) !== "undefined" && requests[i].key === key)
 			return i;
 	}
 
@@ -13,12 +18,13 @@ function getAccountByEmail(email, users)
 {
 	for (let i = 0; i < users.length; i++)
 	{
-		if (users[i].userInfo.email === email)
+		if (typeof(users[i].userInfo.email) !== "undefined" && users[i].userInfo.email === email)
 			return i;
 	}
 
 	return -1;
 }
 
-module.exports.getAccountByKey = getAccountByKey;
+module.exports.getRequestByKey = getRequestByKey;
+module.exports.getRequestByEmail = getRequestByEmail;
 module.exports.getAccountByEmail = getAccountByEmail;

@@ -9,10 +9,10 @@ function hashPassword(password)
 	return hash.update(password).digest("hex");
 }
 
-function generateKey(users)
+function generateKey(array)
 {
 	let key;
-	do { key = Crypto.randomBytes(16).toString('hex'); } while (Database.getAccountByKey(key, users) !== -1);
+	do { key = Crypto.randomBytes(16).toString('hex'); } while (Database.getRequestByKey(key, array) !== -1);
 	return key;
 }
 
@@ -72,7 +72,7 @@ function validatePassword(password)
 	return true;
 }
 
-function validateCreateAccount(req, users)
+function validateCreateAccount(req)
 {
 	let firstNameVal = validateRequiredInput(req.firstName);
 	let lastNameVal = validateRequiredInput(req.lastName);
@@ -99,8 +99,6 @@ function createAccount(req, res, users)
 	}
 
 	let account = {};
-
-	account.key = generateKey(users);
 	account.verified = false;
 
 	account.userInfo = {};
@@ -150,17 +148,6 @@ function validateCredentials(req, res, users)
 	return index;
 }
 
-function findRequest(email, requests)
-{
-	for (let i = 0; i < requests.length; i++)
-	{
-		if (requests[i].email === email)
-			return i;
-	}
-
-	return -1;
-}
-
 function sendResetLink(req, res, users, resetRequests)
 {
 	let emailVal = validateRequiredInput(req.email);
@@ -188,9 +175,10 @@ function generateResetRequest(email, resetRequests)
 	let currentTime = date.getTime();
 	let expirationDate = (+currentTime) + (+900000);
 
-	let index = findRequest(email, resetRequests);		//Reset key expires in 15 minutes
+	let index = Database.getRequestByEmail(email, resetRequests);		//Reset key expires in 15 minutes
 	if (index !== -1)
 	{
+		//Generate new key and expiration date for pre-existing reset request
 		resetRequests[index].key = randString;
 		resetRequests[index].expirationDate = expirationDate;
 	}
@@ -198,32 +186,35 @@ function generateResetRequest(email, resetRequests)
 	{
 		let pendingReset = {};
 		pendingReset.key = randString;
-		pendingReset.email = email;
 		pendingReset.expirationDate = expirationDate;
+		pendingReset.userInfo = {
+			email: email
+		};
+
 		resetRequests.push(pendingReset);
 	}
 
 	return randString;
 }
 
-function sendVerificationLink(key, res, users, verificationRequests)
+function sendVerificationLink(key, res, activeSessions, verificationRequests)
 {
-	let index = Database.getAccountByKey(key, users);
+	let index = Database.getRequestByKey(key, activeSessions);
 	if (index !== -1)
 	{
-		let randString = generateVerificationRequest(users[index].userInfo.username, verificationRequests);
-		let sent = Email.sendVerificationLink(process.argv[2], randString, users[index].userInfo.email);
-		res.msg = sent ? "ok" : "error";
+		let randString = generateVerificationRequest(activeSessions[index].userInfo.email, verificationRequests);
+		Email.sendVerificationLink(process.argv[2], randString, activeSessions[index].userInfo.email);
+		res.msg = "ok";
 	}
 	else
 		res.msg = "error";
 }
 
-function generateVerificationRequest(username, verificationRequests)
+function generateVerificationRequest(email, verificationRequests)
 {
 	let randString = "";
 
-	let index = findRequest(username, verificationRequests);
+	let index = Database.getRequestByEmail(email, verificationRequests);
 	if (index !== -1)
 	{
 		randString = verificationRequests[index].key;
@@ -234,16 +225,36 @@ function generateVerificationRequest(username, verificationRequests)
 
 		let pendingVerification = {};
 		pendingVerification.key = randString;
-		pendingVerification.username = username;
+		pendingVerification.userInfo = {
+			email: email
+		};
+
 		verificationRequests.push(pendingVerification);
 	}
 
 	return randString;
 }
 
+function generateNewSession(firstName, lastName, email, activeSessions)
+{
+	let session = {};
+	session.key = generateKey(activeSessions);
+	session.userInfo = {
+		firstName: firstName,
+		lastName: lastName,
+		email: email
+	};
+
+	activeSessions.push(session);
+	return session.key;
+}
+
 module.exports.hashPassword = hashPassword;
-module.exports.generateKey = generateKey;
+
 module.exports.createAccount = createAccount;
 module.exports.validateCredentials = validateCredentials;
+
 module.exports.sendResetLink = sendResetLink;
 module.exports.sendVerificationLink = sendVerificationLink;
+
+module.exports.generateNewSession = generateNewSession;
