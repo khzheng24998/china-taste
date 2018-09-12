@@ -1,15 +1,24 @@
 var nodemailer = require('nodemailer');
-const Crypto = require("crypto");
 
-function formatEmailBody(emailBody, order)
+function sendLink(password, key, receiver, type)
 {
+	let url;
+	let emailBody;
+	let subject;
 
-}
+	if (type === "reset")
+	{
+		url = "http://localhost:3000/password-reset?" + key;
+		emailBody = "<p>To reset your password, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not request a password reset, please disregard this message.</p>";
+		subject = "Password Reset";
+	}
 
-function sendResetLink(password, key, receiver)
-{
-	let url = "http://localhost:3000/password-reset?" + key;
-	let emailBody = "<p>To reset your password, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not request a password reset, please disregard this message.</p>";
+	else if (type === "verification")
+	{
+		url = "http://localhost:3000/verify-email?" + key;
+		emailBody = "<p>To verify your email, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not recently create an account with us or change your email, please disregard this message.</p>";
+		subject = "Email Verification";
+	}
 
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -23,7 +32,7 @@ function sendResetLink(password, key, receiver)
 	let mailOptions = {
 		from: 'chinatasteofvernon@gmail.com',
   		to: receiver,
-  		subject: 'Password Reset',
+  		subject: subject,
   		html: emailBody
 	};
 
@@ -33,42 +42,6 @@ function sendResetLink(password, key, receiver)
       		console.log(error);
     	else
       		console.log('Email sent: ' + info.response);
-    });
-}
-
-function sendVerificationLink(password, key, receiver)
-{
-	let url = "http://localhost:3000/verify-email?" + key;
-	let emailBody = "<p>To verify your email, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not recently create an account with us or change your email, please disregard this message.</p>";
-
-	let transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: 
-		{
-			user: 'chinatasteofvernon@gmail.com',
-			pass: password
-		}
-  	});
-
-	let mailOptions = {
-		from: 'chinatasteofvernon@gmail.com',
-  		to: receiver,
-  		subject: 'Email Verification',
-  		html: emailBody
-	};
-
-	transporter.sendMail(mailOptions, function(error, info)
-	{
-		if (error) 
-		{
-      		console.log(error);
-      		return false;
-		}
-    	else
-    	{
-      		console.log('Email sent: ' + info.response);
-      		return true;
-    	}
     });
 }
 
@@ -123,5 +96,4 @@ function sendMail(password, order)
 }
 
 module.exports.sendMail = sendMail;
-module.exports.sendResetLink = sendResetLink;
-module.exports.sendVerificationLink = sendVerificationLink;
+module.exports.sendLink = sendLink;

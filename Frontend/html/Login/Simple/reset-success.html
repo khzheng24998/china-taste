@@ -21,11 +21,12 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom CSS styles for this template -->
+    <link href="Frontend/css/generic.css" rel="stylesheet">
     <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
 
     <!--Custom JavaScript files-->
-    <script src="Frontend/js/functions.js"></script>
-    <script src="Frontend/js/generic.js"></script>
+    <script src="Frontend/js/Helper/functions.js"></script>
+    <script src="Frontend/js/simple.js"></script>
 
   </head>
 
@@ -44,11 +45,31 @@
               <a class="nav-link" href="/">Menu</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Services</a>
+              <a class="nav-link" href="#">About Us</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
+
+            <li class="nav-item" id="dynamic-nav-item">
+
+              <a class="nav-link" href="#" id="dynamic-nav-link"></a>
+              <div id="dropdown">
+
+                <div id="dropdown-header">
+                  <p style="margin-bottom: 0px; font-size: 14px;">Signed in as</p>
+                  <p id="username"></p>
+                </div>
+
+                <div id="dropdown-options">
+                  <p class="dropdown-option" id="profile">Your profile</p>
+                  <p class="dropdown-option" id="addresses">Your addresses</p>
+                  <p class="dropdown-option" id="past-orders" style="margin-bottom: 7px;">Your past orders</p>
+                  <div id="dropdown-filler"></div>
+                  <p class="dropdown-option" id="sign-out">Sign out</p>
+                </div>
+
+              </div>
+
             </li>
+
           </ul>
         </div>
       </div>
@@ -60,7 +81,7 @@
     <div class="container" id="page-body">
 
       <h4>Your password has been reset.</h4>
-      <a href="/login">Return to login</a><br><br>
+      <a href="/login">Return to login.</a><br><br>
 
     </div>
     <!-- /.container -->
