@@ -30,7 +30,7 @@ function sendNewPassword()
 		return;
 
 	let req = {};
-	req.newPassword = password;
+	req.password = password;
 
 	$.post("/password-reset", req, function(data, status)
 	{
