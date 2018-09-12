@@ -35,6 +35,11 @@ app.get('/signed-out', function(req, res)
 	res.sendFile(__dirname + '/Frontend/html/Login/Simple/signed-out.html');
 });
 
+app.get('/reset-success', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/reset-success.html');
+});
+
 /*---------------General purpose CSS files---------------*/
 
 app.get('/Frontend/css/generic.css', function(req, res)
@@ -129,13 +134,12 @@ app.get('/Frontend/js/Login/forgot-password.js', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
-/*---------------Reset success---------------*/
+/*---------------Password reset---------------*/
 
-app.get('/reset-success', function(req, res)
+app.get('/Frontend/js/Login/password-reset.js', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/html/Login/Simple/reset-success.html');
+  	res.sendFile(__dirname + "/Frontend/js/Login/password-reset.js");
 });
-
 
 
 
@@ -209,11 +213,6 @@ app.get('/Frontend/js/checkout.js', function(req, res)
 app.get('/Frontend/js/confirmation.js', function(req, res)
 {
   	res.sendFile(__dirname + "/Frontend/js/confirmation.js");
-});
-
-app.get('/Frontend/js/password-reset.js', function(req, res)
-{
-  	res.sendFile(__dirname + "/Frontend/js/password-reset.js");
 });
 
 app.get('/Frontend/js/Profile/profile.js', function(req, res)
@@ -350,7 +349,12 @@ app.post('/password-reset', function(req, res)
 	let response = {};
 
 	let index = Database.getRequestByKey(resetKey, resetRequests)
-	if (index !== -1)
+
+	if (!Login.validatePassword(req.body.newPassword))
+		response.msg = "invalid-password";
+	else if (index === -1)
+		response.msg = "not-found";
+	else
 	{
 		let idx = Database.getAccountByEmail(resetRequests[index].email, users);
 		users[idx].userInfo.password = Login.hashPassword(req.body.newPassword);
@@ -363,8 +367,6 @@ app.post('/password-reset', function(req, res)
 
 		response.msg = "ok";
 	}
-	else
-		response.msg = "not-found";
 
 	res.send(response);
 });
@@ -406,6 +408,12 @@ app.get('/verify-email', function(req, res)
 	else
 		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
 });
+
+
+
+
+
+
 
 /* Get menu and current order */
 

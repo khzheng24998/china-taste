@@ -2,14 +2,6 @@
 const EditOrder = require("./editOrder.js");
 const GetMenu = require("./getMenu.js");
 
-function validateUpdateOrder(req)
-{
-}
-
-function validateRequest(req, url)
-{
-}
-
 function updateOrder(req, order)
 {
 	EditOrder.updateOrder(req, order);
@@ -27,6 +19,11 @@ function getMenu(req)
 {
 	let menu = GetMenu.getMenuGroup(req);
 	return menu;
+}
+
+function validatePostData(req, type)
+{
+
 }
 
 module.exports.updateOrder = updateOrder;
