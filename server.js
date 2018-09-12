@@ -110,6 +110,13 @@ app.get('/Frontend/js/Login/resend-email.js', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
+/*---------------Reset request Sent---------------*/
+
+app.get('/reset-request-sent', function(req, res)
+{
+	res.sendFile(__dirname + '/Frontend/html/Login/reset-request-sent.html');
+});
+
 /*---------------Forgot password---------------*/
 
 app.get('/forgot-password', function(req, res)
@@ -122,14 +129,12 @@ app.get('/Frontend/js/Login/forgot-password.js', function(req, res)
   	res.sendFile(__dirname + req.originalUrl);
 });
 
-/*---------------Reset Request Sent---------------*/
+/*---------------Reset success---------------*/
 
-app.get('/reset-request-sent', function(req, res)
+app.get('/reset-success', function(req, res)
 {
-	res.sendFile(__dirname + '/Frontend/html/Login/reset-request-sent.html');
+	res.sendFile(__dirname + '/Frontend/html/Login/Simple/reset-success.html');
 });
-
-
 
 
 
@@ -155,11 +160,6 @@ app.get('/checkout', function(req, res)
 app.get('/confirmation', function(req, res)
 {
 	res.sendFile(__dirname + '/Frontend/html/confirmation.html');
-});
-
-app.get('/reset-success', function(req, res)
-{
-	res.sendFile(__dirname + '/Frontend/html/Login/Simple/reset-success.html');
 });
 
 app.get('/my-profile', function(req, res)
@@ -226,7 +226,6 @@ app.get('/Frontend/js/Profile/profile.js', function(req, res)
 
 let resetRequests = [];
 let verificationRequests = [];
-
 let activeSessions = [];
 
 let users = [];
@@ -242,8 +241,10 @@ app.post('/log-in', function(req, res)
 
 	if (index !== -1)
 	{
-		users[index].key = Login.generateKey(users);
-		res.cookie("key", users[index].key);
+		let info = users[index].userInfo;
+		let key = Login.generateNewSession(info.firstName, info.lastName, info.email, activeSessions);
+
+		res.cookie("key", key);
 	}
 
 	res.send(response);
@@ -256,11 +257,15 @@ app.get('/log-out', function(req, res)
 	console.log("Received GET request from client! (log-out)");
 
 	let key = req.cookies.key;
-	let index = Database.getAccountByKey(key, users);
+	let index = Database.getRequestByKey(key, activeSessions);
 
 	if (index !== -1)
 	{
-		delete users[index].key;
+		if (activeSessions.length > 1)
+			delete activeSessions[index];
+		else
+			activeSessions = [];
+
 		res.clearCookie("key");
 	}
 	
@@ -276,7 +281,32 @@ app.post('/create-account', function(req, res)
 	let response = {};
 
 	if (Login.createAccount(req.body, response, users))
-		res.cookie("key", users[users.length - 1].key);
+	{
+		let key = Login.generateNewSession(req.body.firstName, req.body.lastName, req.body.email, activeSessions);
+		res.cookie("key", key);
+	}
+
+	res.send(response);
+});
+
+/* Get navigation bar info */
+
+app.get('/get-navbar-info', function(req, res)
+{
+	console.log("Received GET request from client! (get-navbar-info)");
+
+	let response = {};
+	let key = req.cookies.key;
+	let index = Database.getRequestByKey(key, activeSessions);
+
+	if (index !== -1)
+	{
+		response.msg = "signed-in";
+		response.firstName = activeSessions[index].userInfo.firstName;
+		response.lastName = activeSessions[index].userInfo.lastName;
+	}
+	else
+		response.msg = "signed-out";
 
 	res.send(response);
 });
@@ -292,76 +322,7 @@ app.post('/send-reset-email', function(req, res)
 	res.send(response);
 });
 
-/* Send verification email */
-
-app.get('/send-verification-email', function(req, res)
-{
-	console.log("Received GET request from client (send-verification-email)");
-
-	let key = req.cookies.key;
-	let response = {};
-	Login.sendVerificationLink(key, response, users, verificationRequests);
-	res.send(response);
-});
-
-/* Get navigation bar info */
-
-app.get('/get-navbar-info', function(req, res)
-{
-	console.log("Received GET request from client! (get-navbar-info)");
-
-	let response = {};
-	let key = req.cookies.key;
-	let index = Database.getAccountByKey(key, users);
-
-	if (index !== -1)
-	{
-		response.msg = "signed-in";
-		response.firstName = users[index].userInfo.firstName;
-		response.lastName = users[index].userInfo.lastName;
-	}
-	else
-		response.msg = "signed-out";
-
-	res.send(response);
-});
-
-
-
-
-
-
-
-
-
-app.get('/verify-email', function(req, res)
-{
-	console.log("Received GET request from client (verify-email)");
-
-	let url = req.originalUrl.replace("/verify-email?", "");
-
-	console.log(req.originalUrl);
-	console.log(url);
-
-	let index = Database.getAccountByKey(url, verificationRequests);
-	if (index !== -1)
-	{
-		let idx = Database.getAccountByName(verificationRequests[index].username, users);
-		users[idx].verified = true;
-
-		//Delete verification request
-		if (verificationRequests.length > 1)
-			delete verificationRequests[index];
-		else
-			verificationRequests = [];
-
-		res.sendFile(__dirname + '/Frontend/html/Login/Simple/verification-success.html');
-	}
-	else
-	{
-		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
-	}
-});
+/* Get password reset page */
 
 app.get('/password-reset', function(req, res)
 {
@@ -369,20 +330,17 @@ app.get('/password-reset', function(req, res)
 
 	let url = req.originalUrl.replace("/password-reset?", "");
 
-	console.log(req.originalUrl);
-	console.log(url);
-
-	let index = Database.getAccountByKey(url, resetRequests);
+	let index = Database.getRequestByKey(url, resetRequests);
 	if (index !== -1)
 	{
 		res.cookie("resetKey", url);
 		res.sendFile(__dirname + '/Frontend/html/Login/password-reset.html');
 	}
 	else
-	{
 		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
-	}
 });
+
+/* Reset password */
 
 app.post('/password-reset', function(req, res)
 {
@@ -391,10 +349,10 @@ app.post('/password-reset', function(req, res)
 	let resetKey = req.cookies.resetKey;
 	let response = {};
 
-	let index = Database.getAccountByKey(resetKey, resetRequests)
+	let index = Database.getRequestByKey(resetKey, resetRequests)
 	if (index !== -1)
 	{
-		let idx = Database.getAccountByName(resetRequests[index].username, users);
+		let idx = Database.getAccountByEmail(resetRequests[index].email, users);
 		users[idx].userInfo.password = Login.hashPassword(req.body.newPassword);
 
 		//Delete reset request
@@ -411,7 +369,97 @@ app.post('/password-reset', function(req, res)
 	res.send(response);
 });
 
-app.get('/get-profile-data', function(req, res)
+/* Send verification email */
+
+app.get('/send-verification-email', function(req, res)
+{
+	console.log("Received GET request from client (send-verification-email)");
+
+	let key = req.cookies.key;
+	let response = {};
+	Login.sendVerificationLink(key, response, activeSessions, verificationRequests);
+	res.send(response);
+});
+
+/* Verify email */
+
+app.get('/verify-email', function(req, res)
+{
+	console.log("Received GET request from client (verify-email)");
+
+	let url = req.originalUrl.replace("/verify-email?", "");
+
+	let index = Database.getRequestByKey(url, verificationRequests);
+	if (index !== -1)
+	{
+		let idx = Database.getAccountByEmail(verificationRequests[index].email, users);
+		users[idx].verified = true;
+
+		//Delete verification request
+		if (verificationRequests.length > 1)
+			delete verificationRequests[index];
+		else
+			verificationRequests = [];
+
+		res.sendFile(__dirname + '/Frontend/html/Login/Simple/verification-success.html');
+	}
+	else
+		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
+});
+
+/* Get menu and current order */
+
+app.post('/get-combined', function(req, res)
+{
+	console.log("Received GET request from client! (get-combined)");
+
+	let key = req.cookies.key;
+	let combined = {};
+	combined.menu = postHandler.getMenu(req.body);
+
+	let index = Database.getRequestByKey(key, activeSessions);
+	if (index === -1)
+		combined.orderItems = [];
+	else
+	{
+		let idx = Database.getAccountByEmail(activeSessions[index].userInfo.email, users);
+		combined.orderItems = users[idx].currentOrder.items;
+	}
+
+	res.send(combined);
+});
+
+/* Update order */
+
+app.post('/update-order', function(req, res)
+{
+	console.log("Received POST request from client! (update-order)");
+
+	let key = req.cookies.key;
+	let response = {};
+
+	let index = Database.getRequestByKey(key, activeSessions);
+	if (index !== -1)
+	{
+		let idx = Database.getAccountByEmail(activeSessions[index].userInfo.email, users);
+		response.msg = "ok";
+		postHandler.updateOrder(req.body, users[idx].currentOrder.items);
+	}
+	else
+		response.msg = "signed-out";
+
+	res.send(response);
+});
+
+
+
+
+
+
+
+
+
+/*app.get('/get-profile-data', function(req, res)
 {
 	console.log("Received GET request from client! (get-profile-data)");
 
@@ -432,27 +480,7 @@ app.get('/get-profile-data', function(req, res)
 	res.send(response);
 });
 
-//Update order
-app.post('/update-order', function(req, res)
-{
-	console.log("Received POST request from client! (update-order)");
-
-	let key = req.cookies.key;
-	let response = {};
-
-	let index = Database.getAccountByKey(key, users);
-	if (index !== -1)
-	{
-		response.msg = "ok";
-		postHandler.updateOrder(req.body, users[index].currentOrder.items);
-	}
-	else
-		response.msg = "signed-out";
-
-	res.send(response);
-});
-
-/*//Update order info
+//Update order info
 app.post('/submit-order', function(req, res)
 {
 	console.log("Received POST request from client! (submit-order)");
@@ -500,22 +528,5 @@ app.post('/get-menu', function(req, res)
 	else
 		res.send(empty);
 });*/
-
-app.post('/get-combined', function(req, res)
-{
-	console.log("Received GET request from client! (get-combined)");
-
-	let key = req.cookies.key;
-	let combined = {};
-	combined.menu = postHandler.getMenu(req.body);
-
-	let index = Database.getAccountByKey(key, users);
-	if (index === -1)
-		combined.orderItems = [];
-	else
-		combined.orderItems = users[index].currentOrder.items;
-
-	res.send(combined);
-});
 
 app.listen(3000, () => console.log('Example app listening on port 3000!'));

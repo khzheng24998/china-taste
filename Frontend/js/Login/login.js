@@ -52,7 +52,7 @@ function attachEventHandlers()
 		let signedIn = (navLink === "/my-profile") ? true : false;
 
 		if (signedIn)
-			alert("You are already signed in!");
+			alert("You are already signed in! To sign in with a different account, please sign out of this account first.");
 		else
 			sendCredentials();
 	});
