@@ -166,6 +166,7 @@ function resetPassword(key, req, res, users, resetRequests)
 	if (index !== -1)
 	{
 		let idx = Database.getAccountByEmail(resetRequests[index].userInfo.email, users);
+		users[idx].userInfo.password = hashPassword(req.password);
 
 		//Delete reset request
 		resetRequests.splice(index, 1);
