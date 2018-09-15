@@ -5,7 +5,7 @@ const LoginHelper = require("./loginHelper.js");
 
 /* Helper functions */
 
-function updateEmailinStructures(prevEmail, newEmail, activeSessions, resetRequests, verificationRequests)
+function updateEmailInStructures(prevEmail, newEmail, activeSessions, resetRequests, verificationRequests)
 {
 	let idx;
 	idx = Database.getRequestByEmail(prevEmail, activeSessions);
@@ -47,7 +47,7 @@ function updateProfileInfo(key, req, res, users, activeSessions, resetRequests, 
 		if (users[index].userInfo.email !== req.email)
 		{
 			users[index].verified = false;
-			updateEmailinStructures(users[index].userInfo.email, req.email, activeSessions, resetRequests, verificationRequests);
+			updateEmailInStructures(users[index].userInfo.email, req.email, activeSessions, resetRequests, verificationRequests);
 		}
 
 		users[index].userInfo.email = req.email;
@@ -55,6 +55,9 @@ function updateProfileInfo(key, req, res, users, activeSessions, resetRequests, 
 		users[index].userInfo.lastName = req.lastName;
 		users[index].userInfo.phoneNumber = req.phoneNumber;
 
+		let idx = Database.getSessionByEmail(req.email, activeSessions);
+		activeSessions[idx].userInfo.firstName = req.firstName;
+		activeSessions[idx].userInfo.lastName = req.lastName;
 		res.msg = "ok";
 	}
 	else
