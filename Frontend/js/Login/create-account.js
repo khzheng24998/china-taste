@@ -84,7 +84,12 @@ function attachEventHandlers()
 
 	$("#create-account-btn").on("click", function()
 	{
-		createAccount();
+		let signedIn = isUserSignedIn();
+
+		if (signedIn)
+			alert("To create a new account, please sign out of this account first!");
+		else
+			createAccount();
 	});
 
 	$("#verify-btn").on("click", function()

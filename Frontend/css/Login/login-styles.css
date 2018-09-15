@@ -38,20 +38,6 @@
 	padding-bottom: 20px;
 }
 
-#drop-down
-{
-	width: 125px;
-	z-index: 1;
-	background-color: #f1f1f1;
-	display: none;
-	position: absolute;
-	top: 50px;
-	right: 0px;
-	box-shadow: 1px 1px 1px 1px;
-	padding-top: 2px;
-	padding-bottom: 1px;
-}
-
 .label-top
 {
 	margin-top: 0px;
@@ -68,9 +54,4 @@
 	font-size: 14px;
 	margin-bottom: 0px;
 	display: none;
-}
-
-.my-button
-{
-	cursor: pointer;
 }

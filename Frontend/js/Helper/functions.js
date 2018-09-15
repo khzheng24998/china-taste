@@ -98,6 +98,13 @@ function initialize()
 	});
 }
 
+function isUserSignedIn()
+{
+	let navLink = $("#dynamic-nav-link").attr("href");
+	let signedIn = (navLink === "/my-profile") ? true : false;
+	return signedIn;
+}
+
 /* Cookie accessor functions */
 
 function setCookie(cname, cvalue, lifespan) 

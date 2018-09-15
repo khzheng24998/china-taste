@@ -154,7 +154,7 @@ function sendFiles(app)
 		res.sendFile(__dirname + '/Frontend/html/Profile/profile.html');
 	});
 
-	app.get('/Frontend/css/profile.css', function(req, res) 
+	app.get('/Frontend/css/Profile/profile.css', function(req, res) 
 	{
 	  	res.sendFile(__dirname + req.originalUrl);
 	});
