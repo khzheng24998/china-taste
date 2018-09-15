@@ -25,6 +25,18 @@ function getAccountByEmail(email, users)
 	return -1;
 }
 
+function getAccountByKey(key, users, activeSessions)
+{
+	let index = getRequestByKey(key, activeSessions);
+	if (index !== -1)
+	{
+		return getAccountByEmail(activeSessions[index].userInfo.email, users);
+	}
+
+	return -1;
+}
+
 module.exports.getRequestByKey = getRequestByKey;
 module.exports.getRequestByEmail = getRequestByEmail;
+module.exports.getAccountByKey = getAccountByKey;
 module.exports.getAccountByEmail = getAccountByEmail;

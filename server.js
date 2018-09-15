@@ -29,11 +29,12 @@ let activeSessions = [];
 
 let users = [];
 
-const Login = require("./login.js");
 const SendFile = require("./sendFile.js");
+const Login = require("./login.js");
+const Profile = require("./profile.js");
 
-Login.loginEvents(app, users, activeSessions, resetRequests, verificationRequests);
 SendFile.sendFiles(app);
+Login.loginEvents(app, users, activeSessions, resetRequests, verificationRequests);
 
 /* Get menu and current order */
 

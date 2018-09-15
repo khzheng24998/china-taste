@@ -4,12 +4,6 @@ const Crypto = require("crypto");
 
 /* Helper functions */
 
-function hashPassword(password)
-{
-	let hash = Crypto.createHash("sha512");
-	return hash.update(password).digest("hex");
-}
-
 function generateKey(array)
 {
 	let key;
@@ -71,7 +65,24 @@ function generateVerificationRequest(email, verificationRequests)
 	return randString;
 }
 
+function formatPhoneNumber(phoneNumber)
+{
+	let arr = phoneNumber.match(/[0-9]/g);
+	if (arr === null)
+		return "";
+
+	let noSpecialChars = arr.toString();
+	noSpecialChars = noSpecialChars.replace(/,/g, "");
+	return noSpecialChars;
+}
+
 /* Exported functions */
+
+function hashPassword(password)
+{
+	let hash = Crypto.createHash("sha512");
+	return hash.update(password).digest("hex");
+}
 
 function logIn(req, res, users)
 {
@@ -105,7 +116,7 @@ function createAccount(req, res, users)
 	account.userInfo.firstName = req.firstName;
 	account.userInfo.lastName = req.lastName;
 	account.userInfo.email = req.email;
-	account.userInfo.phoneNumber = req.phoneNumber;
+	account.userInfo.phoneNumber = formatPhoneNumber(req.phoneNumber);
 	account.userInfo.password = hashPassword(req.password);
 
 	account.currentOrder = {};
@@ -225,6 +236,7 @@ function verifyEmail(key, users, verificationRequests)
 	return false;
 }
 
+module.exports.hashPassword = hashPassword;
 module.exports.logIn = logIn;
 module.exports.createAccount = createAccount;
 module.exports.sendResetLink = sendResetLink;

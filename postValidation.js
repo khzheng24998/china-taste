@@ -112,7 +112,25 @@ function validatePasswordReset(req)
 	return validatePassword(req.password);
 }
 
-/* For export */
+function validateUpdateProfileInfo(req)
+{
+	let validEmail = validateRequiredInput(req.email);
+	let validFirstName = validateRequiredInput(req.firstName);
+	let validLastName = validateRequiredInput(req.lastName);
+	let validPhoneNumber = validatePhoneNumber(req.phoneNumber);
+
+	return (validEmail && validFirstName && validLastName && validPhoneNumber);
+}
+
+function validateUpdatePassword(req)
+{
+	let validCurrentPassword = validateRequiredInput(req.currentPassword);
+	let validNewPassword = validatePassword(req.newPassword);
+
+	return (validCurrentPassword && validNewPassword);
+}
+
+/* Exported functions */
 
 function validatePostData(req, type)
 {
@@ -131,6 +149,12 @@ function validatePostData(req, type)
 			break;
 		case "password-reset":
 			valid = validatePasswordReset(req);
+			break;
+		case "update-profile-info":
+			valid = validateUpdateProfileInfo(req);
+			break;
+		case "update-password":
+			valid = validateUpdatePassword(req);
 			break;
 		default:
 			valid = false;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <head id="profile">
+  <head id="profile-head">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,10 +22,12 @@
 
     <!-- Custom CSS styles for this template -->
     <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
-    <link href="Frontend/css/profile.css" rel="stylesheet">
+    <link href="Frontend/css/generic.css" rel="stylesheet">
+    <link href="Frontend/css/Profile/profile.css" rel="stylesheet">
 
     <!--Custom JavaScript files-->
-    <script src="Frontend/js/functions.js"></script>
+    <script src="Frontend/js/Helper/functions.js"></script>
+    <script src="Frontend/js/Helper/validation.js"></script>
     <script src="Frontend/js/Profile/profile.js"></script>
 
   </head>
@@ -45,11 +47,31 @@
               <a class="nav-link" href="/">Menu</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Services</a>
+              <a class="nav-link" href="#">About Us</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact</a>
+
+            <li class="nav-item" id="dynamic-nav-item">
+
+              <a class="nav-link" href="#" id="dynamic-nav-link"></a>
+              <div id="dropdown">
+
+                <div id="dropdown-header">
+                  <p style="margin-bottom: 0px; font-size: 14px;">Signed in as</p>
+                  <p id="username"></p>
+                </div>
+
+                <div id="dropdown-options">
+                  <p class="dropdown-option" id="profile">Your profile</p>
+                  <p class="dropdown-option" id="addresses">Your addresses</p>
+                  <p class="dropdown-option" id="past-orders" style="margin-bottom: 7px;">Your past orders</p>
+                  <div id="dropdown-filler"></div>
+                  <p class="dropdown-option" id="sign-out">Sign out</p>
+                </div>
+
+              </div>
+
             </li>
+
           </ul>
         </div>
       </div>
@@ -60,79 +82,204 @@
     <!-- Page Content -->
     <div class="container" id="page-body">
 
+      <div id="modal-1">
+        <div id="modal-content-1">
+
+          <h5 style="margin-top: 0px;">You're almost there - just one last step!</h5>
+          <p style="font-size: 14px;">To activate your account, you must verify your provided email address. You may skip this step for now but please note that you will be unable to place orders until you have done so.</p>
+          <br>
+
+          <div style="margin-top: 20px;">
+            <button id="verify-btn" class="my-button">Verify email</button><button id="skip-btn" class="my-button">Skip verification</button>
+          </div>
+
+        </div>
+      </div>
+      <!-- modal-1 -->
+
+      <div id="modal-2">
+        <div id="modal-content-2">
+          <h5 style="margin-top: 0px;">Your password has been updated!</h5>
+          <div class="centered"><button style="width: 100px;" id="ok-btn" class="my-button">OK</button></div>
+        </div>
+      </div>
+      <!-- modal-2 -->
+
       <div class="row">
 
         <div class="col-lg-1">
         </div>
 
         <div class="col-lg-10">
+
           <div class="row" id="page-content">
-            <div class="col-lg-3" id="left-col">
+
+            <div class="col-lg-3" id="nav-col">
               <p class="my-nav-item" id="my-profile" style="background-color: #d9d9d9;">Profile</p>
               <p class="my-nav-item" id="my-addresses">Addresses</p>
               <p class="my-nav-item" id="my-past-orders">Past Orders</p>
             </div>
-            <div class="col-lg-9" id="right-col">
-              <div id="rc-header">
-                <h5>Profile</h5>
-              </div>
-              <div id="rc-content">
 
-                <div class="row">
-                  <div class="col-lg-4">
-                    <p class="profile-label">Username</p>
+            <div class="col-lg-9" style="padding-top: 15px; padding-right: 15px;">
+
+              <div id="body-header"><h5>Profile</h5></div>
+
+              <div id="body-content">
+
+                <div id="base">
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Email</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <p class="data-val" id="email-data"></p>
+                    </div>
                   </div>
-                  <div class="col-lg-8">
-                    <p class="profile-val" id="username"></p>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Password</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <p class="data-val" id="change-password-text">Change Password</p>
+                    </div>
                   </div>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">First Name</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <p class="data-val" id="first-name-data"></p>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Last Name</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <p class="data-val" id="last-name-data"></p>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Phone Number</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <p class="data-val" id="phone-number-data"></p>
+                    </div>
+                  </div>
+
+                  <div class="centered"><button class="my-button" id="edit-profile-btn">Edit Profile</button></div>
+
                 </div>
+                <!-- base -->
 
-                <div class="row">
-                  <div class="col-lg-4">
-                    <p class="profile-label">Email</p>
+                <div id="edit-profile">
+
+                  <p style="font-size: 14px;"id="warning">*Note that if you change your email, you will have to verify your new email address</p>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Email*</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input class="edit-profile-field" id="email-field" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="email-err"></p>
+                    </div>
                   </div>
-                  <div class="col-lg-8">
-                    <p class="profile-val" id="email"></p>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">First Name</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input class="edit-profile-field" id="first-name-field" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="first-name-err"></p>
+                    </div>
                   </div>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Last Name</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input class="edit-profile-field" id="last-name-field" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="last-name-err"></p>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Phone Number</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input class="edit-profile-field" id="phone-number-field" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="phone-number-err"></p>
+                    </div>
+                  </div>
+
+                  <div class="centered">
+                    <button class="my-button" id="save-btn-1">Save</button>
+                    <button class="cancel-btn">Cancel</button>
+                  </div>
+
                 </div>
+                <!-- edit-profile -->
 
-                <div class="row">
-                  <div class="col-lg-4">
-                    <p class="profile-label">Password</p>
+                <div id="change-password">
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Current Password</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="password" class="change-password-field" id="current-password" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="current-password-err"></p>
+                    </div>
                   </div>
-                  <div class="col-lg-8">
-                    <a href="/my-profile" style="font-size: 15px;">Change Password</a>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">New Password</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="password" class="change-password-field" id="new-password" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="new-password-err"></p>
+                    </div>
                   </div>
+
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <p class="label">Confirm New Password</p>
+                    </div>
+                    <div class="col-lg-8">
+                      <input type="password" class="change-password-field" id="confirmation" placeholder=" (Required)"></input>
+                      <p class="err-msg" id="confirmation-err"></p>
+                    </div>
+                  </div>
+
+                  <div class="centered">
+                    <button class="my-button" id="save-btn-2">Save</button>
+                    <button class="cancel-btn">Cancel</button>
+                  </div>
+
+                  <div id="req-box">
+                    <p style="font-size: 13px; padding-left: 23px; margin-bottom: 5px;">Password must:</p>
+                    <ul style="list-style-type: square; font-size: 13px">
+                      <li>Have at least 8 characters.</li>
+                      <li>Have at least 1 alphabetic character.</li>
+                      <li>Have at least 1 numeric character.</li>
+                      <li>Contain no spaces.</li>
+                    </ul>
+                  </div>
+                  <br>
+
                 </div>
-
-                <div class="row">
-                  <div class="col-lg-4">
-                    <p class="profile-label">First Name</p>
-                  </div>
-                  <div class="col-lg-8">
-                    <p class="profile-val" id="first-name">Kenny</p>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-lg-4">
-                    <p class="profile-label">Last Name</p>
-                  </div>
-                  <div class="col-lg-8">
-                    <p class="profile-val" id="last-name">Zheng</p>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col-lg-4">
-                    <p class="profile-label">Phone Number</p>
-                  </div>
-                  <div class="col-lg-8">
-                    <p class="profile-val" id="phone-number">(860)335-1427</p>
-                  </div>
-                </div>
-
-                <br><div class="center"><button>Edit Profile</button></div>
+                <!-- change-password -->
 
               </div>
             </div>
@@ -146,6 +293,8 @@
 
     </div>
     <!-- /.container -->
+
+    <br>
 
     <!-- Footer -->
     <footer class="py-5 bg-dark">

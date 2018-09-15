@@ -48,8 +48,7 @@ function attachEventHandlers()
 {
 	$("#sign-in").on("click", function()
 	{
-		let navLink = $("#dynamic-nav-link").attr("href");
-		let signedIn = (navLink === "/my-profile") ? true : false;
+		let signedIn = isUserSignedIn();
 
 		if (signedIn)
 			alert("You are already signed in! To sign in with a different account, please sign out of this account first.");
