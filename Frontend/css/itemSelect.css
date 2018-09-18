@@ -338,61 +338,27 @@ textarea
 	text-align: right;
 }
 
+/* New styles */
 
-
-
-
-#my-account
+#sauce-select
 {
-	position: relative;
-}
-
-#drop-down
-{
-	width: 175px;
-	z-index: 1;
-	background-color: white;
 	display: none;
-	position: absolute;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #808080;
-	border-radius: 3px;
-
-	top: 40px;
-	right: 10px;
 }
 
-#dropdown-header
+#sauce-select-header
 {
-	padding-top: 6px;
-	padding-left: 12px;
 	border-bottom-style: solid;
-	border-bottom-width: 1px;
-	border-bottom-color: #dddddd;
+	border-bottom-width: 2px;
+	border-bottom-color: #cccccc;
+	padding-bottom: 3px; 
+	margin-bottom: 2px;
 }
 
-#dropdown-options
+#gf-select-header
 {
-	padding-top: 4px;
-}
-
-#filler
-{
-	border-top-style: solid;
-	border-top-width: 1px;
-	border-top-color: #dddddd;
-	height: 3px;
-	margin: 0px;
-}
-
-.drop-option
-{
-	padding-top: 3px;
-	padding-bottom: 3px;
-	padding-left: 12px;
-	margin-bottom: 3px;
-
-	font-size: 14px;
-	cursor: pointer;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-bottom-color: #cccccc;
+	padding-bottom: 3px; 
+	margin-bottom: 2px;
 }

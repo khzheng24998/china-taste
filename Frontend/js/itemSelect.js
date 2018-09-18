@@ -10,8 +10,6 @@ function getNumFromId(str)
 
 function displayPageContents(menu, order)
 {
-	resizePage();
-
 	for(let i = 0; i < menu.length; i++)
 	{
 		//Retreive and display item name
@@ -26,18 +24,6 @@ function displayPageContents(menu, order)
 
 	displayCategories();
 	displayCheckoutBox(order);
-
-	if(order.length === 0)
-		$("#empty").show();
-	else
-		$("#empty").hide();
-}
-
-function resizePage()
-{
-	let winHeight = window.innerHeight;
-	winHeight = Math.floor(0.8 * winHeight);
-	$("#page-body").css("min-height", winHeight);
 }
 
 function displayCategories()
@@ -74,6 +60,11 @@ function displayCheckoutBox(order)
 	}
 
 	$("#subtotal-text").html("$" + subtotal.toFixed(2));
+
+	if(order.length === 0)
+		$("#empty").show();
+	else
+		$("#empty").hide();
 }
 
 function displayModalBox1(menuItem)
@@ -91,6 +82,26 @@ function displayModalBox1(menuItem)
 		$("#size-opt1-text").html("Sm ($" + menuItem.cost[0].toFixed(2) + ")");
 		$("#size-opt2").show();
 		$("#size-opt2-text").html("Lg ($" + menuItem.cost[1].toFixed(2) + ")");
+	}
+
+	if (typeof(menuItem.special) !== "undefined")
+	{
+		let special = menuItem.special;
+
+		let showSauce = false;
+
+		for (let i = 0; i < special.length; i++)
+		{
+			if (special[i] === "sauce")
+			{
+				showSauce = true;
+				$("#sauce-select").show();
+				$('input[name=sauce][value="white"]').prop("checked", true);
+			}
+		}
+
+		if (!showSauce)
+			$("#sauce-select").hide();
 	}
 
 	$('input[name=size][value="small"]').prop("checked", true);
@@ -255,25 +266,13 @@ function updateItem(orderEntry)
 	sendUpdateOrderReq(req);
 }
 
-function logOut()
-{
-	$.get("/log-out", function(data, status)
-	{
-		if (status !== "success")
-		{
-			console.log(status);
-    		alert("An issue occurred signing out from system!\nIf this problem persists, please call us at (860) 871-9311.");
-		}
-		else
-			location.reload();
-	});
-}
-
 $(document).ready(function()
 {
 	let cat = $("head").attr("id");
 	let req = {};
 	req.category = cat;
+
+	initialize();
 
 	let getMenu = $.post("http://localhost:3000/get-combined", req);
 	$.when(getMenu).done(function(data, status)
@@ -287,11 +286,6 @@ $(document).ready(function()
 		let menu = data.menu;
 		let order = data.orderItems;				//Note: order contains only the order items!
 		displayPageContents(menu, order);
-
-		$(window).resize(function()
-		{
-    		resizePage();
-		});
 
 		let menuIndex, orderIndex;
 
@@ -411,36 +405,6 @@ $(document).ready(function()
 				alert("Add items to order before checking out!");
 			else
 				window.location.href = "/checkout";
-		});
-
-		$("#my-account").hover(function()
-		{
-			$("#drop-down").show();
-		},
-		function()
-		{
-			$("#drop-down").hide();
-		});
-
-		$("#page-body").on("click", function()
-		{
-			$("#drop-down").hide();
-		});
-
-		$(".drop-option").hover(function()
-		{
-			$(this).css("background-color", "#0366d6");
-			$(this).css("color", "white");
-		},
-		function()
-		{
-			$(this).css("background-color", "white");
-			$(this).css("color", "black");
-		});
-
-		$("#log-out").on("click", function()
-		{
-			logOut();
 		});
 	});
 });

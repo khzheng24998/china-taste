@@ -1,16 +1,17 @@
 Menu entry structure:
 
 var menuEntry = {
-	name = "...";
-	category = "...";
+	name = string;
+	category = string;
 	cost = [];
+	special = [];
 }
 
 Order entry structure:
 
 var orderEntry = {
 	menuEntry = {};
-	size = "...";
-	quantity = "...";
-	special = "...";
+	size = string;
+	quantity = string;
+	special = [];
 }

@@ -113,10 +113,7 @@ function updateProfileInfo(userInfo)
 	$.post("/update-profile-info", userInfo, function(data, status)
 	{
 		if(status != "success" || data.msg === "error")
-		{
 			alert("An issue occurred while updating your profile info!\nIf this problem persists, please call us at (860) 871-9311.");
-			location.reload();
-		}
 		else if (data.msg === "ok")
 		{
 			displayBasePage(userInfo);

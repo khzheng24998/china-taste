@@ -22,9 +22,11 @@
 
     <!-- Custom CSS styles for this template -->
     <link href="Frontend/css/shop-homepage.css" rel="stylesheet">
+    <link href="Frontend/css/generic.css" rel="stylesheet">
     <link href="Frontend/css/itemSelect.css" rel="stylesheet">
 
     <!--Custom JavaScript files-->
+    <script src="Frontend/js/Helper/functions.js"></script>
     <script src="Frontend/js/itemSelect.js"></script>
 
   </head>
@@ -47,21 +49,26 @@
               <a class="nav-link" href="#">About Us</a>
             </li>
 
-            <li class="nav-item" id="my-account">
-              <a class="nav-link" href="#">My Account <span style="font-size: 13px;">&nbsp;&#9660;</span></a>
-              <div id="drop-down">
+            <li class="nav-item" id="dynamic-nav-item">
+
+              <a class="nav-link" href="#" id="dynamic-nav-link"></a>
+              <div id="dropdown">
+
                 <div id="dropdown-header">
                   <p style="margin-bottom: 0px; font-size: 14px;">Signed in as</p>
-                  <p style="font-weight: 550; font-size: 14px; margin-bottom: 8px;">Kenny Zheng</p>
+                  <p id="username"></p>
                 </div>
+
                 <div id="dropdown-options">
-                  <p class="drop-option" id="profile">Your profile</p>
-                  <p class="drop-option" id="addresses">Your addresses</p>
-                  <p class="drop-option" id="past-orders" style="margin-bottom: 7px;">Your past orders</p>
-                  <div id="filler"></div>
-                  <p class="drop-option" id="sign-out">Sign out</p>
+                  <p class="dropdown-option" id="profile">Your profile</p>
+                  <p class="dropdown-option" id="addresses">Your addresses</p>
+                  <p class="dropdown-option" id="past-orders" style="margin-bottom: 7px;">Your past orders</p>
+                  <div id="dropdown-filler"></div>
+                  <p class="dropdown-option" id="sign-out">Sign out</p>
                 </div>
+
               </div>
+
             </li>
 
           </ul>
@@ -75,55 +82,87 @@
     <div class="container" id="page-body">
 
       <div id="modal">
-        <!--<div id="modal-border">-->
-          <div id="modal-content">
+        <div id="modal-content">
 
-            <h5 id="modal-name-text"></h5>
+          <h5 id="modal-name-text"></h5>
 
-            <div class="row" id="size-select">
+          <div class="row" id="size-select">
               
-                <div class="col-lg-6">
-                  <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
-                    <input type="radio" checked="checked" name="size" value="small">
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-                <div class="col-lg-6">
-                  <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
-                    <input type="radio" name="size" value="large">
-                    <span class="checkmark"></span>
-                  </label>
-                </div>
-
+            <div class="col-lg-6">
+              <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
+                <input type="radio" checked="checked" name="size" value="small">
+                <span class="checkmark"></span>
+              </label>
             </div>
-
-            <div id="special">
-              <h6>Special Instructions (128 char. limit)</h6>
-              <div id="textarea-wrapper"> 
-                <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
-              </div>
-              <p id="char-count">Character count:</p>
+            <div class="col-lg-6">
+              <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
+                <input type="radio" name="size" value="large">
+                <span class="checkmark"></span>
+              </label>
             </div>
-
-            <div id="modal-quantity">
-              <button id="q-sel-down">-</button><input id="modal-quantity-text" type="text" size="1"><button id="q-sel-up">+</button>
-            </div>
-
-            <span class="modal-btn-wrapper">
-              <button id="cancel-btn">Cancel</button>
-            </span>
-
-            <span id="delete-btn-wrapper">
-              <button id="delete-btn">Delete</button>
-            </span>
-
-            <span class="modal-btn-wrapper">
-              <button id="add-item-btn">Add to Order</button>
-              <button id="save-item-btn">Save Item</button>
-            </span>
 
           </div>
-        <!--</div>-->
+
+          <div id="sauce-select">
+
+            <div id="sauce-select-header">
+              <span style="color: #6bb50c;">Choose sauce </span><span style="color: #BF2E08;">(Required)</span>
+            </div>
+            <p style="font-size: 13px; font-weight: 550; margin-bottom: 3px;">Choose exactly 1 option</p>
+
+            <div class="row">
+
+              <div class="col-lg-6">
+                <label class="radio" id="white"><p>White</p>
+                  <input type="radio" checked="checked" name="sauce" value="white">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+
+              <div class="col-lg-6">
+                <label class="radio" id="brown"><p>Brown</p>
+                  <input type="radio" name="sauce" value="brown">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- sauce-select -->
+
+          <div id="gluten-free">
+
+            <p id="gf-select-header" style="color: #6bb50c;">Make it Gluten Free?</p>
+
+          </div>
+
+          <div id="special">
+            <h6>Special Instructions (128 char. limit)</h6>
+            <div id="textarea-wrapper"> 
+              <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
+            </div>
+            <p id="char-count">Character count:</p>
+          </div>
+
+          <div id="modal-quantity">
+            <button id="q-sel-down">-</button><input id="modal-quantity-text" type="text" size="1"><button id="q-sel-up">+</button>
+          </div>
+
+          <span class="modal-btn-wrapper">
+            <button id="cancel-btn">Cancel</button>
+          </span>
+
+          <span id="delete-btn-wrapper">
+            <button id="delete-btn">Delete</button>
+          </span>
+
+          <span class="modal-btn-wrapper">
+            <button id="add-item-btn">Add to Order</button>
+            <button id="save-item-btn">Save Item</button>
+          </span>
+
+        </div>
       </div>
 
       <div class="row">
