@@ -168,6 +168,8 @@ function generateNewSession(firstName, lastName, email, activeSessions)
 	};
 
 	activeSessions.push(session);
+	
+	Database.addActiveSession(session.key, firstName, lastName, email);
 	return session.key;
 }
 

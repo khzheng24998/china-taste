@@ -1,3 +1,38 @@
+const MongoClient = require('mongodb').MongoClient;
+
+function addActiveSession(key, firstName, lastName, email)
+{
+	let url = 'mongodb+srv://khzheng24998:174acr858onr@cluster0-m9ge7.gcp.mongodb.net/test?retryWrites=true';
+
+	MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) 
+	{
+		let mydb = db.db("chinataste");
+		mydb.collection("activeSessions").insertOne({
+			key: key, 
+		   	firstName: firstName,
+		   	lastName: lastName,
+		   	email: email
+		});
+
+		console.log("Added active session!");
+		db.close();
+	});
+}
+
+function removeActiveSession(key)
+{
+	let url = 'mongodb+srv://khzheng24998:174acr858onr@cluster0-m9ge7.gcp.mongodb.net/test?retryWrites=true';
+
+	MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) 
+	{
+		let mydb = db.db("chinataste");
+		mydb.collection("activeSessions").deleteOne({ "key": key });
+
+		console.log("Removed active session!");
+		db.close();
+	});
+}
+
 function getSessionByEmail(email, sessions)
 {
 	return getAccountByEmail(email, sessions);
