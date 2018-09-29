@@ -4,67 +4,99 @@ const Crypto = require("crypto");
 
 /* Helper functions */
 
-function generateKey(array)
+//DONE
+async function asyncKeyGen(type)
 {
-	let key;
-	do { key = Crypto.randomBytes(16).toString('hex'); } while (Database.getRequestByKey(key, array) !== -1);
-	return key;
+	let attempts = 0;
+
+	while (attempts < 50)
+	{
+		let key = Crypto.randomBytes(16).toString('hex');
+		let entity = {};
+
+		switch (type)
+		{
+			case "session":
+				entity = await Database.findActiveSession("key", key);
+				break;
+			case "reset":
+				entity = await Database.findResetRequest("key", key);
+				break;
+			case "verification":
+				entity = await Database.findVerificationRequest("key", key);
+				break;
+			default:
+				console.log("ERROR: asyncKeyGen() - Invalid type.");
+				break;
+		}
+
+		if (entity === null)
+			return key;
+
+		attempts++;
+	}
 }
 
-function generateResetRequest(email, resetRequests)
+//DONE
+async function asyncActiveSessionGen(key, userId, userInfo)
 {
-	let randString = generateKey(resetRequests);
+	let active = {
+		"key": key,
+		"userId": userId,
+		"firstName": userInfo.firstName,
+		"lastName": userInfo.lastName,
+		"email": userInfo.email
+	};
+
+	let session = await Database.findActiveSession("userId", userId);
+	if (session !== null)
+		Database.replaceActiveSession(session._id, active);
+	else
+		Database.insertActiveSession(active);
+}
+
+//DONE
+async function asyncResetRequestGen(key, userId)
+{
 	let date = new Date();
 	let currentTime = date.getTime();
-	let expirationDate = (+currentTime) + (+900000);
+	let expirationDate = (+currentTime) + (+600000);		//Reset key expires in 10 minutes
 
-	let index = Database.getRequestByEmail(email, resetRequests);		//Reset key expires in 15 minutes
-	if (index !== -1)
-	{
-		//Generate new key and expiration date for pre-existing reset request
-		resetRequests[index].key = randString;
-		resetRequests[index].expirationDate = expirationDate;
-	}
-	else
-	{
-		let pendingReset = {};
-		pendingReset.key = randString;
-		pendingReset.expirationDate = expirationDate;
-		pendingReset.userInfo = {
-			email: email
-		};
+	let reset = {
+		"key": key,
+		"expiration": expirationDate,
+		"userId": userId
+	};
 
-		resetRequests.push(pendingReset);
-	}
+	//NOTE: In future, perhaps should create unified update/add database functions
 
-	return randString;
+	let request = await Database.getResetRequest("userId", userId);
+	if (request !== null) 
+		Database.replaceResetRequest(request._id, reset);
+	else 
+		Database.insertResetRequest(reset);
 }
 
-function generateVerificationRequest(email, verificationRequests)
+//DONE
+async function asyncVerificationRequestGen(key, userId)
 {
-	let randString = "";
+	let verification = { "key": key, "userId": userId };
 
-	let index = Database.getRequestByEmail(email, verificationRequests);
-	if (index !== -1)
-	{
-		randString = verificationRequests[index].key;
-	}
+	let request = await Database.findVerificationRequest("userId", userId);
+	if (request !== null)
+		Database.replaceVerificationRequest(request._id, verification);
 	else
-	{
-		randString = generateKey(verificationRequests);
-
-		let pendingVerification = {};
-		pendingVerification.key = randString;
-		pendingVerification.userInfo = {
-			email: email
-		};
-
-		verificationRequests.push(pendingVerification);
-	}
-
-	return randString;
+		Database.insertVerificationRequest(verification);
 }
 
+//DONE
+function hashPassword(password)
+{
+	let hash = Crypto.createHash("sha512");
+	return hash.update(password).digest("hex");
+}
+
+//DONE
 function formatPhoneNumber(phoneNumber)
 {
 	let arr = phoneNumber.match(/[0-9]/g);
@@ -78,174 +110,196 @@ function formatPhoneNumber(phoneNumber)
 
 /* Exported functions */
 
-function hashPassword(password)
+//DONE
+async function asyncLogIn(req, res)
 {
-	let hash = Crypto.createHash("sha512");
-	return hash.update(password).digest("hex");
-}
+	let body = req.body;
 
-function logIn(req, res, users)
-{
-	let index = Database.getAccountByEmail(req.email, users);
-	if (index === -1)
-		res.msg = "not-found";
-	else if (users[index].userInfo.password !== hashPassword(req.password))
-		res.msg = "invalid-credentials";
-	else
+	let user = await Database.findUser("email", body.email);
+	if (user === null)
 	{
-		res.msg = "ok";
-		return index;
+		res.send({ msg: "not-found" });
+		return;
 	}
 	
-	return -1;
-}
-
-function createAccount(req, res, users)
-{
-	let userExists = (Database.getAccountByEmail(req.email, users) !== -1) ? true : false;
-	if (userExists)
+	if (user.userInfo.password !== hashPassword(body.password))
 	{
-		res.msg = "account-exists";
-		return false;
+		res.send({ msg: "invalid-credentials" });
+		return;
 	}
 
-	let account = {};
-	account.verified = false;
+	let key = await asyncKeyGen("session");
+	asyncActiveSessionGen(key, user._id, user.userInfo);
 
-	account.userInfo = {};
-	account.userInfo.firstName = req.firstName;
-	account.userInfo.lastName = req.lastName;
-	account.userInfo.email = req.email;
-	account.userInfo.phoneNumber = formatPhoneNumber(req.phoneNumber);
-	account.userInfo.password = hashPassword(req.password);
-
-	account.currentOrder = {};
-	account.currentOrder.info = {};
-	account.currentOrder.items = [];
-
-	account.pastOrders = [];
-
-	users.push(account);
-
-	res.msg = "ok";
-	return true;
+	res.cookie("loginKey", key);
+	res.send({ msg: "ok" });
 }
 
-function sendResetLink(req, res, users, resetRequests)
+//DONE
+async function asyncCreateAccount(req, res)
 {
-	let index = Database.getAccountByEmail(req.email, users);
-	if (index !== -1)
+	let body = req.body;
+	let user = await Database.findUser("email", body.email);
+	if (user !== null)
 	{
-		let randString = generateResetRequest(users[index].userInfo.email, resetRequests);
-		Email.sendLink(process.argv[2], randString, users[index].userInfo.email, "reset");
-		res.msg = "ok";
+		res.send({ msg: "account-exists" });
+		return;
 	}
-	else
-		res.msg = "not-found";
-}
 
-function sendVerificationLink(key, res, activeSessions, verificationRequests)
-{
-	let index = Database.getRequestByKey(key, activeSessions);
-	if (index !== -1)
-	{
-		let randString = generateVerificationRequest(activeSessions[index].userInfo.email, verificationRequests);
-		Email.sendLink(process.argv[2], randString, activeSessions[index].userInfo.email, "verification");
-		res.msg = "ok";
-	}
-	else
-		res.msg = "not-found";
-}
-
-function generateNewSession(firstName, lastName, email, activeSessions)
-{
-	let session = {};
-	session.key = generateKey(activeSessions);
-	session.userInfo = {
-		firstName: firstName,
-		lastName: lastName,
-		email: email
+	let userInfo = {
+		"firstName": body.firstName,
+		"lastName": body.lastName,
+		"email": body.email,
+		"phoneNumber": formatPhoneNumber(body.phoneNumber),
+		"password": hashPassword(body.password)
 	};
 
-	activeSessions.push(session);
-	
-	Database.addActiveSession(session.key, firstName, lastName, email);
-	return session.key;
+	let orderId = await Database.insertOrder();
+	let userId = await Database.insertUser(userInfo, orderId);
+
+	let key = await asyncKeyGen("session");
+	asyncActiveSessionGen(key, userId, userInfo);
+
+	res.cookie("loginKey", key);
+	res.send({ msg: "ok" });
 }
 
-function resetPassword(key, req, res, users, resetRequests)
+//DONE
+async function asyncSendResetLink(req, res)
 {
-	let index = Database.getRequestByKey(key, resetRequests)
-	if (index !== -1)
+	let body = req.body;
+	let user = await Database.findUser("email", body.email);
+	if (user === null)
 	{
-		let idx = Database.getAccountByEmail(resetRequests[index].userInfo.email, users);
-		users[idx].userInfo.password = hashPassword(req.password);
+		res.send({ "msg": "error" });	
+		return;
+	}
 
-		//Delete reset request
-		resetRequests.splice(index, 1);
-		res.msg = "ok";
+	let randString = await asyncKeyGen("reset");
+	asyncResetRequestGen(randString, user._id);
+	Email.sendLink(process.argv[2], randString, user.userInfo.email, "reset");
+	res.send({ "msg": "ok" });
+}
+
+//DONE
+async function asyncSendVerificationLink(req, res)
+{
+	let key = req.cookies.loginKey;
+
+	let session = await Database.findActiveSession("key", key);
+	if (session === null)
+	{
+		res.send({ "msg": "error" });
+		return;
+	}
+
+	let randString = await asyncKeyGen("verification");
+	asyncVerificationRequestGen(randString, session.userId);
+
+	Email.sendLink(process.argv[2], randString, session.email, "verification");
+	res.send({ "msg": "ok" });
+}
+
+//DONE
+async function asyncResetPassword(req, res)
+{
+	let key = req.cookies.resetKey;
+	let body = req.body;
+
+	let request = await Database.findResetRequest("key", key);
+	if (request === null)
+	{
+		res.send({ "msg": "error" });
+		return;		
+	}
+
+	let user = await Database.findUser("_id", request.userId);
+	if (user === null)
+	{
+		res.send({ "msg": "error" });
+		return;	
+	}
+
+	let userInfo = user.userInfo;
+	userInfo.password = hashPassword(body.password);
+	Database.replaceUserInfo(user._id, userInfo);
+	Database.deleteResetRequest(request._id);
+
+	res.clearCookie("resetKey");
+	res.send({ "msg": "ok" });
+}
+
+//DONE
+async function asyncLogOut(req, res)
+{
+	let key = req.cookies.loginKey;
+	let session = await Database.findActiveSession("key", key);
+	if (session !== null)
+	{
+		Database.deleteActiveSession(session._id);
+		res.clearCookie("loginKey");
+		res.send({ "msg": "ok" });
+		return;
+	}
+		
+	res.send({ "msg": "error" });
+}
+
+//DONE
+async function asyncGetSessionInfo(req, res)
+{
+	let key = req.cookies.loginKey;
+	let session = await Database.findActiveSession("key", key);
+	if (session !== null)
+		res.send({ "msg": "signed-in", "firstName": session.firstName, "lastName": session.lastName });
+	else
+		res.send({ "msg": "signed-out" });
+}
+
+//DONE
+async function asyncGetResetPortal(req, res)
+{
+	let key = req.originalUrl.replace("/password-reset?", "");
+	let request = await Database.findVerificationRequest("key", key);
+	if (request !== null)
+	{
+		res.cookie("resetKey", key);
+		res.sendFile(__dirname + '/Frontend/html/Login/password-reset.html');
 	}
 	else
-		res.msg = "not-found";
+		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
 }
 
-function logOut(key, res, activeSessions)
+//DONE
+async function asyncVerifyEmail(req, res)
 {
-	let index = Database.getRequestByKey(key, activeSessions);
-	if (index !== -1)
+	let key = req.originalUrl.replace("/verify-email?", "");
+	let request = await Database.findVerificationRequest("key", key);
+	if (request === null)
 	{
-		activeSessions.splice(index, 1);
-		res.msg = "ok";
-		return true;
+		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
+		return;
 	}
 
-	res.msg = "not-found";
-	return false;
-}
-
-function getNavBarInfo(key, res, activeSessions)
-{
-	let index = Database.getRequestByKey(key, activeSessions);
-	if (index !== -1)
+	let user = await Database.findUser("_id", request.userId);
+	if (user === null)
 	{
-		res.msg = "signed-in";
-		res.firstName = activeSessions[index].userInfo.firstName;
-		res.lastName = activeSessions[index].userInfo.lastName;
+		res.sendFile(__dirname + '/Frontend/html/error.html');
+		return;
 	}
-	else
-		res.msg = "signed-out";
+
+	Database.updateUserVerified(user._id, true);
+	Database.deleteVerificationRequest(request._id);
+	res.sendFile(__dirname + '/Frontend/html/Login/verification-success.html');
 }
 
-function getResetPortal(key, resetRequests)
-{
-	let index = Database.getRequestByKey(key, resetRequests);
-	return (index !== -1);
-}
-
-function verifyEmail(key, users, verificationRequests)
-{
-	let index = Database.getRequestByKey(key, verificationRequests);
-	if (index !== -1)
-	{
-		let idx = Database.getAccountByEmail(verificationRequests[index].userInfo.email, users);
-		users[idx].verified = true;
-
-		//Delete verification request
-		verificationRequests.splice(index, 1);
-		return true;
-	}
-	
-	return false;
-}
-
-module.exports.hashPassword = hashPassword;
-module.exports.logIn = logIn;
-module.exports.createAccount = createAccount;
-module.exports.sendResetLink = sendResetLink;
-module.exports.sendVerificationLink = sendVerificationLink;
-module.exports.generateNewSession = generateNewSession;
-module.exports.resetPassword = resetPassword;
-module.exports.logOut = logOut;
-module.exports.getNavBarInfo = getNavBarInfo;
-module.exports.getResetPortal = getResetPortal;
-module.exports.verifyEmail = verifyEmail;
+//DONE
+module.exports.asyncLogIn = asyncLogIn;
+module.exports.asyncCreateAccount = asyncCreateAccount;
+module.exports.asyncSendResetLink = asyncSendResetLink;
+module.exports.asyncSendVerificationLink = asyncSendVerificationLink;
+module.exports.asyncResetPassword = asyncResetPassword;
+module.exports.asyncLogOut = asyncLogOut;
+module.exports.asyncGetSessionInfo = asyncGetSessionInfo;
+module.exports.asyncGetResetPortal = asyncGetResetPortal;
+module.exports.asyncVerifyEmail = asyncVerifyEmail;
