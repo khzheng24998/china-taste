@@ -1,7 +1,7 @@
 const LoginHelper = require("./loginHelper.js");
 const PostValidator = require("./postValidation.js");
 
-function loginEvents(app, users, activeSessions, resetRequests, verificationRequests)
+function loginEvents(app)
 {
 	/* POST events */
 
@@ -41,7 +41,7 @@ function loginEvents(app, users, activeSessions, resetRequests, verificationRequ
 		if (!PostValidator.validatePostData(req.body, "password-reset"))
 			res.send({ msg: "error" });
 		else
-			LoginHelper.asyncPasswordReset(req, res);
+			LoginHelper.asyncResetPassword(req, res);
 	});
 
 	/* GET events */

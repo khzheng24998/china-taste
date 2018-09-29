@@ -70,7 +70,7 @@ async function asyncResetRequestGen(key, userId)
 
 	//NOTE: In future, perhaps should create unified update/add database functions
 
-	let request = await Database.getResetRequest("userId", userId);
+	let request = await Database.findResetRequest("userId", userId);
 	if (request !== null) 
 		Database.replaceResetRequest(request._id, reset);
 	else 
@@ -154,8 +154,11 @@ async function asyncCreateAccount(req, res)
 		"password": hashPassword(body.password)
 	};
 
-	let orderId = await Database.insertOrder();
-	let userId = await Database.insertUser(userInfo, orderId);
+	let order = await Database.insertOrder();
+	let orderId = order.insertedId;
+
+	user = await Database.insertUser(userInfo, orderId);
+	let userId = user.insertedId;
 
 	let key = await asyncKeyGen("session");
 	asyncActiveSessionGen(key, userId, userInfo);
@@ -171,7 +174,7 @@ async function asyncSendResetLink(req, res)
 	let user = await Database.findUser("email", body.email);
 	if (user === null)
 	{
-		res.send({ "msg": "error" });	
+		res.send({ "msg": "not-found" });	
 		return;
 	}
 
@@ -222,7 +225,7 @@ async function asyncResetPassword(req, res)
 
 	let userInfo = user.userInfo;
 	userInfo.password = hashPassword(body.password);
-	Database.replaceUserInfo(user._id, userInfo);
+	Database.updateUserInfo(user._id, userInfo);
 	Database.deleteResetRequest(request._id);
 
 	res.clearCookie("resetKey");
@@ -260,7 +263,8 @@ async function asyncGetSessionInfo(req, res)
 async function asyncGetResetPortal(req, res)
 {
 	let key = req.originalUrl.replace("/password-reset?", "");
-	let request = await Database.findVerificationRequest("key", key);
+	console.log(key);
+	let request = await Database.findResetRequest("key", key);
 	if (request !== null)
 	{
 		res.cookie("resetKey", key);

@@ -34,7 +34,7 @@ const Login = require("./login.js");
 const Profile = require("./profile.js");
 
 SendFile.sendFiles(app);
-Login.loginEvents(app, users, activeSessions, resetRequests, verificationRequests);
+Login.loginEvents(app);
 Profile.profileEvents(app, users, activeSessions, resetRequests, verificationRequests);
 
 /* Get menu and current order */
