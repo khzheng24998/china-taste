@@ -443,3 +443,127 @@ async function asyncSendVerificationLink(req, res)
 	Email.sendLink(process.argv[2], randString, user.userInfo.email, "verification");
 	res.send({ "msg": "ok" });
 }
+
+//Included module(s)
+const Menu = require("./menu.js");
+
+//Return value: Returns array of menu items belonging to category on success. Returns empty array otherwise.
+//Argument(s):
+// - req: {category}
+function getMenuGroup(req)
+{
+	let menu = Menu.menu;
+	let menuGroup = [];
+	let found = false;
+
+	//Check if category is valid
+	for(let i = 0; i < menu.categories.length; i++)
+		if (req.category == menu.categories[i])
+			found = true;
+
+	if (found)
+		menuGroup = menu[req.category];
+	else
+		console.log("getMenuGroup: Could not retreive menu group!");
+
+	return menuGroup;
+}
+
+module.exports.getMenuGroup = getMenuGroup;
+
+//Included module(s)
+const EditOrder = require("./editOrder.js");
+
+function updateOrder(req, order)
+{
+	EditOrder.updateOrder(req, order);
+}
+
+function updateOrderInfo(req, orderInfo)
+{
+	orderInfo.orderType = req.orderType;
+	orderInfo.addressInfo = req.addressInfo;
+	orderInfo.customerInfo = req.customerInfo;
+	orderInfo.orderDetails = req.orderDetails;
+}
+
+/*---------------------------------------------*/
+
+//Included module(s)
+const Menu = require("./menu.js");
+
+function objectsAreEqual(a, b)
+{
+	if (JSON.stringify(a) === JSON.stringify(b))
+		return true;
+
+	return false;
+}
+
+function orderLookup(orderEntry, order)
+{
+	for (let i = 0; i < order.length; i++)
+		if (objectsAreEqual(orderEntry, order[i]))
+			return i;
+
+	return -1;
+}
+
+function menuLookup(menuEntry)
+{
+
+}
+
+function updateOrder(req, order)
+{
+	switch(req.action)
+	{
+		case "add-item":
+			addToOrder(req, order);
+			return true;
+		case "remove-item":
+			removeFromOrder(req, order);
+			return true;
+		case "update-item":
+			updateItem(req, order);
+			return true;
+		default:
+			console.log("updateOrder: Invalid action!");
+			return false;
+	}
+}
+
+function addToOrder(req, order)
+{
+	let index = orderLookup(req.orderEntry, order);
+	if (index != -1)
+		order[index].quantity = (+order[index].quantity) + (+req.orderEntry.quantity);
+	else
+		order.push(req.orderEntry);
+}
+
+function removeFromOrder(req, order)
+{
+	let index = orderLookup(req.orderEntry, order);
+	if (index != -1)
+	{
+		order.splice(index, 1);
+		return true;
+	}
+
+	return false;
+}
+
+function updateItem(req, order)
+{
+	let index = orderLookup(req.orderEntry, order)
+	if (index != -1)
+	{
+		order[index] = req.newEntry;
+		return true;
+	}
+
+	return false;
+}
+
+module.exports.updateOrder = updateOrder;
