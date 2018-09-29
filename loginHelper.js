@@ -4,14 +4,13 @@ const Crypto = require("crypto");
 
 /* Helper functions */
 
-//DONE
 async function asyncKeyGen(type)
 {
 	let attempts = 0;
 
 	while (attempts < 50)
 	{
-		let key = Crypto.randomBytes(16).toString('hex');
+		let key = Crypto.randomBytes(24).toString('hex');
 		let entity = {};
 
 		switch (type)
@@ -37,7 +36,6 @@ async function asyncKeyGen(type)
 	}
 }
 
-//DONE
 async function asyncActiveSessionGen(key, userId, userInfo)
 {
 	let active = {
@@ -55,7 +53,6 @@ async function asyncActiveSessionGen(key, userId, userInfo)
 		Database.insertActiveSession(active);
 }
 
-//DONE
 async function asyncResetRequestGen(key, userId)
 {
 	let date = new Date();
@@ -77,7 +74,6 @@ async function asyncResetRequestGen(key, userId)
 		Database.insertResetRequest(reset);
 }
 
-//DONE
 async function asyncVerificationRequestGen(key, userId)
 {
 	let verification = { "key": key, "userId": userId };
@@ -89,14 +85,12 @@ async function asyncVerificationRequestGen(key, userId)
 		Database.insertVerificationRequest(verification);
 }
 
-//DONE
 function hashPassword(password)
 {
 	let hash = Crypto.createHash("sha512");
 	return hash.update(password).digest("hex");
 }
 
-//DONE
 function formatPhoneNumber(phoneNumber)
 {
 	let arr = phoneNumber.match(/[0-9]/g);
@@ -110,7 +104,6 @@ function formatPhoneNumber(phoneNumber)
 
 /* Exported functions */
 
-//DONE
 async function asyncLogIn(req, res)
 {
 	let body = req.body;
@@ -135,7 +128,6 @@ async function asyncLogIn(req, res)
 	res.send({ msg: "ok" });
 }
 
-//DONE
 async function asyncCreateAccount(req, res)
 {
 	let body = req.body;
@@ -167,7 +159,6 @@ async function asyncCreateAccount(req, res)
 	res.send({ msg: "ok" });
 }
 
-//DONE
 async function asyncSendResetLink(req, res)
 {
 	let body = req.body;
@@ -184,7 +175,6 @@ async function asyncSendResetLink(req, res)
 	res.send({ "msg": "ok" });
 }
 
-//DONE
 async function asyncSendVerificationLink(req, res)
 {
 	let key = req.cookies.loginKey;
@@ -203,7 +193,6 @@ async function asyncSendVerificationLink(req, res)
 	res.send({ "msg": "ok" });
 }
 
-//DONE
 async function asyncResetPassword(req, res)
 {
 	let key = req.cookies.resetKey;
@@ -232,7 +221,6 @@ async function asyncResetPassword(req, res)
 	res.send({ "msg": "ok" });
 }
 
-//DONE
 async function asyncLogOut(req, res)
 {
 	let key = req.cookies.loginKey;
@@ -248,7 +236,6 @@ async function asyncLogOut(req, res)
 	res.send({ "msg": "error" });
 }
 
-//DONE
 async function asyncGetSessionInfo(req, res)
 {
 	let key = req.cookies.loginKey;
@@ -259,7 +246,6 @@ async function asyncGetSessionInfo(req, res)
 		res.send({ "msg": "signed-out" });
 }
 
-//DONE
 async function asyncGetResetPortal(req, res)
 {
 	let key = req.originalUrl.replace("/password-reset?", "");
@@ -274,7 +260,6 @@ async function asyncGetResetPortal(req, res)
 		res.sendFile(__dirname + '/Frontend/html/invalid-link.html');
 }
 
-//DONE
 async function asyncVerifyEmail(req, res)
 {
 	let key = req.originalUrl.replace("/verify-email?", "");
@@ -297,7 +282,6 @@ async function asyncVerifyEmail(req, res)
 	res.sendFile(__dirname + '/Frontend/html/Login/verification-success.html');
 }
 
-//DONE
 module.exports.asyncLogIn = asyncLogIn;
 module.exports.asyncCreateAccount = asyncCreateAccount;
 module.exports.asyncSendResetLink = asyncSendResetLink;

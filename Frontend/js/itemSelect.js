@@ -274,7 +274,7 @@ $(document).ready(function()
 
 	initialize();
 
-	let getMenu = $.post("http://localhost:3000/get-combined", req);
+	let getMenu = $.post("get-menu-and-items", req);
 	$.when(getMenu).done(function(data, status)
 	{
 		if(status != "success")

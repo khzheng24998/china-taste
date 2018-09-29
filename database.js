@@ -263,7 +263,7 @@ function insertUser(userInfo, orderId)
 		if ("firstName" in userInfo === false || "lastName" in userInfo === false || "email" in userInfo === false 
 			|| "phoneNumber" in userInfo === false || "password" in userInfo === false)
 		{
-			console.log("ERROR: addUser() - userInfo argument missing fields!");
+			console.log("ERROR: insertUser() - userInfo argument missing fields!");
 			resolve(null);
 			return;
 		}
@@ -283,51 +283,6 @@ function insertUser(userInfo, orderId)
 
 			resolve(doc);
 		});
-	});
-}
-
-function updateUserVerified(id, bool)
-{
-	let init = initializeDb();
-	init.then(function()
-	{
-		let db = getDb();
-		let chinaTaste = db.db("chinataste");
-		chinaTaste.collection("users").updateOne(
-			{ "_id": id },
-			{
-				$set: { "verified": bool }
-			}
-		);
-	});
-}
-
-function updateUserInfo(id, userInfo)
-{
-	if ("firstName" in userInfo === false || "lastName" in userInfo === false || "email" in userInfo === false 
-		|| "phoneNumber" in userInfo === false || "password" in userInfo === false)
-	{
-		console.log("ERROR: addUser() - userInfo argument missing fields!");
-		return;
-	}
-
-	let init = initializeDb();
-	init.then(function()
-	{
-		let db = getDb();
-		let chinaTaste = db.db("chinataste");
-		chinaTaste.collection("users").updateOne(
-			{ "_id": id },
-			{
-				$set: {
-					"userInfo.firstName": userInfo.firstName,
-					"userInfo.lastName": userInfo.lastName,
-					"userInfo.email": userInfo.email,
-					"userInfo.phoneNumber": userInfo.phoneNumber,
-					"userInfo.password": userInfo.password
-				}
-			}
-		);
 	});
 }
 
@@ -361,6 +316,51 @@ function findUser(field, query)
 	});
 }
 
+function updateUserVerified(id, bool)
+{
+	let init = initializeDb();
+	init.then(function()
+	{
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
+		chinaTaste.collection("users").updateOne(
+			{ "_id": id },
+			{
+				$set: { "verified": bool }
+			}
+		);
+	});
+}
+
+function updateUserInfo(id, userInfo)
+{
+	if ("firstName" in userInfo === false || "lastName" in userInfo === false || "email" in userInfo === false 
+		|| "phoneNumber" in userInfo === false || "password" in userInfo === false)
+	{
+		console.log("ERROR: updateUserInfo() - userInfo argument missing fields!");
+		return;
+	}
+
+	let init = initializeDb();
+	init.then(function()
+	{
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
+		chinaTaste.collection("users").updateOne(
+			{ "_id": id },
+			{
+				$set: {
+					"userInfo.firstName": userInfo.firstName,
+					"userInfo.lastName": userInfo.lastName,
+					"userInfo.email": userInfo.email,
+					"userInfo.phoneNumber": userInfo.phoneNumber,
+					"userInfo.password": userInfo.password
+				}
+			}
+		);
+	});
+}
+
 /* Order database functions */
 
 function insertOrder()
@@ -382,9 +382,61 @@ function insertOrder()
 	});
 }
 
+function findOrder(id)
+{
+	return new Promise(function(resolve, reject)
+	{
+		let init = initializeDb();
+		init.then(function()
+		{
+			let db = getDb();
+			let chinaTaste = db.db("chinataste");
+			let doc = chinaTaste.collection("currentOrders").findOne({ "_id" : id });
+			resolve(doc);
+		});
+	});
+}
+
+function updateOrder(id, items)
+{
+	let init = initializeDb();
+	init.then(function()
+	{
+		let db = getDb();
+		let chinaTaste = db.db("chinataste");
+		chinaTaste.collection("currentOrders").updateOne(
+			{ "_id": id },
+			{
+				$set: { "items": items }
+			}
+		);
+	});
+}
+
 module.exports.insertUser = insertUser;
 module.exports.findUser = findUser;
 module.exports.updateUserVerified = updateUserVerified;
 module.exports.updateUserInfo = updateUserInfo;
 
 module.exports.insertOrder = insertOrder;
+module.exports.findOrder = findOrder;
+module.exports.updateOrder = updateOrder;
+
+/* Menu database functions */
+
+function getMenu(category)
+{
+	return new Promise(function(resolve, reject)
+	{
+		let init = initializeDb();
+		init.then(function()
+		{
+			let db = getDb();
+			let chinaTaste = db.db("chinataste");
+			let cursor = chinaTaste.collection("menu_" + category).find();
+			resolve(cursor.toArray());
+		});
+	});
+}
+
+module.exports.getMenu = getMenu;
