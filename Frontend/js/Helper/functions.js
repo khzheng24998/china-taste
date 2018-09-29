@@ -9,7 +9,7 @@ function resizePage()
 
 function displayNavBar()
 {
-	$.get("/get-navbar-info", function(data, status)
+	$.get("/get-session-info", function(data, status)
 	{
 		if (status !== "success")
     		alert("An issue occurred communicating with our server!\nIf this problem persists, please call us at (860) 871-9311.");
