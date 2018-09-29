@@ -1,7 +1,9 @@
 var nodemailer = require('nodemailer');
 
-function sendLink(password, key, receiver, type)
+function sendLink(key, receiver, type)
 {
+	let password = "174acr858onr";
+
 	let url;
 	let emailBody;
 	let subject;
