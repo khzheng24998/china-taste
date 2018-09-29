@@ -63,9 +63,9 @@ function insertVerificationRequest(request)
 		insertRequestOrSession("verificationRequests", request);
 }
 
-function insertRequestOrSession(type, arg)
+function insertRequestOrSession(group, arg)
 {
-	if (type !== "activeSessions" && type !== "resetRequests" && type !== "verificationRequests")
+	if (group !== "activeSessions" && group !== "resetRequests" && group !== "verificationRequests")
 		return;
 
 	let init = initializeDb();
@@ -73,7 +73,7 @@ function insertRequestOrSession(type, arg)
 	{
 		let db = getDb();
 		let chinaTaste = db.db("chinataste");
-		chinaTaste.collection(type).insertOne(arg);
+		chinaTaste.collection(group).insertOne(arg);
 	});
 }
 
@@ -91,12 +91,12 @@ function deleteResetRequest(id)
 
 function deleteVerificationRequest(id)
 {
-	deleteResetRequest("verificationRequests", id);
+	deleteRequestOrSession("verificationRequests", id);
 }
 
-function deleteRequestOrSession(type, id)
+function deleteRequestOrSession(group, id)
 {
-	if (type !== "activeSessions" && type !== "resetRequests" && type !== "verificationRequests")
+	if (group !== "activeSessions" && group !== "resetRequests" && group !== "verificationRequests")
 		return;
 
 	let init = initializeDb();
@@ -104,7 +104,7 @@ function deleteRequestOrSession(type, id)
 	{
 		let db = getDb();
 		let chinaTaste = db.db("chinataste");
-		chinaTaste.collection(type).deleteOne({ "_id": id });
+		chinaTaste.collection(group).deleteOne({ "_id": id });
 	});
 }
 
@@ -125,7 +125,7 @@ function replaceResetRequest(id, request)
 		console.log("ERROR: replaceResetRequest() - request argument missing fields!");
 
 	else
-		replaceRequestOrSession("resetRequests", id, session);
+		replaceRequestOrSession("resetRequests", id, request);
 }
 
 function replaceVerificationRequest(id, request)
@@ -134,12 +134,12 @@ function replaceVerificationRequest(id, request)
 		console.log("ERROR: replaceVerificationRequest() - request argument missing fields!");
 
 	else
-		replaceRequestOrSession("verificationRequests", id, session);
+		replaceRequestOrSession("verificationRequests", id, request);
 }
 
-function replaceRequestOrSession(type, id, arg)
+function replaceRequestOrSession(group, id, arg)
 {
-	if (type !== "activeSessions" && type !== "resetRequests" && type !== "verificationRequests")
+	if (group !== "activeSessions" && group !== "resetRequests" && group !== "verificationRequests")
 		return;
 
 	let init = initializeDb();
@@ -147,7 +147,7 @@ function replaceRequestOrSession(type, id, arg)
 	{
 		let db = getDb();
 		let chinaTaste = db.db("chinataste");
-		chinaTaste.collection(type).replaceOne({ "_id": id }, arg);
+		chinaTaste.collection(group).replaceOne({ "_id": id }, arg);
 	});
 }
 
@@ -195,20 +195,13 @@ function findVerificationRequest(field, query)
 	return findRequestOrSession("verificationRequests", field, query);
 }
 
-function findRequestOrSession(type, field, query)
+function findRequestOrSession(group, field, query)
 {
 	return new Promise(function(resolve, reject) 
 	{
-		if (type !== "activeSessions" && type !== "resetRequests" && type !== "verificationRequests")
+		if (group !== "activeSessions" && group !== "resetRequests" && group !== "verificationRequests")
 		{
-			console.log("ERROR: findRequestOrSession() - Invalid find type.");
-			resolve(null);
-			return;
-		}
-
-		if (field !== "_id" && field !== "key" && field !== "userId")
-		{
-			console.log("ERROR: findRequestOrSession() - Invalid field for lookup.");
+			console.log("ERROR: findRequestOrSession() - Invalid collection to search in.");
 			resolve(null);
 			return;
 		}
@@ -218,7 +211,25 @@ function findRequestOrSession(type, field, query)
 		{
 			let db = getDb();
 			let chinaTaste = db.db("chinataste");
-			let doc = chinaTaste.collection(type).findOne({ field: query });
+
+			let doc;
+			switch (field)
+			{
+				case "_id": 
+					doc = chinaTaste.collection(group).findOne({ "_id": query });
+					break;
+				case "key":
+					doc = chinaTaste.collection(group).findOne({ "key": query });
+					break;
+				case "userId":
+					doc = chinaTaste.collection(group).findOne({ "userId": query });
+					break;
+				default:
+					console.log("ERROR: findRequestOrSession() - Invalid field for lookup.");
+					resolve(null);
+					return;
+			}
+
 			resolve(doc);
 		});
 	});
@@ -270,7 +281,7 @@ function insertUser(userInfo, orderId)
 				pastOrders: []
 			});
 
-			resolve(doc.insertedId);
+			resolve(doc);
 		});
 	});
 }
@@ -324,22 +335,27 @@ function findUser(field, query)
 {
 	return new Promise(function(resolve, reject) 
 	{
-		if (field !== "_id" && field !== "email")
-		{
-			console.log("ERROR: findUser() - Invalid lookup method.");
-			resolve(null);
-			return;
-		}
-
-		if (field === "email")
-			field = "userInfo.email";
-
 		let init = initializeDb();
 		init.then(function()
 		{
 			let db = getDb();
 			let chinaTaste = db.db("chinataste");
-			let doc = chinaTaste.collection("users").findOne({ field: query });
+
+			let doc;
+			switch (field)
+			{
+				case "_id":
+					doc = chinaTaste.collection("users").findOne({ "_id": query });
+					break;
+				case "email":
+					doc = chinaTaste.collection("users").findOne({ "userInfo.email": query });
+					break;
+				default:
+					console.log("ERROR: findUser() - Invalid lookup method.");
+					resolve(null);
+					return;
+			}
+
 			resolve(doc);
 		});
 	});
@@ -361,7 +377,7 @@ function insertOrder()
 				items: []
 			});
 
-			resolve(doc.insertedId);
+			resolve(doc);
 		});
 	});
 }
