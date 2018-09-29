@@ -171,7 +171,7 @@ async function asyncSendResetLink(req, res)
 
 	let randString = await asyncKeyGen("reset");
 	asyncResetRequestGen(randString, user._id);
-	Email.sendLink(process.argv[2], randString, user.userInfo.email, "reset");
+	Email.sendLink("174acr858onr", randString, user.userInfo.email, "reset");
 	res.send({ "msg": "ok" });
 }
 
@@ -189,7 +189,7 @@ async function asyncSendVerificationLink(req, res)
 	let randString = await asyncKeyGen("verification");
 	asyncVerificationRequestGen(randString, session.userId);
 
-	Email.sendLink(process.argv[2], randString, session.email, "verification");
+	Email.sendLink("174acr858onr", randString, session.email, "verification");
 	res.send({ "msg": "ok" });
 }
 

@@ -15,12 +15,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const postHandler = require("./postValidation.js");
 const Database = require("./database.js");
 
-if (process.argv.length < 3)
-{
-	console.log("Missing argument!");
-	return;
-}
-
 //////////////////////////////////////////////////////////////////
 
 let resetRequests = [];
@@ -39,4 +33,8 @@ Login.loginEvents(app);
 Profile.profileEvents(app, users, activeSessions, resetRequests, verificationRequests);
 Order.orderEvents(app);
 
-app.listen(3000, () => console.log('Example app listening on port 3000!'));
+let port = process.env.PORT;
+if (port == null || port == "")
+	port = 3000;
+
+app.listen(port);
