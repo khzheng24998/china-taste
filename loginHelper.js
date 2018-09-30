@@ -1,6 +1,11 @@
+//Custom modules
 const Database = require("./database.js");
 const Email = require("./email.js");
 const Crypto = require("crypto");
+
+//npm modules
+const bcrypt = require("bcrypt");
+const saltRounds = 12;
 
 /* Helper functions */
 
@@ -85,10 +90,20 @@ async function asyncVerificationRequestGen(key, userId)
 		Database.insertVerificationRequest(verification);
 }
 
-function hashPassword(password)
+function asyncHashPassword(password)
 {
-	let hash = Crypto.createHash("sha512");
-	return hash.update(password).digest("hex");
+	return new Promise(function(resolve, reject)
+	{
+		bcrypt.hash(password, saltRounds, function(err, hash) { resolve(hash) });
+	});
+}
+
+function asyncComparePasswords(password, hash)
+{
+	return new Promise(function(resolve, reject)
+	{
+		bcrypt.compare(password, hash, function(err, res) { resolve(res) });
+	});
 }
 
 function formatPhoneNumber(phoneNumber)
@@ -114,8 +129,9 @@ async function asyncLogIn(req, res)
 		res.send({ msg: "not-found" });
 		return;
 	}
-	
-	if (user.userInfo.password !== hashPassword(body.password))
+
+	let validCredentials = await asyncComparePasswords(body.password, user.userInfo.password);
+	if (!validCredentials)
 	{
 		res.send({ msg: "invalid-credentials" });
 		return;
@@ -138,12 +154,15 @@ async function asyncCreateAccount(req, res)
 		return;
 	}
 
+	let phoneNumber = formatPhoneNumber(body.phoneNumber);
+	let password = await asyncHashPassword(body.password);
+
 	let userInfo = {
 		"firstName": body.firstName,
 		"lastName": body.lastName,
 		"email": body.email,
-		"phoneNumber": formatPhoneNumber(body.phoneNumber),
-		"password": hashPassword(body.password)
+		"phoneNumber": phoneNumber,
+		"password": password
 	};
 
 	let order = await Database.insertOrder();
@@ -213,7 +232,7 @@ async function asyncResetPassword(req, res)
 	}
 
 	let userInfo = user.userInfo;
-	userInfo.password = hashPassword(body.password);
+	userInfo.password = await asyncHashPassword(body.password);
 	Database.updateUserInfo(user._id, userInfo);
 	Database.deleteResetRequest(request._id);
 
