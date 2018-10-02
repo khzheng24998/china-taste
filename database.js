@@ -440,3 +440,20 @@ function getMenu(category)
 }
 
 module.exports.getMenu = getMenu;
+
+function getAPIKey(name)
+{
+	return new Promise(function(resolve, reject)
+	{
+		let init = initializeDb();
+		init.then(function()
+		{
+			let db = getDb();
+			let chinaTaste = db.db("chinataste");
+			let doc = chinaTaste.collection("apiKeys").findOne({ name: name });
+			resolve(doc);
+		});
+	});
+}
+
+module.exports.getAPIKey = getAPIKey;
