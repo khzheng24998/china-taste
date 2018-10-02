@@ -1,10 +1,8 @@
-const sgMail = require('@sendgrid/mail');
-const Database = require("./database.js");
+var nodemailer = require('nodemailer');
 
-async function sendLink(pass, key, receiver, type)
+function sendLink(pass, key, receiver, type)
 {
-	let apiKey = await Database.getAPIKey("sendGrid");
-	sgMail.setApiKey(apiKey.val);
+	let password = "174acr858onr";
 
 	let url;
 	let emailBody;
@@ -24,17 +22,32 @@ async function sendLink(pass, key, receiver, type)
 		subject = "Email Verification";
 	}
 
-	const msg = {
-		to: receiver,
-	  	from: 'chinatasteofvernon@example.com',
-	  	subject: subject,
-	  	html: emailBody,
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: 
+		{
+			user: 'chinatasteofvernon@gmail.com',
+			pass: password
+		}
+  	});
+
+	let mailOptions = {
+		from: 'chinatasteofvernon@gmail.com',
+  		to: receiver,
+  		subject: subject,
+  		html: emailBody
 	};
 
-	sgMail.send(msg);
+	transporter.sendMail(mailOptions, function(error, info)
+	{
+		if (error) 
+      		console.log(error);
+    	else
+      		console.log('Email sent: ' + info.response);
+    });
 }
 
-/*function sendMail(password, order)
+function sendMail(password, order)
 {
 	let emailBody = "";
 
@@ -81,7 +94,8 @@ async function sendLink(pass, key, receiver, type)
       		console.log(error);
     	else 
       		console.log('Email sent: ' + info.response);
-}*/
+    });
+}
 
-//module.exports.sendMail = sendMail;
+module.exports.sendMail = sendMail;
 module.exports.sendLink = sendLink;
