@@ -331,6 +331,7 @@ textarea
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #dddddd;
+	display: none;
 }
 
 .cost-text
