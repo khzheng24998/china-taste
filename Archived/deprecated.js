@@ -567,3 +567,83 @@ function updateItem(req, order)
 }
 
 module.exports.updateOrder = updateOrder;
+
+/*function formatOrderEntry(menuEntry)
+{
+	let orderEntry = {};
+
+	let name = menuEntry.name;
+	let size = $('input[name=size]:checked').val();
+	let quantity = $("#modal-quantity-text").val();
+	let special = $("textarea").val();
+	if (special.length > 128)
+		special = special.substring(0, 128);
+
+	orderEntry.menuEntry = menuEntry;
+	orderEntry.quantity = quantity;
+	orderEntry.special = special;
+
+	if (menuEntry.cost.length != 2)
+		orderEntry.size = "N/A";
+	else
+		orderEntry.size = size;
+
+	return orderEntry;
+}
+
+function getCookie(cname)
+{
+	let name = cname + "=";
+    let ca = document.cookie.split(';');
+    for(let i = 0; i < ca.length; i++) 
+    {
+        let c = ca[i];
+        while (c.charAt(0) == ' ')
+            c = c.substring(1);
+
+        if (c.indexOf(name) == 0)
+            return c.substring(name.length, c.length);
+    }
+    return "";
+}
+
+function checkForCookie()
+{
+	let orderId = getCookie("key");
+    if (orderId == "")
+    {
+    	document.cookie = "key=setme";
+    	return false;
+    }
+
+    return true;
+}
+
+function formatUpdateOrderReq(action, orderEntry, newEntry)
+{
+	let req = {};
+	req.action = action;
+	req.orderEntry = orderEntry;
+	req.newEntry = newEntry;
+	return req;
+}
+
+function addToOrder(menuEntry)
+{
+	let orderEntry = formatOrderEntry(menuEntry);
+	let req = formatUpdateOrderReq("add-item", orderEntry);
+	sendUpdateOrderReq(req);
+}
+
+function deleteItem(orderEntry)
+{
+	let req = formatUpdateOrderReq("remove-item", orderEntry);
+	sendUpdateOrderReq(req);
+}
+
+function updateItem(orderEntry)
+{
+	let newEntry = formatOrderEntry(orderEntry.menuEntry);
+	let req = formatUpdateOrderReq("update-item", orderEntry, newEntry);
+	sendUpdateOrderReq(req);
+}*/
