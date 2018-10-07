@@ -439,7 +439,23 @@ function getMenu(category)
 	});
 }
 
+function getMenuItem(name, category)
+{
+	return new Promise(function(resolve, reject)
+	{
+		let init = initializeDb();
+		init.then(function()
+		{
+			let db = getDb();
+			let chinaTaste = db.db("chinataste");
+			let doc = chinaTaste.collection("menu_" + category).findOne({ "name" : name });
+			resolve(doc);
+		});
+	});
+}
+
 module.exports.getMenu = getMenu;
+module.exports.getItem = getMenuItem;
 
 function getAPIKey(name)
 {

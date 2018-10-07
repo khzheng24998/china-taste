@@ -274,8 +274,7 @@ $(document).ready(function()
 
 	initialize();
 
-	let getMenu = $.post("get-menu-and-items", req);
-	$.when(getMenu).done(function(data, status)
+	let getMenu = $.post("get-menu-and-items", req, function(data, status)
 	{
 		if(status != "success")
 		{

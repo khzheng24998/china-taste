@@ -1,3 +1,4 @@
+const Crypto = require("crypto");
 const Database = require("./database.js");
 
 /* Helper functions */
@@ -21,8 +22,53 @@ function updateItems(request, items)
 	}
 }
 
+function getOrderItem(id, items)
+{
+	for (let i = 0; i < items.length; i++)
+	{
+		if (items.id == id)
+			return i;
+	}
+
+	return -1;
+}
+
+async function generateOrderEntry(request, items)
+{
+	let orderEntry = {};
+	let menuEntry = await Database.getMenuItem(request.name, request.category);
+	if (menuEntry == null)
+		return false;
+
+	let id;
+	do { id = Crypto.randomBytes(16).toString('hex') } while (getOrderItem(id, items) != -1);
+
+	orderEntry.id = id;
+	orderEntry.name = menuEntry.name;
+	orderEntry.category = request.category;
+	orderEntry.quantity = request.quantity;
+
+	if (menuEntry.cost.length == 1 && request.size != "N/A")
+		return false;
+
+	orderEntry.size = request.size;
+}
+
 function addToOrder(request, items)
 {
+	/* struct orderEntry {
+		name,
+		category,
+		size, 
+		quantity
+	} */
+
+	/*let menuEntry = await Database.getItem(request.orderEntry.name, request.orderEntry.category);
+
+	let orderEntry = request.orderEntry;
+	
+	orderEntry.id = id;*/
+
 	items.push(request.orderEntry);
 }
 
