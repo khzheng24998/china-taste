@@ -32,7 +32,7 @@ function addToOrder(request, items)
 	return new Promise(async function(resolve, reject)
 	{
 		let orderEntry = {};
-		let menuEntry = await Database.getMenuItem(request.menuEntry.name, request.menuEntry.category);
+		let menuEntry = await Database.getMenuItem(request.name, request.category);
 
 		let id;
 		do { id = Crypto.randomBytes(16).toString('hex') } while (itemLookup(id, items) != -1);
@@ -45,7 +45,7 @@ function addToOrder(request, items)
 		orderEntry.size = request.size;
 
 		items.push(orderEntry);
-		
+
 		resolve(true);
 	});
 }
