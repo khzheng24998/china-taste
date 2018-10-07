@@ -45,7 +45,8 @@ function addToOrder(request, items)
 		orderEntry.size = request.size;
 
 		items.push(orderEntry);
-		resolve(items);
+		
+		resolve(true);
 	});
 }
 
