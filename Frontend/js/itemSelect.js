@@ -164,7 +164,7 @@ function displayModalBox2(orderItem)
 	$("#delete-btn-wrapper").show();
 }
 
-function formatOrderEntry(menuEntry)
+/*function formatOrderEntry(menuEntry)
 {
 	let orderEntry = {};
 
@@ -215,7 +215,6 @@ function checkForCookie()
     return true;
 }
 
-//Formats POST requests to the URL http://localhost:3000/update-order
 function formatUpdateOrderReq(action, orderEntry, newEntry)
 {
 	let req = {};
@@ -223,27 +222,6 @@ function formatUpdateOrderReq(action, orderEntry, newEntry)
 	req.orderEntry = orderEntry;
 	req.newEntry = newEntry;
 	return req;
-}
-
-function sendUpdateOrderReq(req)
-{
-	checkForCookie();
-
-	$.post("http://localhost:3000/update-order", req, function(data, status) 
-	{
-		if(status != "success")
-			alert("An issue occurred while updating your order!\nIf this problem persists, please call us at (860) 871-9311.");
-		else
-		{
-			console.log(data.msg);
-
-			if (data.msg === "signed-out")
-				window.location.href = "/login";
-
-			else if (data.msg === "ok")
-				location.reload();
-		}
-	});
 }
 
 function addToOrder(menuEntry)
@@ -264,6 +242,57 @@ function updateItem(orderEntry)
 	let newEntry = formatOrderEntry(orderEntry.menuEntry);
 	let req = formatUpdateOrderReq("update-item", orderEntry, newEntry);
 	sendUpdateOrderReq(req);
+}*/
+
+function addToOrder(menuEntry)
+{
+	let req = {
+		action: "add-item",
+		menuEntry: menuEntry,
+		quantity: $("#modal-quantity-text").val(),
+		size: (menuEntry.cost.length == 1) ? "N/A" : $('input[name=size]:checked').val()
+	};
+
+	sendUpdateOrderReq(req);
+}
+
+function updateItem(orderEntry)
+{
+	let req = {
+		action: "update-item",
+		id: orderEntry.id,
+		quantity: $("#modal-quantity-text").val(),
+		size: (orderEntry.menuEntry.cost.length == 1) ? "N/A" : $('input[name=size]:checked').val()
+	};
+
+	sendUpdateOrderReq(req);
+}
+
+function deleteItem(orderEntry)
+{
+	let req = {
+		action: "remove-item",
+		id: orderEntry.id
+	};
+
+	sendUpdateOrderReq(req);
+}
+
+function sendUpdateOrderReq(req)
+{
+	$.post("/update-order", req, function(data, status) 
+	{
+		if(status != "success")
+			alert("An issue occurred while updating your order!\nIf this problem persists, please call us at (860) 871-9311.");
+		else
+		{
+			if (data.msg === "signed-out")
+				window.location.href = "/login";
+
+			else if (data.msg === "ok")
+				location.reload();
+		}
+	});
 }
 
 $(document).ready(function()
@@ -274,7 +303,7 @@ $(document).ready(function()
 
 	initialize();
 
-	let getMenu = $.post("get-menu-and-items", req, function(data, status)
+	let getMenu = $.post("/get-menu-and-items", req, function(data, status)
 	{
 		if(status != "success")
 		{
