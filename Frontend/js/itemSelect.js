@@ -13,9 +13,10 @@ function displayPageContents(menu, order)
 	for(let i = 0; i < menu.length; i++)
 	{
 		//Retreive and display item name
+		$("#item" + i).show();
 		$("#item" + i).find(".name-text").html(menu[i].name);
 
-		let costString = menu[i].cost[0];
+		let costString = menu[i].cost[0].toFixed(2);
 		if (menu[i].cost.length > 1)
 			costString += "+";
 
