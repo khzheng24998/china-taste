@@ -5,99 +5,72 @@ const Database = require("./database.js");
 
 function updateItems(request, items)
 {
-	switch(request.action)
+	return new Promise(async function(resolve, reject)
 	{
-		case "add-item":
-			addToOrder(request, items);
-			break;
-		case "remove-item":
-			removeFromOrder(request, items);
-			break;
-		case "update-item":
-			updateItem(request, items);
-			break;
-		default:
-			console.log("ERROR: updateItems() - Invalid update action!");
-			break;
-	}
-}
+		switch(request.action)
+		{
+			case "add-item":
+				await addToOrder(request, items);
+				break;
+			case "remove-item":
+				removeFromOrder(request, items);
+				break;
+			case "update-item":
+				updateItem(request, items);
+				break;
+			default:
+				console.log("ERROR: updateItems() - Invalid update action!");
+				break;
+		}
 
-function getOrderItem(id, items)
-{
-	for (let i = 0; i < items.length; i++)
-	{
-		if (items.id == id)
-			return i;
-	}
-
-	return -1;
-}
-
-async function generateOrderEntry(request, items)
-{
-	let orderEntry = {};
-	let menuEntry = await Database.getMenuItem(request.name, request.category);
-	if (menuEntry == null)
-		return false;
-
-	let id;
-	do { id = Crypto.randomBytes(16).toString('hex') } while (getOrderItem(id, items) != -1);
-
-	orderEntry.id = id;
-	orderEntry.name = menuEntry.name;
-	orderEntry.category = request.category;
-	orderEntry.quantity = request.quantity;
-
-	if (menuEntry.cost.length == 1 && request.size != "N/A")
-		return false;
-
-	orderEntry.size = request.size;
+		resolve(true);
+	});
 }
 
 function addToOrder(request, items)
 {
-	/* struct orderEntry {
-		name,
-		category,
-		size, 
-		quantity
-	} */
+	return new Promise(async function(resolve, reject)
+	{
+		let orderEntry = {};
+		let menuEntry = await Database.getMenuItem(request.menuEntry.name, request.menuEntry.category);
 
-	/*let menuEntry = await Database.getItem(request.orderEntry.name, request.orderEntry.category);
+		let id;
+		do { id = Crypto.randomBytes(16).toString('hex') } while (itemLookup(id, items) != -1);
 
-	let orderEntry = request.orderEntry;
-	
-	orderEntry.id = id;*/
+		orderEntry.menuEntry = menuEntry;
+		orderEntry.id = id;
 
-	items.push(request.orderEntry);
+		//Need to add checks to quantity and size
+		orderEntry.quantity = request.quantity;
+		orderEntry.size = request.size;
+
+		items.push(orderEntry);
+		resolve(items);
+	});
 }
 
 function removeFromOrder(request, items)
 {
-	let index = itemLookup(request.orderEntry, items);
-	if (index != -1)
+	let index = itemLookup(request.id, items);
+	if (index !== -1)
 		items.splice(index, 1);
 }
 
 function updateItem(request, items)
 {
-	let index = itemLookup(request.orderEntry, items)
-	if (index != -1)
-		items[index] = request.newEntry;
+	let index = itemLookup(request.id, items);
+	if (index !== -1)
+	{
+		//Need to add checks to quantity and size
+		items[index].size = request.size;
+		items[index].quantity = request.quantity;
+	}
 }
 
-function objectsAreEqual(a, b)
-{
-	if (JSON.stringify(a) === JSON.stringify(b))
-		return true;
-
-	return false;
-}
-
-function itemLookup(entry, items)
+function itemLookup(id, items)
 {
 	for (let i = 0; i < items.length; i++)
-		if (objectsAreEqual(entry, items[i]))
+		if (id == items[i].id)
 			return i;
 
 	return -1;
@@ -147,7 +120,7 @@ async function asyncUpdateOrder(req, res)
 		let currentOrder = await Database.findOrder(orderId);
 		let items = currentOrder.items;
 
-		updateItems(body, items);
+		await updateItems(body, items);
 		Database.updateOrder(orderId, items);
 		res.send({ msg: "ok" });
 	}
