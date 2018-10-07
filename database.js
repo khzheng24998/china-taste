@@ -455,7 +455,7 @@ function getMenuItem(name, category)
 }
 
 module.exports.getMenu = getMenu;
-module.exports.getItem = getMenuItem;
+module.exports.getMenuItem = getMenuItem;
 
 function getAPIKey(name)
 {
