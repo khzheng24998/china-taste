@@ -3,20 +3,23 @@ const Database = require("./database.js");
 
 async function sendLink(key, receiver, type)
 {
-	sgMail.setApiKey(process.env.SG_KEY);
+	let apiKey = await Database.getAPIKey("sendGrid");
+	sgMail.setApiKey(apiKey.val);
 
-	let url, subject, emailBody;
+	let url;
+	let emailBody;
+	let subject;
 
 	if (type === "reset")
 	{
-		url = "https://serene-river-58442.herokuapp.com/password-reset?" + key;
+		url = "http://localhost:3000/password-reset?" + key;
 		emailBody = "<p>To reset your password, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not request a password reset, please disregard this message.</p>";
 		subject = "Password Reset";
 	}
 
 	else if (type === "verification")
 	{
-		url = "https://serene-river-58442.herokuapp.com/verify-email?" + key;
+		url = "http://localhost:3000/verify-email?" + key;
 		emailBody = "<p>To verify your email, click the following link:</p><a href='" + url + "'>" + url + "</a><p>If you did not recently create an account with us or change your email, please disregard this message.</p>";
 		subject = "Email Verification";
 	}
