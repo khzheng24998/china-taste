@@ -375,7 +375,7 @@ textarea
 	cursor: pointer;
 }
 
-#cancel-btn
+#delete-btn
 {
 	background-color: #BF2E08;
 	color: white;
@@ -388,7 +388,7 @@ textarea
 	cursor: pointer;
 }
 
-#delete-btn
+#cancel-btn
 {
 	background-color: #999999;
 	color: white;
