@@ -1,11 +1,9 @@
 function getNumFromId(str)
 {
-	for(let i = 0; i < str.length; i++)
-	{
-		let char = str.charAt(i);
-		if(!isNaN(char))
-			return char;
-	}
+	let myString = str;
+	myString.replace("checkout-item", "");
+	myString.replace("item", "");
+	return parseInt(myString, 10);
 }
 
 function displayPageContents(menu, order)
