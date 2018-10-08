@@ -89,13 +89,13 @@
           <div class="row" id="size-select">
               
             <div class="col-lg-6">
-              <label class="radio" id="size-opt1"><p id="size-opt1-text"></p>
+              <label class="radio" id="size-opt1"><p id="size-opt1-text" class="radio-text"></p>
                 <input type="radio" checked="checked" name="size" value="small">
                 <span class="checkmark"></span>
               </label>
             </div>
             <div class="col-lg-6">
-              <label class="radio" id="size-opt2"><p id="size-opt2-text"></p>
+              <label class="radio" id="size-opt2"><p id="size-opt2-text" class="radio-text"></p>
                 <input type="radio" name="size" value="large">
                 <span class="checkmark"></span>
               </label>
@@ -103,9 +103,41 @@
 
           </div>
 
+          <div id="spicy-select">
+
+            <div class="select-header">
+              <span style="color: #6bb50c;">How spicy? </span><span style="color: #BF2E08;">(Required)</span>
+            </div>
+            <p style="font-size: 13px; font-weight: 550; margin-bottom: 3px;">Choose exactly 1 option</p>
+
+            <div class="row">
+
+              <div class="col-lg-6">
+                <label class="radio"><p class="radio-text">Mild</p>
+                  <input type="radio" checked="checked" name="spicy" value="mild">
+                  <span class="checkmark"></span>
+                </label>
+                <br>
+                <label class="radio"><p class="radio-text">Hot</p>
+                  <input type="radio" name="spicy" value="hot">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+
+              <div class="col-lg-6">
+                <label class="radio"><p class="radio-text">Medium</p>
+                  <input type="radio" name="spicy" value="medium">
+                  <span class="checkmark"></span>
+                </label>
+              </div>
+
+            </div>
+
+          </div>
+
           <div id="sauce-select">
 
-            <div id="sauce-select-header">
+            <div class="select-header">
               <span style="color: #6bb50c;">Choose sauce </span><span style="color: #BF2E08;">(Required)</span>
             </div>
             <p style="font-size: 13px; font-weight: 550; margin-bottom: 3px;">Choose exactly 1 option</p>
@@ -113,14 +145,14 @@
             <div class="row">
 
               <div class="col-lg-6">
-                <label class="radio" id="white"><p>White</p>
+                <label class="radio"><p class="radio-text">White</p>
                   <input type="radio" checked="checked" name="sauce" value="white">
                   <span class="checkmark"></span>
                 </label>
               </div>
 
               <div class="col-lg-6">
-                <label class="radio" id="brown"><p>Brown</p>
+                <label class="radio"><p class="radio-text">Brown</p>
                   <input type="radio" name="sauce" value="brown">
                   <span class="checkmark"></span>
                 </label>
@@ -129,15 +161,19 @@
             </div>
 
           </div>
-          <!-- sauce-select -->
 
-          <div id="gluten-free">
+          <div id="gluten-free-select">
 
-            <p id="gf-select-header" style="color: #6bb50c;">Make it Gluten Free?</p>
+            <div class="select-header">
+              <span style="color: #6bb50c;">Make it gluten free? </span>
+            </div>
+            <p style="font-size: 13px; font-weight: 550; margin-bottom: 3px;">Choose up to 1 option</p>
+
+            <div><input type="checkbox" name="gluten-free" value="yes"> Yes</div>
 
           </div>
 
-          <div id="special">
+          <div id="special" style="padding-top: 8px;">
             <h6>Special Instructions (128 char. limit)</h6>
             <div id="textarea-wrapper"> 
               <textarea rows="3" cols="46" placeholder=" Click here to write a message."></textarea>
