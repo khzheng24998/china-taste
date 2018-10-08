@@ -1,5 +1,5 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://khzheng24998:' + process.env.DB_KEY + '@cluster0-m9ge7.gcp.mongodb.net/test?retryWrites=true';
+const url = 'mongodb+srv://khzheng24998:' + process.env.DB_PASS + '@cluster0-m9ge7.gcp.mongodb.net/test?retryWrites=true';
 
 let _db = null;
 
