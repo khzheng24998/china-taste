@@ -86,26 +86,26 @@ function displayModalBox1(menuItem)
 	{
 		let special = menuItem.special;
 
-		let showSauce = false;
+		$("#spicy-select").hide();
+		$("#gluten-free-select").hide();
 
 		for (let i = 0; i < special.length; i++)
 		{
-			if (special[i] === "sauce")
-			{
-				showSauce = true;
-				$("#sauce-select").show();
-				$('input[name=sauce][value="white"]').prop("checked", true);
-			}
-		}
+			if (special[i] === "spicy")
+				$("#spicy-select").show();
 
-		if (!showSauce)
-			$("#sauce-select").hide();
+			if (special[i] === "gluten-free")
+				$("#gluten-free-select").show();
+		}
+	}
+	else
+	{
+		$("#spicy-select").hide();
+		$("#gluten-free-select").hide();
 	}
 
 	$('input[name=size][value="small"]').prop("checked", true);
-
 	$("#modal-quantity-text").val("1");
-
 	$("textarea").val("");
 
 	let textLen = $("textarea").val().length;
@@ -242,8 +242,6 @@ $(document).ready(function()
 			menuIndex = getNumFromId(id);
 			let menuItem = menu[menuIndex];
 			displayModalBox1(menuItem);
-
-			console.log(document.cookie);
 		});
 
 		$(".item").hover(function()
@@ -333,8 +331,6 @@ $(document).ready(function()
 			orderIndex = getNumFromId(id);
 			let orderItem = order[orderIndex];
 			displayModalBox2(orderItem);
-			
-			console.log(document.cookie);
 		});
 
 		$(".checkout-name").hover(function()
