@@ -333,6 +333,9 @@ textarea
 	border-bottom-style: solid;
 	border-bottom-width: 1px;
 	border-bottom-color: #dddddd;
+	border-left-style: solid;
+	border-left-width: 2px;
+	border-left-color: white;
 	display: none;
 }
 

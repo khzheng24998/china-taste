@@ -1,7 +1,7 @@
 const sgMail = require('@sendgrid/mail');
 const Database = require("./database.js");
 
-async function sendLink(pass, key, receiver, type)
+async function sendLink(key, receiver, type)
 {
 	let apiKey = await Database.getAPIKey("sendGrid");
 	sgMail.setApiKey(apiKey.val);

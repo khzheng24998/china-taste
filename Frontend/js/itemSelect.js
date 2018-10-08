@@ -108,13 +108,7 @@ function displayModalBox1(menuItem)
 	$("#modal-quantity-text").val("1");
 	$("textarea").val("");
 
-	let textLen = $("textarea").val().length;
-	if (textLen > 128)
-		$("#char-count").css("color", "red");
-	else
-		$("#char-count").css("color", "black");
-
-	$("#char-count").html("Character count: " + textLen);
+	$("#char-count").html("Character count: 0");
 
 	$("#add-item-btn").show();
 	$("#save-item-btn").hide();
@@ -140,13 +134,34 @@ function displayModalBox2(orderItem)
 		$("#size-opt2-text").html("Lg ($" + parseFloat(menuItem.cost[1]).toFixed(2) + ")");
 	}
 
+	if (typeof(menuItem.special) !== "undefined")
+	{
+		let special = menuItem.special;
+
+		$("#spicy-select").hide();
+		$("#gluten-free-select").hide();
+
+		for (let i = 0; i < special.length; i++)
+		{
+			if (special[i] === "spicy")
+				$("#spicy-select").show();
+
+			if (special[i] === "gluten-free")
+				$("#gluten-free-select").show();
+		}
+	}
+	else
+	{
+		$("#spicy-select").hide();
+		$("#gluten-free-select").hide();
+	}
+
 	if (orderItem.size != "N/A")
 		$('input[name=size][value="' + orderItem.size + '"]').prop("checked", true);
 	else
 		$('input[name=size][value="small"]').prop("checked", true);
 
 	$("#modal-quantity-text").val(orderItem.quantity);
-
 	$("textarea").val(orderItem.special);
 
 	let textLen = $("textarea").val().length;
@@ -214,6 +229,11 @@ function sendUpdateOrderReq(req)
 	});
 }
 
+function attachEventHandlers(menu, order)
+{
+	
+}
+
 $(document).ready(function()
 {
 	let cat = $("head").attr("id");
@@ -247,10 +267,12 @@ $(document).ready(function()
 		$(".item").hover(function()
 		{
 			$(this).css("background-color", "#f1f1f1");
+			$(this).css("border-left-color", "#0366d6");
 		},
 		function()
 		{
 			$(this).css("background-color", "white");
+			$(this).css("border-left-color", "white");
 		});
 
 		$(".category").on("click", function()
