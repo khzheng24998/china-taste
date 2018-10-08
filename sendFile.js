@@ -217,6 +217,16 @@ function sendFiles(app)
 	{
 		res.sendFile(__dirname + '/Frontend/html/Menu/apps.html');
 	});
+
+	app.get('/soup', function(req, res) 
+	{
+		res.sendFile(__dirname + '/Frontend/html/Menu/soup.html');
+	});
+
+	app.get('/chwm', function(req, res) 
+	{
+		res.sendFile(__dirname + '/Frontend/html/Menu/chwm.html');
+	});
 }
 
 module.exports.sendFiles = sendFiles;
