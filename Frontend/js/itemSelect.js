@@ -1,8 +1,7 @@
 function getNumFromId(str)
 {
-	let myString = str;
-	myString.replace("checkout-item", "");
-	myString.replace("item", "");
+	let myString = str.replace("checkout-item", "");
+	myString = myString.replace("item", "");
 	return parseInt(myString, 10);
 }
 
