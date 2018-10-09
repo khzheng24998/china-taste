@@ -1,5 +1,12 @@
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb+srv://khzheng24998:' + process.env.DB_PASS + '@cluster0-m9ge7.gcp.mongodb.net/test?retryWrites=true';
+
+let password;
+if (process.argv.length !== 3)
+	password = process.env.DB_PASS;
+else
+	password = process.argv[2];
+
+const url = 'mongodb+srv://khzheng24998:' + password + '@cluster0-m9ge7.gcp.mongodb.net/test?retryWrites=true';
 
 let _db = null;
 
