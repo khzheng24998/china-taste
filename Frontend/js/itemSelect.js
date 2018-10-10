@@ -231,7 +231,10 @@ function sendUpdateOrderReq(req)
 
 function attachEventHandlers(menu, order)
 {
-	
+	$("#close-modal").on("click", function()
+	{
+		$("#temp-modal").hide();
+	});
 }
 
 $(document).ready(function()
@@ -255,6 +258,8 @@ $(document).ready(function()
 		displayPageContents(menu, order);
 
 		let menuIndex, orderIndex;
+
+		attachEventHandlers(menu, order);
 
 		$(".item").on("click", function()
 		{
