@@ -665,11 +665,12 @@ $(document).ready(function()
     		return;
 		}
 
-		let orderType;
-		if (typeof(data.info.type) === "undefined")
+		let orderType = "takeout";
+
+		/*if (typeof(data.info.type) === "undefined")
 			orderType = "takeout";
 		else
-			orderType = data.info.type;
+			orderType = data.info.type;*/
 
 		let order = data.items;
 		displayPageContents(orderType, order);

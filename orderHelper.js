@@ -105,6 +105,29 @@ async function asyncGetMenuAndItems(req, res)
 	res.send(menuAndItems);
 }
 
+async function asyncGetMyOrder(req, res)
+{
+	let key = req.cookies.loginKey;
+	let myOrder = {};
+
+	let session = await Database.findActiveSession("key", key);
+	if (session !== null)
+	{
+		let user = await Database.findUser("_id", session.userId);
+
+		//NOTE: In the future, might want to add a check and error message for user...
+
+		let orderId = user.currentOrder;
+		let currentOrder = await Database.findOrder(orderId);
+		myOrder.items = currentOrder.items;	
+	}
+	else
+		myOrder.items = [];
+
+	myOrder.msg = "ok";
+	res.send(myOrder);
+}
+
 async function asyncUpdateOrder(req, res)
 {
 	let key = req.cookies.loginKey;
@@ -130,4 +153,5 @@ async function asyncUpdateOrder(req, res)
 }
 
 module.exports.asyncGetMenuAndItems= asyncGetMenuAndItems;
+module.exports.asyncGetMyOrder = asyncGetMyOrder;
 module.exports.asyncUpdateOrder = asyncUpdateOrder;

@@ -5,7 +5,7 @@ function orderEvents(app)
 {
 	app.post('/get-menu-and-items', function(req, res)
 	{
-		console.log("Received GET request from client! (get-menu-and-items)");
+		console.log("Received POST request from client! (get-menu-and-items)");
 		OrderHelper.asyncGetMenuAndItems(req, res);
 	});
 
@@ -13,6 +13,12 @@ function orderEvents(app)
 	{
 		console.log("Received POST request from client! (update-order)");
 		OrderHelper.asyncUpdateOrder(req, res);
+	});
+
+	app.get('/my-order', function(req, res)
+	{
+		console.log("Received GET request from client! (my-order)");
+		OrderHelper.asyncGetMyOrder(req, res);
 	});
 
 	/*//Update order info
